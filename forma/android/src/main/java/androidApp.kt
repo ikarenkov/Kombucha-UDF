@@ -32,10 +32,8 @@ fun Project.androidApp(
     consumerMinificationFiles: Set<String> = emptySet(),
     manifestPlaceholders: Map<String, Any> = emptyMap()
 ) {
-
-    disallowResources()
-
     target.validate(ApplicationTargetTemplate)
+
     val libraryFeatureConfiguration = AndroidLibraryFeatureConfiguration(
         packageName,
         buildConfiguration,

@@ -101,7 +101,8 @@ val String.dep: NamedDependency get() = deps(this)
 
 val String.kapt: NamedDependency get() = kapt(this)
 
-val Project.target: FormaTarget get() = FormaTarget(this)
+// TODO: maybe should use exclusive naming?
+val Project.target: FormaTarget get() = FormaTarget(path)
 
-fun Project.target(name: String): FormaTarget = FormaTarget(project(name))
+fun target(path: String) = deps(FormaTarget(path))
 

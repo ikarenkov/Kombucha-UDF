@@ -3,6 +3,7 @@ import tools.forma.android.feature.androidLibraryFeatureDefinition
 import tools.forma.android.feature.applyFeatures
 import tools.forma.android.feature.kotlinAndroidFeatureDefinition
 import tools.forma.android.target.AndroidUtilTargetTemplate
+import tools.forma.android.target.LibraryTargetTemplate
 import tools.forma.android.target.ResourcesTargetTemplate
 import tools.forma.android.target.TestUtilTargetTemplate
 import tools.forma.android.owner.NoOwner
@@ -58,6 +59,7 @@ fun Project.androidUtil(
     applyDependencies(
         validator = validator(
             AndroidUtilTargetTemplate,
+            LibraryTargetTemplate,
             TestUtilTargetTemplate,
             ResourcesTargetTemplate
         ),

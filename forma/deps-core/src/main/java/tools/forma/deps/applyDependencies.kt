@@ -19,7 +19,7 @@ fun Project.applyDependencies(
     dependencies {
         val projectAction: (TargetSpec) -> Unit = {
             validator.validate(it.target)
-            add(it.config.name, it.target.project)
+            add(it.config.name, project(it.target.path))
         }
         dependencies.forEach(
             {
@@ -32,12 +32,12 @@ fun Project.applyDependencies(
         )
         testDependencies.forEach(
             { addDependencyTo("testImplementation", it.name) { isTransitive = it.transitive } },
-            { add("testImplementation", it.target.project) },
+            { add("testImplementation", project(it.target.path)) },
             { add("testImplementation", files(it.file)) }
         )
         androidTestDependencies.forEach(
             { addDependencyTo("androidTestImplementation", it.name) { isTransitive = it.transitive } },
-            { add("androidTestImplementation", it.target.project) },
+            { add("androidTestImplementation", project(it.target.path)) },
             { add("androidTestImplementation", files(it.file)) }
         )
     }
