@@ -17,11 +17,11 @@ package ru.ikarenkov.teamaker.reducer
  * ```
  */
 open class ResultBuilder<State : Any, Eff : Any>(
-        /**
-         * Initial state for state and state {}. Initial state is val and it is permanent.
-         */
-        @Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
-        val initialState: State
+    /**
+     * Initial state for state and state {}. Initial state is val and it is permanent.
+     */
+    @Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
+    val initialState: State
 ) {
 
     /**

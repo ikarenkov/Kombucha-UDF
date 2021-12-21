@@ -1,11 +1,11 @@
 package ru.ikarenkov.teamaker
 
-class SyncFeature<Msg : Any, Model : Any, Eff : Any>(
+class SyncStore<Msg : Any, Model : Any, Eff : Any>(
     initialState: Model,
     private val reducer: (Model, Msg) -> Pair<Model, Set<Eff>>,
     private val effHandlers: List<EffectHandler<Eff, Msg>> = listOf(),
     initialEffects: Set<Eff> = setOf(),
-) : Feature<Msg, Model, Eff> {
+) : Store<Msg, Model, Eff> {
 
     override var currentState: Model = initialState
         private set
@@ -37,7 +37,7 @@ class SyncFeature<Msg : Any, Model : Any, Eff : Any>(
     }
 
     override fun listenEffect(listener: (eff: Eff) -> Unit): Cancelable =
-            effListeners.addListenerAndMakeCancelable(listener)
+        effListeners.addListenerAndMakeCancelable(listener)
 
     override fun cancel() {
         isCanceled = true

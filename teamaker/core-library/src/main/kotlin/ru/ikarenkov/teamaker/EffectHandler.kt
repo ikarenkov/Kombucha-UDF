@@ -15,12 +15,12 @@ interface EffectHandler<Eff : Any, Msg : Any> : Cancelable {
 }
 
 fun <Eff1 : Any, Msg1 : Any, Eff2 : Any, Msg2 : Any> EffectHandler<Eff1, Msg1>.adapt(
-        effAdapter: (Eff2) -> Eff1?,
-        msgAdapter: (Msg1) -> Msg2? = { null }
+    effAdapter: (Eff2) -> Eff1?,
+    msgAdapter: (Msg1) -> Msg2? = { null }
 ): EffectHandler<Eff2, Msg2> = object : EffectHandler<Eff2, Msg2> {
 
     override fun setListener(listener: (Msg2) -> Unit) =
-            setListener { msg: Msg1 -> msgAdapter(msg)?.let { listener(it) } }
+        setListener { msg: Msg1 -> msgAdapter(msg)?.let { listener(it) } }
 
     override fun handleEffect(eff: Eff2) {
         effAdapter(eff)?.let { handleEffect(it) }
@@ -30,10 +30,10 @@ fun <Eff1 : Any, Msg1 : Any, Eff2 : Any, Msg2 : Any> EffectHandler<Eff1, Msg1>.a
 
 }
 
-fun <Msg : Any, State : Any, Eff : Any> Feature<Msg, State, Eff>.wrapWithEffectHandler(
+fun <Msg : Any, State : Any, Eff : Any> Store<Msg, State, Eff>.wrapWithEffectHandler(
     effectHandler: EffectHandler<Eff, Msg>,
     initialEffects: Set<Eff> = emptySet()
-) = object : Feature<Msg, State, Eff> by this {
+) = object : Store<Msg, State, Eff> by this {
     override fun cancel() {
         effectHandler.cancel()
         this@wrapWithEffectHandler.cancel()
@@ -44,10 +44,10 @@ fun <Msg : Any, State : Any, Eff : Any> Feature<Msg, State, Eff>.wrapWithEffectH
     initialEffects.forEach(effectHandler::handleEffect)
 }
 
-fun <Msg : Any, State : Any, Eff : Any> Feature<Msg, State, Eff>.wrapWithEffectHandlers(
+fun <Msg : Any, State : Any, Eff : Any> Store<Msg, State, Eff>.wrapWithEffectHandlers(
     vararg effectHandlers: EffectHandler<Eff, Msg>,
     initialEffects: Set<Eff> = emptySet()
-) = object : Feature<Msg, State, Eff> by this {
+) = object : Store<Msg, State, Eff> by this {
     override fun cancel() {
         effectHandlers.forEach { it.cancel() }
         this@wrapWithEffectHandlers.cancel()

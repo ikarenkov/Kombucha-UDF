@@ -6,6 +6,9 @@ androidApp(
         google.material,
         androidx.compose.base,
         androidx.compose.activity,
+    ) + deps(
+        tea.core,
+        tea.instanceKeeperUtil
     ),
     compose = true
 )

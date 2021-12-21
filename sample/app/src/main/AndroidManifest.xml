@@ -12,7 +12,7 @@
         android:theme="@style/Theme.TeaMaker">
 
         <activity
-            android:name="ru.ikarenkov.teamaker.sample.RootActivity"
+            android:name="ru.ikarenkov.teamaker.sample.root.RootActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

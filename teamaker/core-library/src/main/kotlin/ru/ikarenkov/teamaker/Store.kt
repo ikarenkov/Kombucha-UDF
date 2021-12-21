@@ -1,6 +1,6 @@
 package ru.ikarenkov.teamaker
 
-interface Feature<Msg : Any, Model : Any, Eff : Any> : Cancelable {
+interface Store<Msg : Any, Model : Any, Eff : Any> : Cancelable {
 
     val currentState: Model
 
