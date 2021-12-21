@@ -31,7 +31,7 @@ data class FormaConfiguration(
     val repositories: RepositoryHandler.() -> Unit,
     // Databinding is Application level feature, android_binary will be infering dataBinding flag, developers does not need to know about
     val dataBinding: Boolean = false,
-    val compose: Boolean = false,
+    val composeVersion: String? = null,
     val validateManifestPackages: Boolean = false,
     val generateMissedManifests: Boolean = false,
     val vectorDrawablesUseSupportLibrary: Boolean = minSdk < AndroidSdkVersion.N,

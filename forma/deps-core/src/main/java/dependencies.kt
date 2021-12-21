@@ -98,6 +98,7 @@ fun kapt(vararg names: String): NamedDependency =
     NamedDependency(names.toList().map { NameSpec(it, Kapt, true) })
 
 val String.dep: NamedDependency get() = deps(this)
+val String.transitiveDep: NamedDependency get() = transitiveDeps(this)
 
 val String.kapt: NamedDependency get() = kapt(this)
 

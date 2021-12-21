@@ -21,7 +21,8 @@ object androidx {
     )
     private val lifecycle_common = deps(
         annotation,
-        "androidx.lifecycle:lifecycle-common:${versions.androidx.lifecycle}".dep
+        "androidx.lifecycle:lifecycle-common:${versions.androidx.lifecycle}".dep,
+        "androidx.lifecycle:lifecycle-common-java8:${versions.androidx.lifecycle}".dep
     )
 
     private val lifecycle_extensions = deps(
@@ -53,6 +54,7 @@ object androidx {
 
     private val savedstate = deps(
         "androidx.savedstate:savedstate:${versions.androidx.savedstate}".dep,
+        "androidx.savedstate:savedstate-ktx:${versions.androidx.savedstate}".dep,
         annotation,
         core_common,
         lifecycle_common
@@ -316,4 +318,64 @@ object androidx {
         "androidx.room:room-compiler:${versions.androidx.room}".kapt,
         sqlite
     )
+
+    object compose {
+
+        private val runtime = deps(
+            "androidx.compose.runtime:runtime:${versions.androidx.compose}".dep,
+            "androidx.compose.runtime:runtime-saveable:${versions.androidx.compose}".dep,
+            kotlinx.coroutines_android
+        )
+
+        private val ui = deps(
+            "androidx.compose.ui:ui:${versions.androidx.compose}",
+            "androidx.compose.ui:ui-geometry:${versions.androidx.compose}",
+            "androidx.compose.ui:ui-graphics:${versions.androidx.compose}",
+            "androidx.compose.ui:ui-unit:${versions.androidx.compose}",
+            "androidx.compose.ui:ui-text:${versions.androidx.compose}"
+        )
+
+        // Tooling support (Previews, etc.)
+        private val uiTooling = deps(
+            "androidx.compose.ui:ui-tooling:${versions.androidx.compose}".dep,
+            "androidx.compose.ui:ui-tooling-preview:${versions.androidx.compose}".dep,
+            "androidx.compose.ui:ui-tooling-data:${versions.androidx.compose}".dep,
+        )
+
+        private val animation = deps(
+            "androidx.compose.animation:animation:${versions.androidx.compose}",
+            "androidx.compose.animation:animation-core:${versions.androidx.compose}",
+        )
+
+        // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+        private val foundation = deps(
+            "androidx.compose.foundation:foundation:${versions.androidx.compose}".dep,
+            "androidx.compose.foundation:foundation-layout:${versions.androidx.compose}".dep
+        )
+
+        private val material = deps(
+            "androidx.compose.material:material:${versions.androidx.compose}".dep,
+            "androidx.compose.material:material-icons-core:${versions.androidx.compose}".dep,
+            "androidx.compose.material:material-ripple:${versions.androidx.compose}".dep
+        )
+
+        val baseNoMaterial = deps(
+            foundation,
+            ui,
+            uiTooling,
+            annotation,
+            animation,
+            runtime
+        )
+
+        val base = deps(
+            baseNoMaterial,
+            material
+        )
+
+        val constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02".dep
+
+        // Integration with activities
+        val activity = "androidx.activity:activity-compose:${versions.androidx.activity}".dep
+    }
 }

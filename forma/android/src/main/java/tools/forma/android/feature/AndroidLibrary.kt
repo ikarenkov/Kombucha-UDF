@@ -22,6 +22,7 @@ class AndroidLibraryFeatureConfiguration(
     val manifestPlaceholders: Map<String, Any> = emptyMap(),
     val viewBinding: Boolean = false,
     val dataBinding: Boolean = false,
+    val compose: Boolean = false,
     val selfValidator: Validator = validator(LibraryTargetTemplate)
 )
 
@@ -57,6 +58,12 @@ fun androidLibraryFeatureDefinition(
 
             buildFeatures.dataBinding = feature.dataBinding
             buildFeatures.viewBinding = feature.viewBinding
+            if (feature.compose && formaConfiguration.composeVersion == null) {
+                error("You must specify compose version in root forma config.")
+            } else {
+                composeOptions.kotlinCompilerExtensionVersion = formaConfiguration.composeVersion
+                buildFeatures.compose = feature.compose
+            }
         }
     }
 )
