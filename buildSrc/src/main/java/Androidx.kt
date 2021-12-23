@@ -25,11 +25,6 @@ object androidx {
         "androidx.lifecycle:lifecycle-common-java8:${versions.androidx.lifecycle}".dep
     )
 
-    private val lifecycle_extensions = deps(
-        annotation,
-        "androidx.lifecycle:lifecycle-extensions:${versions.androidx.lifecycle}".dep
-    )
-
     private val lifecycle_runtime = deps(
         "androidx.lifecycle:lifecycle-runtime:${versions.androidx.lifecycle}".dep,
         core_common,
@@ -48,8 +43,7 @@ object androidx {
     )
 
     val viewmodel = deps(
-        lifecycle_viewmodel_ktx,
-        lifecycle_extensions
+        lifecycle_viewmodel_ktx
     )
 
     private val savedstate = deps(

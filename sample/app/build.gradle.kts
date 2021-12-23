@@ -6,6 +6,9 @@ androidApp(
         google.material,
         androidx.compose.base,
         androidx.compose.activity,
+        androidx.viewmodel,
+        di.koinAndroid,
+        log.logcat
     ) + deps(
         tea.core,
         tea.instanceKeeperUtil

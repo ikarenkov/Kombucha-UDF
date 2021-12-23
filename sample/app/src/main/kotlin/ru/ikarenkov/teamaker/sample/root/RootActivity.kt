@@ -6,23 +6,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import logcat.logcat
+import org.koin.android.ext.android.getKoin
 import ru.ikarenkov.teamaker.Store
-import ru.ikarenkov.teamaker.SyncStoreFactory
 import ru.ikarenkov.teamaker.instancekeeper.getStore
 
 class RootActivity : AppCompatActivity() {
 
     private lateinit var store: Store<Msg, State, Eff>
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        store = getStore {
-            SyncStoreFactory().create(
-                "ROOT",
-                State(0),
-                rootReducer::invoke
-            )
-        }
+        logcat { "onCreate" }
+        store = getStore { getKoin().createRootStore() }
         var state by mutableStateOf(store.currentState)
         store.listenState { state = it }
         setContent {
