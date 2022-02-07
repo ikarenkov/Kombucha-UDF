@@ -7,4 +7,4 @@ import org.gradle.api.tasks.TaskProvider
 import kotlin.reflect.KClass
 
 fun <T : Task> TaskContainer.register(name: String, type: KClass<T>, configurationAction: Action<in T>): TaskProvider<T> =
-        register(name, type.java, configurationAction)
+    register(name, type.java, configurationAction)

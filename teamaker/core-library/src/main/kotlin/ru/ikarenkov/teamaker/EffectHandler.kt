@@ -14,6 +14,11 @@ interface EffectHandler<Eff : Any, Msg : Any> : Cancelable {
 
 }
 
+inline fun <reified Eff1 : Any, Msg1 : Any, Eff2 : Any, reified Msg2 : Any> EffectHandler<Eff1, Msg1>.adaptCast(): EffectHandler<Eff2, Msg2> = adapt(
+    effAdapter = { it as? Eff1 },
+    msgAdapter = { it as? Msg2 }
+)
+
 fun <Eff1 : Any, Msg1 : Any, Eff2 : Any, Msg2 : Any> EffectHandler<Eff1, Msg1>.adapt(
     effAdapter: (Eff2) -> Eff1?,
     msgAdapter: (Msg1) -> Msg2? = { null }

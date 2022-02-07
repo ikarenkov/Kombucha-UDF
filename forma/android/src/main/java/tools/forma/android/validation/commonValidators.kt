@@ -1,8 +1,8 @@
 package tools.forma.android.validation
 
 import org.gradle.api.Project
-import java.io.File
 import tools.forma.validation.validateDirectoryContent
+import java.io.File
 
 fun Project.disallowResources() = validateDirectoryContent(
     dir = "./src/main",

@@ -84,10 +84,10 @@ private fun LibraryExtension.validateManifestPackage(
             if (manifestPackageName != packageName) {
                 error(
                     "Manifest package != build.gradle.kts packageName, it must be equal" +
-                            "\nmanifest ${it.manifest.srcFile.absolutePath}" +
-                            "\npackage $manifestPackageName" +
-                            "\nbuild script ${project.buildFile.absolutePath}" +
-                            "\npackageName $packageName"
+                        "\nmanifest ${it.manifest.srcFile.absolutePath}" +
+                        "\npackage $manifestPackageName" +
+                        "\nbuild script ${project.buildFile.absolutePath}" +
+                        "\npackageName $packageName"
                 )
             }
         }
@@ -133,7 +133,7 @@ private fun populateManifest(
             createNewFile()
             writeText(
                 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                        "<manifest package=\"$packageName\"/>"
+                    "<manifest package=\"$packageName\"/>"
             )
         }
     }

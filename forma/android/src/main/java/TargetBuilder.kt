@@ -2,7 +2,7 @@ import org.gradle.api.Project
 import tools.forma.android.plugin.PluginWrapper
 
 class TargetBuilder(
-        private val project: Project
+    private val project: Project
 ) {
 
     fun withPlugin(pluginWrapper: PluginWrapper<*>): TargetBuilder {

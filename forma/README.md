@@ -1,4 +1,3 @@
-
 <p align="center">
     <a href="https://forma.tools" target="_blank" rel="noopener noreferrer"><img width="100" src="./img/press.svg" alt="Logo"></a>
 </p>
@@ -20,7 +19,9 @@
     <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/formatools/forma?style=social"/>
 </p>    
 
-**Forma** - Kotlin first, Meta Build System with Android and Gradle support. Opinionated, scalable, thoughtfully structured, type-safe and guided way to declare your project structure. Distributed as a Gradle plugin, Forma helps developers to shift focus from `Build Configuration` to `Project Structure Declaration`, abstracting away build configuration complexity.
+**Forma** - Kotlin first, Meta Build System with Android and Gradle support. Opinionated, scalable, thoughtfully structured, type-safe and guided way
+to declare your project structure. Distributed as a Gradle plugin, Forma helps developers to shift focus from `Build Configuration`
+to `Project Structure Declaration`, abstracting away build configuration complexity.
 
 - You don't need to be a gradle expert anymore
 - Get rid of project configuration bad practices
@@ -32,7 +33,9 @@
 - Extensible - be the expert when you need to!
 - And much more...
 
-⚠️ We are using `target` term to express application components(e.g. modules or projects, depending in the context) across documentation and code, there is couple of reasons for that. `Module` term often confused with Dagger modules which makes communication harder, `project` from the other hand used only in Gradle context but not in other build systems like Buck and Bazel.
+⚠️ We are using `target` term to express application components(e.g. modules or projects, depending in the context) across documentation and code,
+there is couple of reasons for that. `Module` term often confused with Dagger modules which makes communication harder, `project` from the other hand
+used only in Gradle context but not in other build systems like Buck and Bazel.
 
 ⚠️ This is early *alpha* release - please do try this at home🏠
 
@@ -41,6 +44,7 @@ Easiest way to start is here >> ‼️ https://github.com/stepango/FormaShowcase
 [Presentation Link](https://www.beautiful.ai/player/-MLn7RnBBWeh7vePDoDq)
 
 Configuration made easy (Gradle 6.8+):
+
 ```gradle
 // settings.gradle.kts
 dependencyResolutionManagement {
@@ -52,7 +56,6 @@ dependencyResolutionManagement {
 }
 
 ```
-
 
 ``` gradle
 // root build.gradle.kts
@@ -105,6 +108,7 @@ androidLibrary(
     )
 )
 ```
+
 ## Progress
 
 |    Supported target types     | implemented | purpose                  | validation |
@@ -124,5 +128,5 @@ androidLibrary(
 |             api               |      ✅      | Feature external API's  |    partial |
 |             impl              |      ✅      | Feature implementation  |    partial |
 
-
-Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
+from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>

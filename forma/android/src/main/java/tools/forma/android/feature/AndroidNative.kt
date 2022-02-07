@@ -1,9 +1,13 @@
 @file:Suppress("UnstableApiUsage")
+
 package tools.forma.android.feature
 
 import androidJunitRunner
 import com.android.build.gradle.LibraryExtension
-import tools.forma.android.config.*
+import tools.forma.android.config.CMake
+import tools.forma.android.config.NdkAbi
+import tools.forma.android.config.NdkBuild
+import tools.forma.android.config.NdkBuildSystem
 import tools.forma.android.target.NativeTarget
 import tools.forma.android.utils.applyFrom
 import tools.forma.validation.Validator

@@ -3,7 +3,6 @@ package tools.forma.validation
 import org.gradle.api.Project
 import org.gradle.tooling.BuildException
 import java.io.File
-import java.lang.IllegalStateException
 
 fun Project.validateDirectoryContent(
     errorMsg: String,

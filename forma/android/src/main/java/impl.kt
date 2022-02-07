@@ -28,11 +28,12 @@ fun Project.impl(
     testDependencies: NamedDependency = emptyDependency(),
     androidTestDependencies: NamedDependency = emptyDependency(),
     viewBinding: Boolean = false,
+    compose: Boolean = false,
     testInstrumentationRunner: String = androidJunitRunner,
     buildConfiguration: BuildConfiguration = BuildConfiguration(),
     consumerMinificationFiles: Set<String> = emptySet(),
     manifestPlaceholders: Map<String, Any> = emptyMap()
-) {
+): TargetBuilder {
 
     target.validate(ImplTargetTemplate)
     val libraryFeatureConfiguration = AndroidLibraryFeatureConfiguration(
@@ -42,7 +43,8 @@ fun Project.impl(
         consumerMinificationFiles,
         manifestPlaceholders,
         selfValidator = validator(ImplTargetTemplate),
-        viewBinding = viewBinding
+        viewBinding = viewBinding,
+        compose = compose
     )
     applyFeatures(
         androidLibraryFeatureDefinition(libraryFeatureConfiguration),
@@ -68,5 +70,6 @@ fun Project.impl(
         repositoriesConfiguration = Forma.configuration.repositories,
         configurationFeatures = kaptConfigurationFeature()
     )
+    return TargetBuilder(this)
 }
 

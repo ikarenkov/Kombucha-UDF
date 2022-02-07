@@ -8,25 +8,43 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.github.terrakok.modo.Modo
+import com.github.terrakok.modo.android.compose.ComposeScreen
+import com.github.terrakok.modo.android.compose.uniqueScreenKey
+import com.github.terrakok.modo.forward
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
+import org.koin.java.KoinJavaComponent.getKoin
+import ru.ikarenkov.teamaker.learn_compose.api.learnComposeFeatureFacade
+import ru.ikarenkov.teamaker.sample.counter.api.counterFeatureFacade
+
+@Parcelize
+internal class RootScreen(
+    override val screenKey: String = uniqueScreenKey
+) : ComposeScreen("Root Screen") {
+
+    @IgnoredOnParcel
+    private val modo: Modo by lazy { getKoin().get() }
+
+    @Composable
+    override fun Content() {
+        RootScreen(modo)
+    }
+
+}
 
 @Composable
-fun RootScreen(state: State, dispatch: (Msg) -> Unit) {
+fun RootScreen(modo: Modo) {
     Box(Modifier.fillMaxSize()) {
         Column(Modifier.align(Alignment.Center)) {
-            Text(state.counter.toString(), Modifier.align(Alignment.CenterHorizontally))
-            Button(onClick = { dispatch(Msg.OnIncreaseClick) }) {
-                Text(text = "Increase")
-            }
-            Button(onClick = { dispatch(Msg.OnDecreaseClick) }) {
-                Text(text = "Decrease")
+            listOf(
+                "Counter" to { counterFeatureFacade.api.createScreen() },
+                "Learn compose" to { learnComposeFeatureFacade.api.screen() },
+            ).forEach { (text, screen) ->
+                Button(onClick = { modo.forward(screen()) }) {
+                    Text(text = text)
+                }
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun RootScreenPreview() {
-    RootScreen(state = State(0)) {}
 }

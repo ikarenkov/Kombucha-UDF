@@ -1,7 +1,13 @@
 package tools.forma.target
 
-class FormaTarget(val path: String) {
+open class FormaTarget(val path: String) {
 
-    val name: String = path.substringAfterLast(":")
+    open val name: String = path.substringAfterLast(":")
+
+}
+
+class FormaMimicTarget(path: String, mimicTarget: TargetTemplate) : FormaTarget(path) {
+
+    override val name: String = "${super.name}-${mimicTarget.suffix}"
 
 }

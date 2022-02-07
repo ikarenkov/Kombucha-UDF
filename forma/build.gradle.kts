@@ -7,7 +7,7 @@ plugins {
 class FormaRootConfigurationException(
     override val message: String,
     override val cause: Throwable? = null
-): Exception()
+) : Exception()
 
 val propertyKotlinVersion = "forma.kotlinVersion"
 val propertyAgpVersion = "forma.agpVersion"

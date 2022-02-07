@@ -1,9 +1,9 @@
 package tools.forma.validation
 
-import tools.forma.validation.error.ProjectValidationError
+import org.gradle.api.Project
 import tools.forma.target.FormaTarget
 import tools.forma.target.TargetTemplate
-import org.gradle.api.Project
+import tools.forma.validation.error.ProjectValidationError
 
 interface Validator {
     fun validate(target: FormaTarget)

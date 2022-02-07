@@ -1,12 +1,12 @@
 package tools.forma.android.feature
 
-import tools.forma.android.config.FormaConfiguration
 import org.gradle.api.Project
-import tools.forma.android.dependencies.kotlin
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import tools.forma.android.config.FormaConfiguration
+import tools.forma.android.dependencies.kotlin
 import tools.forma.deps.ConfigurationType
 import tools.forma.deps.Kapt
 

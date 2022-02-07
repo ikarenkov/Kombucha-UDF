@@ -1,8 +1,8 @@
 package tools.forma.android.dependencies
 
+import Forma
 import dep
 import deps
-import Forma
 
 object versions {
     object jetbrains {
@@ -11,13 +11,11 @@ object versions {
 }
 
 object jetbrains {
-    val annotations
-            = "org.jetbrains:annotations:${versions.jetbrains.annotations}".dep
+    val annotations = "org.jetbrains:annotations:${versions.jetbrains.annotations}".dep
 }
 
 object kotlin {
-    val stdlib_common
-            = "org.jetbrains.kotlin:kotlin-stdlib-common:${Forma.configuration.kotlinVersion}".dep
+    val stdlib_common = "org.jetbrains.kotlin:kotlin-stdlib-common:${Forma.configuration.kotlinVersion}".dep
     val stdlib = deps(
         "org.jetbrains.kotlin:kotlin-stdlib:${Forma.configuration.kotlinVersion}".dep,
         jetbrains.annotations,

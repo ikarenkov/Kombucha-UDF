@@ -1,20 +1,8 @@
 import org.gradle.api.Project
-import tools.forma.deps.ConfigurationType
-import tools.forma.deps.DepType
-import tools.forma.deps.EmptyDependency
-import tools.forma.deps.FileDependency
-import tools.forma.deps.FileSpec
-import tools.forma.deps.FormaDependency
-import tools.forma.deps.Implementation
-import tools.forma.deps.Kapt
-import tools.forma.deps.MixedDependency
-import tools.forma.deps.NameSpec
-import tools.forma.deps.NamedDependency
-import tools.forma.deps.PlatformDependency
-import tools.forma.deps.PlatformSpec
-import tools.forma.deps.TargetDependency
-import tools.forma.deps.TargetSpec
+import tools.forma.deps.*
+import tools.forma.target.FormaMimicTarget
 import tools.forma.target.FormaTarget
+import tools.forma.target.TargetTemplate
 import java.io.File
 
 val DepType.names: List<NameSpec>
@@ -106,4 +94,4 @@ val String.kapt: NamedDependency get() = kapt(this)
 val Project.target: FormaTarget get() = FormaTarget(path)
 
 fun target(path: String) = deps(FormaTarget(path))
-
+fun mimicTarget(path: String, mimicTarget: TargetTemplate) = deps(FormaMimicTarget(path, mimicTarget))

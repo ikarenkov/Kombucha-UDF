@@ -23,6 +23,7 @@ fun Project.androidLibrary(
     packageName: String,
     owner: Owner = NoOwner,
     visibility: Visibility = Public,
+    compose: Boolean = false,
     dependencies: FormaDependency = emptyDependency(),
     testDependencies: NamedDependency = emptyDependency(),
     androidTestDependencies: NamedDependency = emptyDependency(),
@@ -38,6 +39,7 @@ fun Project.androidLibrary(
         testInstrumentationRunner,
         consumerMinificationFiles,
         manifestPlaceholders,
+        compose = compose
     )
     applyFeatures(
         androidLibraryFeatureDefinition(libraryFeatureConfiguration),

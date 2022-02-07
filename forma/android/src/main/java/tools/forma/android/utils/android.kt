@@ -3,8 +3,8 @@ package tools.forma.android.utils
 import com.android.build.gradle.internal.CompileOptions
 import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.dsl.DefaultConfig
-import tools.forma.android.config.FormaConfiguration
 import org.gradle.api.NamedDomainObjectContainer
+import tools.forma.android.config.FormaConfiguration
 
 data class BuildConfiguration(
     val buildTypes: Map<String, BuildType.() -> Unit> = emptyMap()

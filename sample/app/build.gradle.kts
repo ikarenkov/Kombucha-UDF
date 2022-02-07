@@ -11,7 +11,12 @@ androidApp(
         log.logcat
     ) + deps(
         tea.core,
-        tea.instanceKeeperUtil
+        tea.instanceKeeperUtil,
+        navigation.modoCompose,
+        core.feature
+    ) + deps(
+        target(":sample:features:counter:impl"),
+        target(":sample:features:learnCompose:impl"),
     ),
     compose = true
-)
+).withPlugin(Plugins.parcelize)

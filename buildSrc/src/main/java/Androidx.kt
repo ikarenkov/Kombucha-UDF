@@ -315,9 +315,11 @@ object androidx {
 
     object compose {
 
-        private val runtime = deps(
-            "androidx.compose.runtime:runtime:${versions.androidx.compose}".dep,
-            "androidx.compose.runtime:runtime-saveable:${versions.androidx.compose}".dep,
+        val runtime = deps(
+            deps(
+                "androidx.compose.runtime:runtime:${versions.androidx.compose}",
+                "androidx.compose.runtime:runtime-saveable:${versions.androidx.compose}",
+            ),
             kotlinx.coroutines_android
         )
 
@@ -331,9 +333,9 @@ object androidx {
 
         // Tooling support (Previews, etc.)
         private val uiTooling = deps(
-            "androidx.compose.ui:ui-tooling:${versions.androidx.compose}".dep,
-            "androidx.compose.ui:ui-tooling-preview:${versions.androidx.compose}".dep,
-            "androidx.compose.ui:ui-tooling-data:${versions.androidx.compose}".dep,
+            "androidx.compose.ui:ui-tooling:${versions.androidx.compose}",
+            "androidx.compose.ui:ui-tooling-preview:${versions.androidx.compose}",
+            "androidx.compose.ui:ui-tooling-data:${versions.androidx.compose}",
         )
 
         private val animation = deps(
@@ -343,14 +345,31 @@ object androidx {
 
         // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
         private val foundation = deps(
-            "androidx.compose.foundation:foundation:${versions.androidx.compose}".dep,
-            "androidx.compose.foundation:foundation-layout:${versions.androidx.compose}".dep
+            "androidx.compose.foundation:foundation:${versions.androidx.compose}",
+            "androidx.compose.foundation:foundation-layout:${versions.androidx.compose}"
         )
 
+        // Integration with activities
+        val activity = "androidx.activity:activity-compose:${versions.androidx.activity}".dep
+
         private val material = deps(
-            "androidx.compose.material:material:${versions.androidx.compose}".dep,
-            "androidx.compose.material:material-icons-core:${versions.androidx.compose}".dep,
-            "androidx.compose.material:material-ripple:${versions.androidx.compose}".dep
+            "androidx.compose.material:material:${versions.androidx.compose}",
+            "androidx.compose.material:material-icons-core:${versions.androidx.compose}",
+            "androidx.compose.material:material-ripple:${versions.androidx.compose}"
+        )
+
+        private val preview = deps(
+            deps(
+                "androidx.savedstate:savedstate:${versions.androidx.savedstate}",
+                "androidx.lifecycle:lifecycle-runtime:${versions.androidx.lifecycle}",
+                "androidx.lifecycle:lifecycle-common:${versions.androidx.lifecycle}",
+                "androidx.arch.core:core-common:${versions.androidx.core_common}",
+                "androidx.lifecycle:lifecycle-viewmodel:${versions.androidx.lifecycle}",
+                "androidx.activity:activity:${versions.androidx.activity}",
+                "androidx.core:core:${versions.androidx.core}",
+                "androidx.collection:collection:${versions.androidx.collection}",
+            ),
+            activity
         )
 
         val baseNoMaterial = deps(
@@ -359,7 +378,8 @@ object androidx {
             uiTooling,
             annotation,
             animation,
-            runtime
+            runtime,
+            preview
         )
 
         val base = deps(
@@ -368,8 +388,5 @@ object androidx {
         )
 
         val constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02".dep
-
-        // Integration with activities
-        val activity = "androidx.activity:activity-compose:${versions.androidx.activity}".dep
     }
 }

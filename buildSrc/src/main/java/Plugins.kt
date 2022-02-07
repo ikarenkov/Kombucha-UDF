@@ -10,6 +10,8 @@ object Plugins {
 
     val googleServices = PluginWrapper<Any>("com.google.gms.google-services")
 
+    val parcelize = PluginWrapper<Any>("kotlin-parcelize")
+
     fun crashlytics(mappingFileUploadEnabled: Boolean = false) = PluginWrapper(
         "com.google.firebase.crashlytics",
         google.firebase,
