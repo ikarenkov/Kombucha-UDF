@@ -332,6 +332,7 @@ object androidx {
         )
 
         // Tooling support (Previews, etc.)
+        // TODO: use debug implementation
         private val uiTooling = deps(
             "androidx.compose.ui:ui-tooling:${versions.androidx.compose}",
             "androidx.compose.ui:ui-tooling-preview:${versions.androidx.compose}",
