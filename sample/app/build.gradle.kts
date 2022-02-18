@@ -17,6 +17,7 @@ androidApp(
     ) + deps(
         target(":sample:features:counter:impl"),
         target(":sample:features:learnCompose:impl"),
+        target(":sample:features:game:impl"),
     ),
     compose = true
 ).withPlugin(Plugins.parcelize)

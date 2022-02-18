@@ -1,8 +1,8 @@
 package ru.ikarenkov.teamaker.sample.root
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import com.github.terrakok.modo.Modo
 import com.github.terrakok.modo.android.compose.ComposeRender
 import com.github.terrakok.modo.android.compose.init
@@ -10,9 +10,8 @@ import com.github.terrakok.modo.android.compose.saveState
 import com.github.terrakok.modo.back
 import logcat.logcat
 import org.koin.android.ext.android.getKoin
-import ru.ikarenkov.teamaker.sample.counter.api.counterFeatureFacade
 
-class RootActivity : AppCompatActivity() {
+class RootActivity : ComponentActivity() {
 
     private val modo: Modo by lazy { getKoin().get() }
     private val render = ComposeRender(this)

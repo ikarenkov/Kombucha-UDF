@@ -388,6 +388,24 @@ object androidx {
             material
         )
 
-        val constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02".dep
+        val constraintLayout = deps(
+            "androidx.constraintlayout:constraintlayout-compose:1.0.0",
+            "androidx.constraintlayout:constraintlayout-core:1.0.3"
+        )
+
+        object accompanist {
+
+            val version = "0.23.0"
+
+            val insets = "com.google.accompanist:accompanist-insets:$version".dep
+
+            /**
+             * Wrapers for default widgets with built-in insets support
+             */
+            val insetsUi = "com.google.accompanist:accompanist-insets-ui:$version".dep
+
+            val systemUiController = "com.google.accompanist:accompanist-systemuicontroller:$version".dep
+
+        }
     }
 }

@@ -15,6 +15,7 @@ import com.github.terrakok.modo.forward
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.koin.java.KoinJavaComponent.getKoin
+import ru.ikarenkov.teamaker.game.api.gameFeatureFacade
 import ru.ikarenkov.teamaker.learn_compose.api.learnComposeFeatureFacade
 import ru.ikarenkov.teamaker.sample.counter.api.counterFeatureFacade
 
@@ -40,6 +41,7 @@ fun RootScreen(modo: Modo) {
             listOf(
                 "Counter" to { counterFeatureFacade.api.createScreen() },
                 "Learn compose" to { learnComposeFeatureFacade.api.screen() },
+                "Game" to { gameFeatureFacade.api.createScreen() },
             ).forEach { (text, screen) ->
                 Button(onClick = { modo.forward(screen()) }) {
                     Text(text = text)

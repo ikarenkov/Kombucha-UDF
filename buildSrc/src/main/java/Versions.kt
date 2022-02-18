@@ -18,7 +18,7 @@ object versions {
         const val core_common = "2.1.0"
         const val coordinatorlayout = "1.1.0"
         const val constraintlayout = "2.0.1"
-        const val compose = "1.1.0-rc03"
+        const val compose = "1.1.0"
         const val customview = "1.1.0"
         const val cursoradapter = "1.0.0"
         const val documentfile = "1.0.1"
