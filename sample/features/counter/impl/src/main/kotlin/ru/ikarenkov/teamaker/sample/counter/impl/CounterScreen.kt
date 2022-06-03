@@ -1,45 +1,51 @@
 package ru.ikarenkov.teamaker.sample.counter.impl
 
-import android.util.Log
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.github.terrakok.modo.android.compose.ComposeScreen
 import com.github.terrakok.modo.android.compose.uniqueScreenKey
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import logcat.logcat
-import ru.ikarenkov.teamaker.compose.TeaScreen
+import ru.ikarenkov.teamaker.compose.ComposeTea
+import ru.ikarenkov.teamaker.compose.asCompose
 import ru.ikarenkov.teamaker.compose.brewComposeTea
 
 @Parcelize
 internal class CounterScreen(
-    override val screenKey: String = uniqueScreenKey
-) :
-    ComposeScreen("counter"),
-    TeaScreen<Msg.Ui, State, Eff> by brewComposeTea(createCounterStore()) {
+    private var saveableState: State = State(0),
+    override val screenKey: String = uniqueScreenKey,
+) : ComposeScreen("counter") {
 
-    init {
-        logcat { "CounterScreen init, state is $state" }
-        Log.d("CounterScreen", "init, state is $state")
-    }
+    // TODO: lifecycle
+    @IgnoredOnParcel
+    private val tea: ComposeTea<Msg.Ui, State, Eff> = createCounterStore(saveableState).asCompose()
 
     @Composable
     override fun Content() {
-        logcat { "CounterScreen Content, state is $state" }
-        Log.d("CounterScreen", "Content, state is $state")
-        CounterContent(counter = state.counter, dispatch = ::dispatch)
+        val storeOwner = LocalViewModelStoreOwner.current!!
+        // TODO: lifecycle
+        val tea = remember(storeOwner) {
+            storeOwner.brewComposeTea<Msg, Msg.Ui, State, Eff, Nothing>(screenKey) { createCounterStore(saveableState) }
+        }
+        // Temp workaround to save state
+        saveableState = tea.state
+        logcat { "CounterScreen Content, state is ${tea.state}" }
+        CounterContent(counter = tea.state.counter, dispatch = tea::dispatch)
     }
 
 }
@@ -47,10 +53,6 @@ internal class CounterScreen(
 @Preview
 @Composable
 internal fun CounterContent(counter: Int = 0, dispatch: (Msg.Ui) -> Unit = {}) {
-    val focusRequester = remember { FocusRequester() }
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
     Box(Modifier.fillMaxSize()) {
         Column(
             Modifier
@@ -58,7 +60,7 @@ internal fun CounterContent(counter: Int = 0, dispatch: (Msg.Ui) -> Unit = {}) {
                 .width(IntrinsicSize.Max)
         ) {
             Text(counter.toString(), Modifier.align(Alignment.CenterHorizontally))
-            FocusableButton(text = "Increase", focusRequester) {
+            FocusableButton(text = "Increase") {
                 dispatch(Msg.Ui.OnIncreaseClick)
             }
             FocusableButton(text = "Decrease") {
@@ -74,24 +76,12 @@ internal fun CounterContent(counter: Int = 0, dispatch: (Msg.Ui) -> Unit = {}) {
 @Composable
 private fun FocusableButton(
     text: String,
-    requester: FocusRequester = FocusRequester(),
     onClick: () -> Unit = {}
 ) {
-    var isFocused by remember { mutableStateOf(false) }
     Button(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .focusRequester(requester)
-            .onFocusChanged {
-                isFocused = it.hasFocus
-            }
-            .focusable(),
+        modifier = Modifier.fillMaxWidth(),
         elevation = ButtonDefaults.elevation(defaultElevation = 0.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = if (isFocused) MaterialTheme.colors.primary else Color.Gray,
-            contentColor = if (isFocused) MaterialTheme.colors.onPrimary else Color.White
-        )
     ) {
         Text(text = text)
     }

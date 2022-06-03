@@ -1,3 +1,6 @@
+plugins {
+    `android-library`
+}
 androidApp(
     packageName = "ru.ikarenkov.teamaker.sample",
     dependencies = deps(
@@ -21,3 +24,9 @@ androidApp(
     ),
     compose = true
 ).withPlugin(Plugins.parcelize)
+
+dependencies {
+    implementation("androidx.core:core-ktx:1.7.0") {
+        isTransitive = false
+    }
+}

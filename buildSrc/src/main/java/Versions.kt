@@ -1,6 +1,6 @@
 object versions {
     const val funktionale = "1.2"
-    const val coil = "0.8.0"
+    const val coil = "1.4.0"
 
     object jetbrains {
         const val coroutines = "1.5.2"
@@ -18,7 +18,7 @@ object versions {
         const val core_common = "2.1.0"
         const val coordinatorlayout = "1.1.0"
         const val constraintlayout = "2.0.1"
-        const val compose = "1.1.0"
+        const val compose = "1.1.1"
         const val customview = "1.1.0"
         const val cursoradapter = "1.0.0"
         const val documentfile = "1.0.1"
@@ -26,7 +26,7 @@ object versions {
         const val interpolator = "1.0.0"
         const val fragment = "1.4.0"
         const val legacy = "1.0.0"
-        const val lifecycle = "2.4.0"
+        const val lifecycle = "2.4.1"
         const val loader = "1.1.0"
         const val localbroadcastmanager = "1.0.0"
         const val navigation = "2.3.1"

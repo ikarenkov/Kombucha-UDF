@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 abstract class CoroutineEffectHandler<Eff : Any, Msg : Any>(
-    executorCoroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+    executorCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : EffectHandler<Eff, Msg>, CoroutineScope {
 
     final override val coroutineContext: CoroutineContext by lazy {
@@ -35,18 +35,27 @@ abstract class CoroutineEffectHandler<Eff : Any, Msg : Any>(
         listener?.invoke(msg)
     }
 
+    final override fun handleEff(eff: Eff) {
+        launch { suspendHandleEff(eff) }
+    }
+
+    abstract suspend fun suspendHandleEff(eff: Eff)
+
 }
 
 fun <Eff : Any, Msg : Any> effectHandler(
+    coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main,
     handleEffect: suspend (eff: Eff, dispatcher: suspend (Msg) -> Unit) -> Any?
-) = object : CoroutineEffectHandler<Eff, Msg>() {
+) = object : CoroutineEffectHandler<Eff, Msg>(coroutineDispatcher) {
 
-    override fun handleEffect(eff: Eff) {
-        launch {
-            handleEffect(eff) {
-                withContext(Dispatchers.Main) { sendMsg(it) }
-            }
+    override suspend fun suspendHandleEff(eff: Eff) {
+        handleEffect(eff) {
+            withContext(Dispatchers.Main) { sendMsg(it) }
         }
     }
 
 }
+
+fun <Eff : Any, Msg : Any> ioEffectHandler(
+    handleEffect: suspend (eff: Eff, dispatcher: suspend (Msg) -> Unit) -> Any?
+) = effectHandler(Dispatchers.IO, handleEffect)

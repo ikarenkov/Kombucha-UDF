@@ -31,7 +31,9 @@ open class ResultBuilder<State : Any, Eff : Any>(
         get() = currentState
 
     private var currentState: State = initialState
-    private val effBuilder = OperationsBuilder<Eff>()
+//    private val effBuilder = OperationsBuilder<Eff>()
+
+    private val effectsList = mutableListOf<Eff>()
 
     /**
      * Dsl for updating current state.
@@ -57,16 +59,18 @@ open class ResultBuilder<State : Any, Eff : Any>(
      * }
      * ```
      */
-    fun eff(update: OperationsBuilder<Eff>.() -> Unit) {
-        effBuilder.update()
+    fun eff(vararg effects: Eff) {
+        effects.forEach {
+            effectsList += it
+        }
     }
 
     @PublishedApi
     internal fun build(): Pair<State, Set<Eff>> {
-        val effs = mutableSetOf<Eff>().apply {
-            addAll(effBuilder.build())
-        }
-        return currentState to effs
+//        val effs = mutableSetOf<Eff>().apply {
+//            addAll(effBuilder.build())
+//        }
+        return currentState to effectsList.toSet()
     }
 
 }

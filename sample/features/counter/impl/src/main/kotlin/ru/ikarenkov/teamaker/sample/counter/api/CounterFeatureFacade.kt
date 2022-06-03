@@ -7,7 +7,7 @@ import ru.ikarenkov.teamaker.sample.counter.impl.CounterStoreFactory
 
 val counterFeatureFacade by lazy {
     featureFacade<CounterDeps, CounterApi>("counter") {
-        scoped { CounterStoreFactory(get(), get()) }
+        scoped { CounterStoreFactory(get(), get(), get()) }
         scoped<CounterApi> { CounterApiImpl() }
         factory { CounterEffectHandler(get()) }
     }

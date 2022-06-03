@@ -18,7 +18,7 @@ class SyncStore<Msg : Any, Model : Any, Eff : Any>(
         initEffHandlers(initialEffects)
     }
 
-    override fun accept(msg: Msg) {
+    override fun dispatch(msg: Msg) {
         if (isCanceled) {
             return
         }
@@ -46,9 +46,9 @@ class SyncStore<Msg : Any, Model : Any, Eff : Any>(
 
     private fun initEffHandlers(initialEffects: Set<Eff>) {
         effHandlers.forEach {
-            it.setListener(::accept)
-            listenEffect(it::handleEffect)
-            initialEffects.forEach(it::handleEffect)
+            it.setListener(::dispatch)
+            listenEffect(it::handleEff)
+            initialEffects.forEach(it::handleEff)
         }
     }
 

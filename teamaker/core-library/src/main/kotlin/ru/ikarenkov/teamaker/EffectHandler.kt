@@ -8,7 +8,7 @@ interface EffectHandler<Eff : Any, Msg : Any> : Cancelable {
      */
     fun setListener(listener: (Msg) -> Unit) {}
 
-    fun handleEffect(eff: Eff)
+    fun handleEff(eff: Eff)
 
     override fun cancel() = Unit
 
@@ -27,8 +27,8 @@ fun <Eff1 : Any, Msg1 : Any, Eff2 : Any, Msg2 : Any> EffectHandler<Eff1, Msg1>.a
     override fun setListener(listener: (Msg2) -> Unit) =
         setListener { msg: Msg1 -> msgAdapter(msg)?.let { listener(it) } }
 
-    override fun handleEffect(eff: Eff2) {
-        effAdapter(eff)?.let { handleEffect(it) }
+    override fun handleEff(eff: Eff2) {
+        effAdapter(eff)?.let { handleEff(it) }
     }
 
     override fun cancel() = this@adapt.cancel()
@@ -44,9 +44,9 @@ fun <Msg : Any, State : Any, Eff : Any> Store<Msg, State, Eff>.wrapWithEffectHan
         this@wrapWithEffectHandler.cancel()
     }
 }.apply {
-    effectHandler.setListener(::accept)
-    listenEffect(effectHandler::handleEffect)
-    initialEffects.forEach(effectHandler::handleEffect)
+    effectHandler.setListener(::dispatch)
+    listenEffect(effectHandler::handleEff)
+    initialEffects.forEach(effectHandler::handleEff)
 }
 
 fun <Msg : Any, State : Any, Eff : Any> Store<Msg, State, Eff>.wrapWithEffectHandlers(
@@ -59,8 +59,8 @@ fun <Msg : Any, State : Any, Eff : Any> Store<Msg, State, Eff>.wrapWithEffectHan
     }
 }.apply {
     effectHandlers.forEach {
-        it.setListener(::accept)
-        listenEffect(it::handleEffect)
-        initialEffects.forEach(it::handleEffect)
+        it.setListener(::dispatch)
+        listenEffect(it::handleEff)
+        initialEffects.forEach(it::handleEff)
     }
 }

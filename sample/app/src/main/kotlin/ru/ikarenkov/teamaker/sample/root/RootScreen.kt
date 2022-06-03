@@ -2,7 +2,10 @@ package ru.ikarenkov.teamaker.sample.root
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -37,13 +40,20 @@ internal class RootScreen(
 @Composable
 fun RootScreen(modo: Modo) {
     Box(Modifier.fillMaxSize()) {
-        Column(Modifier.align(Alignment.Center)) {
+        Column(
+            Modifier
+                .align(Alignment.Center)
+                .width(IntrinsicSize.Max)
+        ) {
             listOf(
                 "Counter" to { counterFeatureFacade.api.createScreen() },
                 "Learn compose" to { learnComposeFeatureFacade.api.screen() },
                 "Game" to { gameFeatureFacade.api.createScreen() },
             ).forEach { (text, screen) ->
-                Button(onClick = { modo.forward(screen()) }) {
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { modo.forward(screen()) }
+                ) {
                     Text(text = text)
                 }
             }

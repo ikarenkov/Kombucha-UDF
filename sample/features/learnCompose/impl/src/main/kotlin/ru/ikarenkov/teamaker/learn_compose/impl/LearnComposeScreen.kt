@@ -1,6 +1,10 @@
 package ru.ikarenkov.teamaker.learn_compose.impl
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Indication
+import androidx.compose.foundation.IndicationInstance
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -12,8 +16,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.geometry.Offset
@@ -33,10 +46,33 @@ internal class LearnComposeScreen(
 
     @Composable
     override fun Content() {
+        staticCompositionLocalOf {  }
+        LocalContentColor
+        val items = remember {
+            List(10) { 0 }.flatMap { listOf(Color.Green, Color.Cyan, Color.Red) }
+        }
+        var topItem by remember { mutableStateOf(0) }
         CompositionLocalProvider(
             LocalIndication provides DefaultDebugIndication
         ) {
-            LearnComposeContent((0..100).map { RowItem("Title $it", (0..100).map { "Item $it" }) })
+            CardsStack(items, topItem, onTopSwiped = { topItem++ }) {
+                Box(
+                    modifier = Modifier
+                        .background(items[it].copy(alpha = 1f))
+                        .size(300.dp)
+                ) {
+                    when (items[it]) {
+                        Color.Green -> Text(text = "sfgdsfg dsg sdfg sdg sdg  ")
+                        Color.Cyan -> Box {
+                            Box(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .background(Color.Magenta)
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 

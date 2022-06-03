@@ -5,8 +5,6 @@ import ru.ikarenkov.teamaker.game.impl.GameApiImpl
 
 val gameFeatureFacade by lazy {
     featureFacade<GameDeps, GameApi>("gamedetails") {
-//        scoped { CounterStoreFactory(get(), get()) }
         scoped<GameApi> { GameApiImpl() }
-//        factory { CounterEffectHandler(get()) }
     }
 }

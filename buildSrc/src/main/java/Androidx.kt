@@ -363,13 +363,13 @@ object androidx {
             deps(
                 "androidx.savedstate:savedstate:${versions.androidx.savedstate}",
                 "androidx.lifecycle:lifecycle-runtime:${versions.androidx.lifecycle}",
-                "androidx.lifecycle:lifecycle-common:${versions.androidx.lifecycle}",
                 "androidx.arch.core:core-common:${versions.androidx.core_common}",
                 "androidx.lifecycle:lifecycle-viewmodel:${versions.androidx.lifecycle}",
                 "androidx.activity:activity:${versions.androidx.activity}",
                 "androidx.core:core:${versions.androidx.core}",
                 "androidx.collection:collection:${versions.androidx.collection}",
             ),
+            lifecycle_common,
             activity
         )
 
@@ -387,6 +387,8 @@ object androidx {
             baseNoMaterial,
             material
         )
+
+        val viewModel = transitiveDeps("androidx.lifecycle:lifecycle-viewmodel-compose:${versions.androidx.lifecycle}")
 
         val constraintLayout = deps(
             "androidx.constraintlayout:constraintlayout-compose:1.0.0",

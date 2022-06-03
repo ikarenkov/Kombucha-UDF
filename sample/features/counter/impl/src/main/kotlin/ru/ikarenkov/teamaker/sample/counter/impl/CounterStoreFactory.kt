@@ -3,21 +3,24 @@ package ru.ikarenkov.teamaker.sample.counter.impl
 import ru.ikarenkov.teamaker.Store
 import ru.ikarenkov.teamaker.StoreFactory
 import ru.ikarenkov.teamaker.adaptCast
+import ru.ikarenkov.teamaker.sample.counter.api.CounterDeps
 import ru.ikarenkov.teamaker.sample.counter.api.counterFeatureFacade
 
 internal class CounterStoreFactory(
     private val storeFactory: StoreFactory,
-    private val counterEffectHandler: CounterEffectHandler
+    private val counterEffectHandler: CounterEffectHandler,
+    private val deps: CounterDeps
 ) {
 
-    fun create(): Store<Msg, State, Eff> = storeFactory.create(
+    fun create(initialState: State): Store<Msg, State, Eff> = storeFactory.create(
         "COUNTER",
-        State(0),
+        initialState,
         rootReducer::invoke,
         emptySet(),
-        counterEffectHandler.adaptCast(),
+        counterEffectHandler(deps).adaptCast(),
     )
 
 }
 
-internal fun createCounterStore(): Store<Msg, State, Eff> = counterFeatureFacade.scope.get<CounterStoreFactory>().create()
+internal fun createCounterStore(initialState: State): Store<Msg, State, Eff> =
+    counterFeatureFacade.scope.get<CounterStoreFactory>().create(initialState)
