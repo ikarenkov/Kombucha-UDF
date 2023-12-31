@@ -10,42 +10,54 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import com.github.terrakok.modo.android.compose.ComposeScreen
-import com.github.terrakok.modo.android.compose.uniqueScreenKey
-import kotlinx.parcelize.IgnoredOnParcel
+import com.github.terrakok.modo.Screen
+import com.github.terrakok.modo.ScreenKey
+import com.github.terrakok.modo.generateScreenKey
+import com.github.terrakok.modo.model.ScreenModel
+import com.github.terrakok.modo.model.rememberScreenModel
 import kotlinx.parcelize.Parcelize
 import logcat.logcat
-import ru.ikarenkov.teamaker.compose.ComposeTea
-import ru.ikarenkov.teamaker.compose.asCompose
-import ru.ikarenkov.teamaker.compose.brewComposeTea
+import ru.ikarenkov.teamaker.Store
 
 @Parcelize
 internal class CounterScreen(
     private var saveableState: State = State(0),
-    override val screenKey: String = uniqueScreenKey,
-) : ComposeScreen("counter") {
-
-    // TODO: lifecycle
-    @IgnoredOnParcel
-    private val tea: ComposeTea<Msg.Ui, State, Eff> = createCounterStore(saveableState).asCompose()
+    override val screenKey: ScreenKey = generateScreenKey(),
+) : Screen {
 
     @Composable
     override fun Content() {
-        val storeOwner = LocalViewModelStoreOwner.current!!
         // TODO: lifecycle
-        val tea = remember(storeOwner) {
-            storeOwner.brewComposeTea<Msg, Msg.Ui, State, Eff, Nothing>(screenKey) { createCounterStore(saveableState) }
+        val tea = rememberScreenModel {
+            CounterScreenModel(saveableState)
         }
         // Temp workaround to save state
-        saveableState = tea.state
+        saveableState = tea.state.value
         logcat { "CounterScreen Content, state is ${tea.state}" }
-        CounterContent(counter = tea.state.counter, dispatch = tea::dispatch)
+        CounterContent(counter = tea.state.value.counter, dispatch = tea.store::dispatch)
+    }
+
+}
+
+private class CounterScreenModel(
+    private var saveableState: State = State(0)
+) : ScreenModel {
+    val store: Store<Msg, State, Eff> = createCounterStore(saveableState)
+    val state = mutableStateOf(store.currentState)
+
+    init {
+        store.listenState {
+            state.value = it
+        }
+    }
+
+    override fun onDispose() {
+        store.cancel()
     }
 
 }

@@ -7,10 +7,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -45,7 +48,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -55,7 +57,6 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
-import com.google.accompanist.insets.LocalWindowInsets
 import ru.ikarenkov.teamaker.game.impl.details.ui.theme.BackgroundColor
 
 val contentPadding = 24.dp
@@ -63,9 +64,9 @@ val contentPadding = 24.dp
 // For tablets support
 val LocalContentPadding = staticCompositionLocalOf { contentPadding }
 
-fun Modifier.contentPadding(): Modifier = composed { padding(horizontal = LocalContentPadding.current) }
+fun Modifier.contentPadding(): Modifier = this.composed { padding(horizontal = LocalContentPadding.current) }
 
-@OptIn(ExperimentalMotionApi::class, androidx.compose.material.ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMotionApi::class, ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun DetailsScreen(state: DetailsScreenState = mockModel) {
@@ -84,13 +85,12 @@ fun DetailsScreen(state: DetailsScreenState = mockModel) {
 
     val connection = remember { createNestedScrollConnection(swipeableState) }
 
-
-    val topInsets = LocalDensity.current.run { LocalWindowInsets.current.systemBars.top.toDp() }
+    val topInsets = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
     val topContentOffset = topInsets + 26.dp
     val headerHeight = 88.dp
 
     val buttonHeight = 64.dp
-    val bottomInsets = LocalDensity.current.run { LocalWindowInsets.current.systemBars.bottom.toDp() }
+    val bottomInsets = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
     val bottomButtonOffset = bottomInsets + LocalContentPadding.current
 
     val listTopOffset = buttonHeight + topContentOffset + headerHeight + 23.dp

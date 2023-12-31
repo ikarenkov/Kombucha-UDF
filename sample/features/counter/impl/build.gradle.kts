@@ -1,17 +1,22 @@
-impl(
-    packageName = "ru.ikarenkov.teamaker.sample.counter",
-    compose = true,
-    dependencies = deps(
-        androidx.compose.base,
-        androidx.compose.viewModel,
-        di.koinAndroid,
-        log.logcat,
-        utils.instanceKeeper,
-    ) + deps(
-        tea.core,
-        tea.compose,
-        tea.instanceKeeperUtil,
-        navigation.modoCompose,
-        core.feature
-    )
-).withPlugin(Plugins.parcelize)
+plugins {
+    alias(libs.plugins.kombucha.android.library)
+    alias(libs.plugins.kombucha.jetpackCompose.library)
+    alias(libs.plugins.kotlin.parcelize)
+}
+
+android {
+    namespace = "com.github.ikarenkov.sample.counter"
+}
+
+dependencies {
+    implementation(libs.koin.android)
+    implementation(libs.debug.logcat)
+
+    implementation(libs.modo)
+    implementation(libs.androidx.compose.material)
+
+    implementation(projects.teamaker.core)
+
+    implementation(projects.sample.core.feature)
+
+}

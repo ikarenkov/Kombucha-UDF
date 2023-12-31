@@ -1,9 +1,9 @@
 package ru.ikarenkov.teamaker.learn_compose.api
 
-import com.github.terrakok.modo.android.compose.ComposeScreen
+import com.github.terrakok.modo.Screen
 
 interface LearnComposeApi {
 
-    fun screen(): ComposeScreen
+    fun screen(): Screen
 
 }

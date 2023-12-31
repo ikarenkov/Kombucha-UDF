@@ -1,32 +1,39 @@
 plugins {
-    `android-library`
+    alias(libs.plugins.kombucha.android.app)
+    alias(libs.plugins.kombucha.jetpackCompose.app)
+    alias(libs.plugins.kotlin.parcelize)
 }
-androidApp(
-    packageName = "ru.ikarenkov.teamaker.sample",
-    dependencies = deps(
-        androidx.appcompat,
-        androidx.vectordrawable,
-        google.material,
-        androidx.compose.base,
-        androidx.compose.activity,
-        androidx.viewmodel,
-        di.koinAndroid,
-        log.logcat
-    ) + deps(
-        tea.core,
-        tea.instanceKeeperUtil,
-        navigation.modoCompose,
-        core.feature
-    ) + deps(
-        target(":sample:features:counter:impl"),
-        target(":sample:features:learnCompose:impl"),
-        target(":sample:features:game:impl"),
-    ),
-    compose = true
-).withPlugin(Plugins.parcelize)
+
+android {
+    namespace = "com.github.ikarenkov.kombucha.sample"
+
+    defaultConfig {
+        applicationId = "com.github.ikarenkov.kombucha.sample"
+        targetSdk = libs.versions.compileSdk.get().toInt()
+        versionCode = 1
+        versionName = "1.0"
+    }
+}
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.7.0") {
-        isTransitive = false
-    }
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+
+    implementation(libs.androidx.compose.material)
+    implementation(libs.modo)
+    implementation(libs.koin.android)
+
+    implementation(libs.debug.logcat)
+
+    implementation(projects.teamaker.core)
+    implementation(projects.sample.core.feature)
+
+    implementation(projects.sample.features.counter.impl)
+    implementation(projects.sample.features.game.impl)
+    implementation(projects.sample.features.learnCompose.impl)
 }

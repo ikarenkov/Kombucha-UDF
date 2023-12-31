@@ -1,5 +1,5 @@
 include(
-    ":teamaker:core-library",
+    ":teamaker:core",
     ":teamaker:instanceKeeper-android-util",
-    ":teamaker:compose-android-util"
+    ":teamaker:compose"
 )

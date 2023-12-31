@@ -1,15 +1,15 @@
 package ru.ikarenkov.teamaker.learn_compose.impl
 
 import androidx.compose.runtime.Composable
-import com.github.terrakok.modo.android.compose.ComposeScreen
-import com.github.terrakok.modo.android.compose.uniqueScreenKey
-import kotlinx.parcelize.IgnoredOnParcel
+import com.github.terrakok.modo.Screen
+import com.github.terrakok.modo.ScreenKey
+import com.github.terrakok.modo.generateScreenKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal class FocusScreen(
-    override val screenKey: String = uniqueScreenKey
-) : ComposeScreen("focus_screen") {
+    override val screenKey: ScreenKey = generateScreenKey()
+) : Screen {
 
     @Composable
     override fun Content() {

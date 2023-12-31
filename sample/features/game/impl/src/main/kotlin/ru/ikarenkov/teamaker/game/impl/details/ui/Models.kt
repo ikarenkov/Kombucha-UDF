@@ -1,7 +1,7 @@
 package ru.ikarenkov.teamaker.game.impl.details.ui
 
 import androidx.annotation.DrawableRes
-import ru.ikarenkov.teamaker.game.R
+import com.github.ikarenkov.sample.game.R
 
 
 data class DetailsScreenState(

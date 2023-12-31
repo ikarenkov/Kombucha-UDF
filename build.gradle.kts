@@ -1,10 +1,17 @@
-androidProjectConfiguration(
-    minSdk = 21,
-    targetSdk = 31,
-    compileSdk = 31,
-    versionCode = 1,
-    versionName = "0.0.1",
-    composeVersion = versions.androidx.compose,
-    validateManifestPackages = true,
-    generateMissedManifests = true
-)
+buildscript {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
+    }
+}
+
+plugins {
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
+}

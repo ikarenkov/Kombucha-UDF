@@ -34,20 +34,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import com.github.terrakok.modo.android.compose.ComposeScreen
-import com.github.terrakok.modo.android.compose.uniqueScreenKey
+import com.github.terrakok.modo.Screen
+import com.github.terrakok.modo.ScreenKey
+import com.github.terrakok.modo.generateScreenKey
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal class LearnComposeScreen(
-    override val screenKey: String = uniqueScreenKey
-) : ComposeScreen("learn_compose") {
+    override val screenKey: ScreenKey = generateScreenKey()
+) : Screen {
 
     @Composable
     override fun Content() {
-        staticCompositionLocalOf {  }
-        LocalContentColor
         val items = remember {
             List(10) { 0 }.flatMap { listOf(Color.Green, Color.Cyan, Color.Red) }
         }

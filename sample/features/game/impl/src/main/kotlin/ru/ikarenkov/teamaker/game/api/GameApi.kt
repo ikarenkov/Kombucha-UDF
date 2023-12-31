@@ -1,9 +1,9 @@
 package ru.ikarenkov.teamaker.game.api
 
-import com.github.terrakok.modo.android.compose.ComposeScreen
+import com.github.terrakok.modo.Screen
 
 interface GameApi {
 
-    fun createScreen(): ComposeScreen
+    fun createScreen(): Screen
 
 }

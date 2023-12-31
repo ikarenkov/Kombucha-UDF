@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.withSaveLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ru.ikarenkov.teamaker.game.R
+import com.github.ikarenkov.sample.game.R
 import ru.ikarenkov.teamaker.game.impl.details.ui.theme.Typography
 
 @Composable

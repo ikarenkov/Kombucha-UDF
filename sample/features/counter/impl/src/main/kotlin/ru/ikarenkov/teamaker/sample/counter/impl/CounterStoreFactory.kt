@@ -9,7 +9,6 @@ import ru.ikarenkov.teamaker.sample.counter.api.counterFeatureFacade
 internal class CounterStoreFactory(
     private val storeFactory: StoreFactory,
     private val counterEffectHandler: CounterEffectHandler,
-    private val deps: CounterDeps
 ) {
 
     fun create(initialState: State): Store<Msg, State, Eff> = storeFactory.create(
@@ -17,7 +16,7 @@ internal class CounterStoreFactory(
         initialState,
         rootReducer::invoke,
         emptySet(),
-        counterEffectHandler(deps).adaptCast(),
+        counterEffectHandler.adaptCast(),
     )
 
 }

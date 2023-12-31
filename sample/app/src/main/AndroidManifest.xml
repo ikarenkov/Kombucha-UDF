@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ru.ikarenkov.teamaker.sample">
+    package="com.github.ikarenkov.kombucha.sample">
 
     <application
-        android:name="ru.ikarenkov.teamaker.sample.App"
+        android:name="com.github.ikarenkov.kombucha.sample.App"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -12,7 +12,8 @@
         android:theme="@style/Theme.TeaMaker">
 
         <activity
-            android:name="ru.ikarenkov.teamaker.sample.root.RootActivity"
+            android:name="com.github.ikarenkov.kombucha.sample.root.RootActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

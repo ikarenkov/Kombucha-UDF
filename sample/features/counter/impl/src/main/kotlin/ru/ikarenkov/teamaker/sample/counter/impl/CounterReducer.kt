@@ -21,9 +21,9 @@ internal sealed interface Msg {
 
     sealed interface Ui : Msg {
 
-        object OnIncreaseClick : Ui
-        object OnDecreaseClick : Ui
-        object OpenScreenClick : Ui
+        data object OnIncreaseClick : Ui
+        data object OnDecreaseClick : Ui
+        data object OpenScreenClick : Ui
 
     }
 
@@ -33,7 +33,7 @@ internal sealed interface Eff {
 
     sealed interface Ext : Eff {
 
-        object OpenScreen : Ext
+        data object OpenScreen : Ext
 
     }
 
