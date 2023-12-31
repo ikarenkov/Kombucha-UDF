@@ -1,7 +1,7 @@
 package ru.ikarenkov.teamaker.sample.counter.impl
 
-import ru.ikarenkov.teamaker.CoroutineEffectHandler
-import ru.ikarenkov.teamaker.effectHandler
+import ru.ikarenkov.teamaker.eff_handler_legacy.CoroutineEffectHandler
+import ru.ikarenkov.teamaker.eff_handler_legacy.effectHandler
 import ru.ikarenkov.teamaker.sample.counter.api.CounterDeps
 
 internal class CounterEffectHandler(

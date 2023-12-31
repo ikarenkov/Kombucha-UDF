@@ -8,7 +8,7 @@ import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import ru.ikarenkov.teamaker.Cancelable
-import ru.ikarenkov.teamaker.Store
+import ru.ikarenkov.teamaker.store_legacy.Store
 
 /**
  * This interface provides Ui related part of TEA for compose.

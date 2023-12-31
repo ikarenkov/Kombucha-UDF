@@ -1,4 +1,4 @@
-package ru.ikarenkov.teamaker
+package ru.ikarenkov.teamaker.eff_handler_legacy
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

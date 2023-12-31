@@ -1,9 +1,8 @@
 package ru.ikarenkov.teamaker.sample.counter.impl
 
-import ru.ikarenkov.teamaker.Store
-import ru.ikarenkov.teamaker.StoreFactory
-import ru.ikarenkov.teamaker.adaptCast
-import ru.ikarenkov.teamaker.sample.counter.api.CounterDeps
+import ru.ikarenkov.teamaker.store_legacy.Store
+import ru.ikarenkov.teamaker.store_legacy.StoreFactory
+import ru.ikarenkov.teamaker.eff_handler_legacy.adaptCast
 import ru.ikarenkov.teamaker.sample.counter.api.counterFeatureFacade
 
 internal class CounterStoreFactory(

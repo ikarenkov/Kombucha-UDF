@@ -1,4 +1,6 @@
-package ru.ikarenkov.teamaker
+package ru.ikarenkov.teamaker.store_legacy
+
+import ru.ikarenkov.teamaker.eff_handler_legacy.EffectHandler
 
 class SyncStoreFactory : StoreFactory {
 

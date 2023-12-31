@@ -22,7 +22,7 @@ import com.github.terrakok.modo.model.ScreenModel
 import com.github.terrakok.modo.model.rememberScreenModel
 import kotlinx.parcelize.Parcelize
 import logcat.logcat
-import ru.ikarenkov.teamaker.Store
+import ru.ikarenkov.teamaker.store_legacy.Store
 
 @Parcelize
 internal class CounterScreen(

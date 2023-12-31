@@ -1,4 +1,7 @@
-package ru.ikarenkov.teamaker
+package ru.ikarenkov.teamaker.eff_handler_legacy
+
+import ru.ikarenkov.teamaker.Cancelable
+import ru.ikarenkov.teamaker.store_legacy.Store
 
 interface EffectHandler<Eff : Any, Msg : Any> : Cancelable {
 

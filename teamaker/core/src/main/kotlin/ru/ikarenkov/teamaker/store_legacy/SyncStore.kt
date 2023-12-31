@@ -1,4 +1,9 @@
-package ru.ikarenkov.teamaker
+package ru.ikarenkov.teamaker.store_legacy
+
+import ru.ikarenkov.teamaker.Cancelable
+import ru.ikarenkov.teamaker.addListenerAndMakeCancelable
+import ru.ikarenkov.teamaker.eff_handler_legacy.EffectHandler
+import ru.ikarenkov.teamaker.notifyAll
 
 class SyncStore<Msg : Any, Model : Any, Eff : Any>(
     initialState: Model,

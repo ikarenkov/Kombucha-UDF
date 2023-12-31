@@ -1,4 +1,6 @@
-package ru.ikarenkov.teamaker
+package ru.ikarenkov.teamaker.store_legacy
+
+import ru.ikarenkov.teamaker.Cancelable
 
 interface Store<Msg : Any, Model : Any, Eff : Any> : Cancelable {
 
