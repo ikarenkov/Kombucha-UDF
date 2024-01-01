@@ -1,6 +1,6 @@
 package ru.ikarenkov.teamaker
 
-interface Cancelable {
+fun interface Cancelable {
 
     fun cancel()
 

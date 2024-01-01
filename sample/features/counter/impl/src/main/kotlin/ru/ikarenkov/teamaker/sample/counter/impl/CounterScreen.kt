@@ -10,7 +10,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,7 +22,7 @@ import com.github.terrakok.modo.model.ScreenModel
 import com.github.terrakok.modo.model.rememberScreenModel
 import kotlinx.parcelize.Parcelize
 import logcat.logcat
-import ru.ikarenkov.teamaker.store_legacy.Store
+import ru.ikarenkov.teamaker.store.Store
 
 @Parcelize
 internal class CounterScreen(
@@ -37,9 +37,10 @@ internal class CounterScreen(
             CounterScreenModel(saveableState)
         }
         // Temp workaround to save state
-        saveableState = tea.state.value
+        val state = tea.state.collectAsState()
+        saveableState = state.value
         logcat { "CounterScreen Content, state is ${tea.state}" }
-        CounterContent(counter = tea.state.value.counter, dispatch = tea.store::dispatch)
+        CounterContent(counter = state.value.counter, dispatch = tea.store::dispatch)
     }
 
 }
@@ -48,13 +49,7 @@ private class CounterScreenModel(
     private var saveableState: State = State(0)
 ) : ScreenModel {
     val store: Store<Msg, State, Eff> = createCounterStore(saveableState)
-    val state = mutableStateOf(store.currentState)
-
-    init {
-        store.listenState {
-            state.value = it
-        }
-    }
+    val state = store.state
 
     override fun onDispose() {
         store.cancel()
