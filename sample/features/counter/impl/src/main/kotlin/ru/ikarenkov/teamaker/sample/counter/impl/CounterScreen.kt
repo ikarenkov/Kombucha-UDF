@@ -22,6 +22,8 @@ import com.github.terrakok.modo.model.ScreenModel
 import com.github.terrakok.modo.model.rememberScreenModel
 import kotlinx.parcelize.Parcelize
 import logcat.logcat
+import org.koin.core.parameter.parametersOf
+import ru.ikarenkov.teamaker.sample.counter.api.counterFeatureFacade
 import ru.ikarenkov.teamaker.store.Store
 
 @Parcelize
@@ -34,7 +36,7 @@ internal class CounterScreen(
     override fun Content() {
         // TODO: lifecycle
         val tea = rememberScreenModel {
-            CounterScreenModel(saveableState)
+            counterFeatureFacade.scope.get<CounterScreenModel>(parameters = { parametersOf(State(0)) })
         }
         // Temp workaround to save state
         val state = tea.state.collectAsState()
@@ -45,10 +47,11 @@ internal class CounterScreen(
 
 }
 
-private class CounterScreenModel(
-    private var saveableState: State = State(0)
+internal class CounterScreenModel(
+    private var saveableState: State = State(0),
+    counterStoreFactory: CounterCoroutineStoreFactory
 ) : ScreenModel {
-    val store: Store<Msg, State, Eff> = createCounterStore(saveableState)
+    val store: Store<Msg, State, Eff> = counterStoreFactory.create(saveableState)
     val state = store.state
 
     override fun onDispose() {

@@ -1,7 +1,10 @@
 package ru.ikarenkov.teamaker.sample.counter.impl
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import ru.ikarenkov.teamaker.Cancelable
 import ru.ikarenkov.teamaker.eff_handler.EffectHandler
+import ru.ikarenkov.teamaker.eff_handler.FlowEffectHandler
 import ru.ikarenkov.teamaker.eff_handler_legacy.effectHandler
 import ru.ikarenkov.teamaker.sample.counter.api.CounterDeps
 
@@ -14,6 +17,16 @@ internal class CounterEffectHandler(
         deps.openNewScreen()
         emmitTerminate(Any())
         return Cancelable { }
+    }
+
+}
+
+internal class CounterFlowEffectHandler(
+    private val deps: CounterDeps
+) : FlowEffectHandler<Eff.Ext, Any> {
+
+    override fun handleEff(eff: Eff.Ext): Flow<Any> = flow {
+        deps.openNewScreen()
     }
 
 }

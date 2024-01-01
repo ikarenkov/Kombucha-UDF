@@ -1,5 +1,8 @@
 package ru.ikarenkov.teamaker.eff_handler
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapNotNull
 import ru.ikarenkov.teamaker.Cancelable
 
 interface EffectHandler<Eff : Any, Msg : Any> {
@@ -7,6 +10,18 @@ interface EffectHandler<Eff : Any, Msg : Any> {
     fun handleEff(eff: Eff, emmit: (Msg) -> Unit, emmitTerminate: (Msg) -> Unit): Cancelable
 
 }
+
+interface FlowEffectHandler<Eff : Any, Msg : Any> {
+
+    fun handleEff(eff: Eff): Flow<Msg>
+
+}
+
+inline fun <reified Eff1 : Any, Msg1 : Any, Eff2 : Any, reified Msg2 : Any> FlowEffectHandler<Eff1, Msg1>.adaptCast(): FlowEffectHandler<Eff2, Msg2> =
+    adapt(
+        effAdapter = { it as? Eff1 },
+        msgAdapter = { it as? Msg2 }
+    )
 
 inline fun <reified Eff1 : Any, Msg1 : Any, Eff2 : Any, reified Msg2 : Any> EffectHandler<Eff1, Msg1>.adaptCast(): EffectHandler<Eff2, Msg2> = adapt(
     effAdapter = { it as? Eff1 },
@@ -28,6 +43,19 @@ fun <Eff1 : Any, Msg1 : Any, Eff2 : Any, Msg2 : Any> EffectHandler<Eff1, Msg1>.a
                 )
             }
             ?: Cancelable {}
+
+}
+
+fun <Eff1 : Any, Msg1 : Any, Eff2 : Any, Msg2 : Any> FlowEffectHandler<Eff1, Msg1>.adapt(
+    effAdapter: (Eff2) -> Eff1?,
+    msgAdapter: (Msg1) -> Msg2? = { null }
+): FlowEffectHandler<Eff2, Msg2> = object : FlowEffectHandler<Eff2, Msg2> {
+
+    override fun handleEff(eff: Eff2): Flow<Msg2> = effAdapter(eff)
+        ?.let {
+            handleEff(eff = it).mapNotNull { msgAdapter(it) }
+        }
+        ?: flow {}
 
 }
 
