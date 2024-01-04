@@ -17,7 +17,7 @@ package ru.ikarenkov.teamaker.reducer
  * ```
  */
 fun <Msg : Any, State : Any, Eff : Any> dslReducer(
-    reduce: ResultBuilder<State, Eff>.(msg: Msg) -> Any?
+    reduce: ResultBuilder<State, Eff>.(msg: Msg) -> Unit
 ) = Reducer<Msg, State, Eff> { state, msg ->
     ResultBuilder<State, Eff>(state).apply { reduce(msg) }.build()
 }

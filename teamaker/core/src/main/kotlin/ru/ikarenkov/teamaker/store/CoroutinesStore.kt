@@ -19,7 +19,7 @@ import ru.ikarenkov.teamaker.eff_handler.FlowEffectHandler
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.EmptyCoroutineContext
 
-class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
+open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     initialState: Model,
     private val reducer: (Model, Msg) -> Pair<Model, Set<Eff>>,
     private val effHandlers: List<FlowEffectHandler<Eff, Msg>> = listOf(),

@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
 import com.github.terrakok.modo.LocalContainerScreen
 import com.github.terrakok.modo.Screen
 import com.github.terrakok.modo.ScreenKey
@@ -46,6 +47,7 @@ private fun RootScreen(parent: StackScreen) {
                 "Counter" to { counterFeatureFacade.api.createScreen() },
                 "Learn compose" to { learnComposeFeatureFacade.api.screen() },
                 "Game" to { gameFeatureFacade.api.createScreen() },
+                "Shikimori" to { shikimoriFeatureFacade.api.createScreen() },
             ).forEach { (text, screen) ->
                 Button(
                     modifier = Modifier.fillMaxWidth(),
