@@ -68,7 +68,7 @@ internal class AnimesScreen(
                 state = lazyListState,
                 contentPadding = WindowInsets.systemBars.asPaddingValues()
             ) {
-                items(items = state.items, key = { it.id }) { anime ->
+                items(items = state.items) { anime ->
                     Box(Modifier.padding(vertical = 8.dp)) {
                         Card(
                             Modifier
@@ -110,6 +110,7 @@ internal class AnimesScreen(
                                 }
                             }
                         }
+
                         PaginationFeature.State.PageLoadingState.Idle -> {}
                     }
                 }
