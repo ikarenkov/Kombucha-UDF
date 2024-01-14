@@ -1,9 +1,24 @@
 package com.github.ikarenkov.sample.shikimori.impl.pagination
 
+import ru.ikarenkov.teamaker.eff_handler.adaptCast
 import ru.ikarenkov.teamaker.reducer.Reducer
 import ru.ikarenkov.teamaker.reducer.dslReducer
+import ru.ikarenkov.teamaker.store.Store
+import ru.ikarenkov.teamaker.store.StoreFactory
 
 object PaginationFeature {
+
+    fun <T> create(
+        storeFactory: StoreFactory,
+        name: String,
+        dataFetcher: PaginationEffectHandler.DataFetcher<T>
+    ): Store<Msg, State<T>, Eff> = storeFactory.create(
+        name = name,
+        initialState = State.Initial(),
+        reducer = reducer<T>()::invoke,
+        initEffects = Eff.Initial(),
+        PaginationEffectHandler(dataFetcher).adaptCast()
+    )
 
     data class State<out T>(
         val items: List<T>,
@@ -31,7 +46,6 @@ object PaginationFeature {
 
     sealed interface Msg {
 
-        // тут должна быть сложная логика, так что пока исключаем
 //        data object Reload : Msg
 
         data object LoadNext : Msg

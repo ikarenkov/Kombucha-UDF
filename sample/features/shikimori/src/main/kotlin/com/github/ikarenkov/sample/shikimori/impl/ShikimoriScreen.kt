@@ -131,10 +131,10 @@ internal class AnimesScreen(
 }
 
 internal class AnimesScreenModel(
-    private val animesPaginationFeature: AnimesPaginationFeature
+    private val animesPaginationFeatureFactory: AnimesPaginationFeatureFactory
 ) : ScreenModel {
 
-    val store = animesPaginationFeature.createStore()
+    val store = animesPaginationFeatureFactory.createStore()
 
     override fun onDispose() {
         store.cancel()
