@@ -1,14 +1,13 @@
 package com.github.ikarenkov.kombucha.sample.root
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import com.github.ikarenkov.kombucha.sample.NavigationHolder
+import com.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
 import logcat.logcat
 import org.koin.java.KoinJavaComponent
 
@@ -18,9 +17,11 @@ class RootActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        addOnNewIntentListener { intent ->
+            shikimoriFeatureFacade.api.onIntentResult(intent)
+        }
         logcat { "onCreate" }
         enableEdgeToEdge()
-        window
         navigationHolder.onCreate(savedInstanceState)
         setContent {
             Surface(color = MaterialTheme.colors.background) {

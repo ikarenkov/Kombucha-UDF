@@ -19,6 +19,10 @@ dependencies {
     implementation(libs.ktor.client.contentNegotiation)
     implementation(libs.ktor.client.kotlinxSerializationJson)
     implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastorePreferences)
 
     implementation(projects.teamaker.core)
 

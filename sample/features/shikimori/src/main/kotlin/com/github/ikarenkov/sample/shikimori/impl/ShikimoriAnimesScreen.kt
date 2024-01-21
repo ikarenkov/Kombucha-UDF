@@ -14,17 +14,28 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import com.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
+import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeatureAgregatorFactory
+import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesAggregatorFeature
+import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature
+import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
 import com.github.terrakok.modo.Screen
 import com.github.terrakok.modo.ScreenKey
@@ -46,19 +57,29 @@ internal class AnimesScreen(
         val model = rememberScreenModel {
             shikimoriFeatureFacade.scope.get<AnimesScreenModel>()
         }
-        Scaffold { paddingValues ->
+        Scaffold(
+            floatingActionButton = {
+                FloatingActionButton(onClick = { model.store.dispatch(AnimesAggregatorFeature.Msg.Animes(AnimesFeature.Msg.Authorize)) }) {
+                    Icon(
+                        painter = rememberVectorPainter(image = Icons.Outlined.AccountCircle),
+                        contentDescription = "Auth"
+                    )
+                }
+            }
+        ) { paddingValues ->
             val state by model.store.state.collectAsState()
+            val paginationState by remember { derivedStateOf { state.paginationState } }
             val lazyListState = rememberLazyListState()
             LaunchedEffect(key1 = Unit) {
                 snapshotFlow { lazyListState.layoutInfo }
                     .map {
                         it.visibleItemsInfo.isNotEmpty() &&
-                            state.items.size - 1 <= it.visibleItemsInfo.last().index
+                                paginationState.items.size - 1 <= it.visibleItemsInfo.last().index
                     }
                     .collect { needLoadMore ->
                         withContext(Dispatchers.IO) {
                             if (needLoadMore) {
-                                model.store.dispatch(PaginationFeature.Msg.LoadNext)
+                                model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.LoadNext))
                             }
                         }
                     }
@@ -68,7 +89,7 @@ internal class AnimesScreen(
                 state = lazyListState,
                 contentPadding = WindowInsets.systemBars.asPaddingValues()
             ) {
-                items(items = state.items) { anime ->
+                items(items = paginationState.items) { anime ->
                     Box(Modifier.padding(vertical = 8.dp)) {
                         Card(
                             Modifier
@@ -84,8 +105,8 @@ internal class AnimesScreen(
                         }
                     }
                 }
-                if (state.items.isNotEmpty()) {
-                    when (state.nextPageLoadingState) {
+                if (paginationState.items.isNotEmpty()) {
+                    when (paginationState.nextPageLoadingState) {
                         PaginationFeature.State.PageLoadingState.Loading -> item {
                             Card(
                                 Modifier
@@ -97,6 +118,7 @@ internal class AnimesScreen(
                                 }
                             }
                         }
+
                         is PaginationFeature.State.PageLoadingState.Error -> item {
                             Card(
                                 Modifier
@@ -104,7 +126,7 @@ internal class AnimesScreen(
                                     .fillMaxWidth()
                             ) {
                                 Box(Modifier.fillMaxWidth()) {
-                                    Button(onClick = { model.store.dispatch(PaginationFeature.Msg.RetryLoadNext) }) {
+                                    Button(onClick = { model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext)) }) {
                                         Text(text = "Error, try again")
                                     }
                                 }
@@ -115,9 +137,9 @@ internal class AnimesScreen(
                     }
                 }
             }
-            if (state.items.isEmpty()) {
-                if (state.nextPageLoadingState is PaginationFeature.State.PageLoadingState.Error) {
-                    Button(onClick = { model.store.dispatch(PaginationFeature.Msg.RetryLoadNext) }) {
+            if (paginationState.items.isEmpty()) {
+                if (paginationState.nextPageLoadingState is PaginationFeature.State.PageLoadingState.Error) {
+                    Button(onClick = { model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext)) }) {
                         Text(text = "Error, try again")
                     }
                 } else {
@@ -131,10 +153,10 @@ internal class AnimesScreen(
 }
 
 internal class AnimesScreenModel(
-    private val animesPaginationFeatureFactory: AnimesPaginationFeatureFactory
+    private val animesFeatureAgregatorFactory: AnimesFeatureAgregatorFactory
 ) : ScreenModel {
 
-    val store = animesPaginationFeatureFactory.createStore()
+    val store = animesFeatureAgregatorFactory.createStore()
 
     override fun onDispose() {
         store.cancel()

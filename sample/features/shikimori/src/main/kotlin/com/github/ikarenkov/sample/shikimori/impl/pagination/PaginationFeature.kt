@@ -6,6 +6,8 @@ import ru.ikarenkov.teamaker.reducer.dslReducer
 import ru.ikarenkov.teamaker.store.Store
 import ru.ikarenkov.teamaker.store.StoreFactory
 
+typealias PaginationStore<T> = Store<PaginationFeature.Msg, PaginationFeature.State<T>, PaginationFeature.Eff>
+
 object PaginationFeature {
 
     fun <T> create(
@@ -95,6 +97,7 @@ object PaginationFeature {
                     )
                 }
             }
+
             Msg.RetryLoadNext -> {
                 if (state.nextPageLoadingState is State.PageLoadingState.Error) {
                     state {
@@ -108,6 +111,7 @@ object PaginationFeature {
                     )
                 }
             }
+
             is Msg.Internal.LoadResult<*> -> {
                 msg.result
                     .onSuccess { resultList ->

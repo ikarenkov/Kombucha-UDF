@@ -60,7 +60,10 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
                     null
                 }
             }
-            effs?.forEach(::handleEff)
+            effs?.forEach { eff ->
+                _effects.emit(eff)
+                handleEff(eff)
+            }
         }
     }
 
