@@ -19,7 +19,7 @@ val shikimoriFeatureFacade by lazy {
         scoped { AuthFeature(get(), get()) }
 
         factory { AnimesScreenModel(get()) }
-        factory { AnimesFeatureAgregatorFactory(get(), get(), get(), get()) }
+        factory { AnimesFeatureAgregatorFactory(get(), get(), get()) }
         factory { AnimesFeatureAgregatorFactory.AnimesDataFetcher(get()) }
         factory { AuthFeature.AuthEffHandler(get(), get(), get()) }
     }

@@ -19,9 +19,9 @@ import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.stack.StackScreen
 import com.github.terrakok.modo.stack.forward
 import kotlinx.parcelize.Parcelize
-import ru.ikarenkov.teamaker.game.api.gameFeatureFacade
-import ru.ikarenkov.teamaker.learn_compose.api.learnComposeFeatureFacade
-import ru.ikarenkov.teamaker.sample.counter.api.counterFeatureFacade
+import ru.ikarenkov.kombucha.game.api.gameFeatureFacade
+import ru.ikarenkov.kombucha.learn_compose.api.learnComposeFeatureFacade
+import ru.ikarenkov.kombucha.sample.counter.api.counterFeatureFacade
 
 @Parcelize
 internal class KombuchaRootScreen(

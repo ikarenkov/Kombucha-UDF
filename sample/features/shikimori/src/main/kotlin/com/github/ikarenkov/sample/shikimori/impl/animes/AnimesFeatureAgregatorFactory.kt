@@ -6,8 +6,8 @@ import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import com.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationEffectHandler
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
-import ru.ikarenkov.teamaker.store.Store
-import ru.ikarenkov.teamaker.store.StoreFactory
+import ru.ikarenkov.kombucha.store.Store
+import ru.ikarenkov.kombucha.store.StoreFactory
 
 internal class AnimesFeatureAgregatorFactory(
     private val storeFactory: StoreFactory,

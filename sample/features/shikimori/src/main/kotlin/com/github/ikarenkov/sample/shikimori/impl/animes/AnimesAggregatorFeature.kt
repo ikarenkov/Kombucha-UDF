@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import ru.ikarenkov.teamaker.store.AggregatorStore
+import ru.ikarenkov.kombucha.store.AggregatorStore
 
 internal class AnimesAggregatorFeature(
     private val animesFeature: AnimesFeature,

@@ -1,10 +1,10 @@
 package com.github.ikarenkov.sample.shikimori.impl.pagination
 
-import ru.ikarenkov.teamaker.eff_handler.adaptCast
-import ru.ikarenkov.teamaker.reducer.Reducer
-import ru.ikarenkov.teamaker.reducer.dslReducer
-import ru.ikarenkov.teamaker.store.Store
-import ru.ikarenkov.teamaker.store.StoreFactory
+import ru.ikarenkov.kombucha.eff_handler.adaptCast
+import ru.ikarenkov.kombucha.reducer.Reducer
+import ru.ikarenkov.kombucha.reducer.dslReducer
+import ru.ikarenkov.kombucha.store.Store
+import ru.ikarenkov.kombucha.store.StoreFactory
 
 typealias PaginationStore<T> = Store<PaginationFeature.Msg, PaginationFeature.State<T>, PaginationFeature.Eff>
 

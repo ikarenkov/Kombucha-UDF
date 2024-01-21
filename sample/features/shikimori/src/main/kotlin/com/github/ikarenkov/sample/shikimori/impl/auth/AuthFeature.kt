@@ -9,11 +9,11 @@ import com.github.ikarenkov.sample.shikimori.impl.data.AuthDataLocalStorage
 import com.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.ikarenkov.teamaker.eff_handler.FlowEffectHandler
-import ru.ikarenkov.teamaker.eff_handler.adaptCast
-import ru.ikarenkov.teamaker.reducer.dslReducer
-import ru.ikarenkov.teamaker.store.Store
-import ru.ikarenkov.teamaker.store.StoreFactory
+import ru.ikarenkov.kombucha.eff_handler.FlowEffectHandler
+import ru.ikarenkov.kombucha.eff_handler.adaptCast
+import ru.ikarenkov.kombucha.reducer.dslReducer
+import ru.ikarenkov.kombucha.store.Store
+import ru.ikarenkov.kombucha.store.StoreFactory
 
 internal class AuthFeature(
     storeFactory: StoreFactory,
@@ -71,7 +71,7 @@ internal class AuthFeature(
 
     }
 
-    internal object Reducer : ru.ikarenkov.teamaker.reducer.Reducer<Msg, State, Eff> by dslReducer({ msg ->
+    internal object Reducer : ru.ikarenkov.kombucha.reducer.Reducer<Msg, State, Eff> by dslReducer({ msg ->
         when (msg) {
             Msg.Init -> {
                 val state = state
