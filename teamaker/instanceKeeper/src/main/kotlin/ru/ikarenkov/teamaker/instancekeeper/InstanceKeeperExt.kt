@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
-import ru.ikarenkov.teamaker.Store
+import ru.ikarenkov.teamaker.store.Store
 
 fun <T : Store<*, *, *>> ViewModelStoreOwner.getStore(key: Any, factory: () -> T): T = instanceKeeper().getStore(key, factory)
 

@@ -1,9 +1,15 @@
-androidUtil(
-    packageName = "ru.ikarenkov.teamaker.instancekeeper",
-    owner = Teams.core,
-    dependencies = deps(
-        androidx.fragment,
-        utils.instanceKeeper,
-    ) +
-        tea.core,
-)
+plugins {
+    alias(libs.plugins.kombucha.android.library)
+    alias(libs.plugins.kombucha.jetpackCompose.library)
+}
+
+android {
+    namespace = "com.github.ikarenkov.kobucha.instanceKeeper"
+}
+
+dependencies {
+    implementation(projects.teamaker.core)
+
+    implementation(libs.essenty.instanceKeeper)
+    implementation(libs.androidx.lifecycle.viewmodel)
+}
