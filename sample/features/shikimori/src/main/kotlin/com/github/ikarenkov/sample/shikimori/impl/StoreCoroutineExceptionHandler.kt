@@ -8,6 +8,6 @@ import logcat.logcat
 internal fun storeCoroutineExceptionHandler(name: String) = CoroutineExceptionHandler { _, throwable ->
     logcat(
         priority = LogPriority.ERROR,
-        tag = "AnimesAggregator"
-    ) { throwable.asLog() }
+        tag = "StoreCoroutineExceptionHandler"
+    ) { "Unhandled exception in store \"$name\"" + throwable.asLog() }
 }

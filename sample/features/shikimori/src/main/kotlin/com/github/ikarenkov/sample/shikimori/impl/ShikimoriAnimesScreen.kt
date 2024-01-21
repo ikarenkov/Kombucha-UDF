@@ -32,10 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import com.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
-import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeatureAgregatorFactory
 import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesAggregatorFeature
 import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature
-import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
+import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeatureAgregatorFactory
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
 import com.github.terrakok.modo.Screen
 import com.github.terrakok.modo.ScreenKey
@@ -126,7 +125,11 @@ internal class AnimesScreen(
                                     .fillMaxWidth()
                             ) {
                                 Box(Modifier.fillMaxWidth()) {
-                                    Button(onClick = { model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext)) }) {
+                                    Button(
+                                        onClick = {
+                                            model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext))
+                                        }
+                                    ) {
                                         Text(text = "Error, try again")
                                     }
                                 }
