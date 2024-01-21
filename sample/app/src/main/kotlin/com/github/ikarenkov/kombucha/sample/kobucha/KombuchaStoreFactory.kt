@@ -17,12 +17,12 @@ class KombuchaStoreFactory : StoreFactory {
         initEffects: Set<Eff>,
         vararg effectHandlers: FlowEffectHandler<Eff, Msg>
     ): Store<Msg, State, Eff> = CoroutinesStore<Msg, State, Eff>(
-        initialState,
-        reducer,
-        effectHandlers.toList(),
-        initEffects,
-        name,
-        CoroutineExceptionHandler { _, throwable ->
+        name = name,
+        reducer = reducer,
+        effHandlers = effectHandlers.toList(),
+        initialState = initialState,
+        initialEffects = initEffects,
+        coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
             logcat(LogPriority.ERROR) {
                 "Unhandled coroutine error in the Store with name \"$name\".\n" + throwable.asLog()
             }

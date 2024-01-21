@@ -2,7 +2,6 @@ package com.github.ikarenkov.sample.shikimori.impl.data
 
 import com.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
 import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
-import com.github.ikarenkov.sample.shikimori.impl.auth.AuthStore
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
@@ -57,8 +56,8 @@ internal class HttpClientFactory {
     private fun Auth.setupAuth() {
         bearer {
             loadTokens {
-                val authStore = shikimoriFeatureFacade.scope.get<AuthStore>()
-                val authData = authStore.state
+                val authFeature = shikimoriFeatureFacade.scope.get<AuthFeature>()
+                val authData = authFeature.state
                     .filter { it !is AuthFeature.State.Init }
                     .first() as? AuthFeature.State.Authorized
                 authData?.let {
@@ -66,7 +65,7 @@ internal class HttpClientFactory {
                 }
             }
             refreshTokens {
-                val authStore = shikimoriFeatureFacade.scope.get<AuthStore>()
+                val authStore = shikimoriFeatureFacade.scope.get<AuthFeature>()
                 authStore.dispatch(AuthFeature.Msg.RefreshToken)
                 val newAuthData = authStore.state
                     // What if error happened? How to catch it here?

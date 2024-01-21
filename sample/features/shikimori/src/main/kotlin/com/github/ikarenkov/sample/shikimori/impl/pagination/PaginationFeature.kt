@@ -8,19 +8,17 @@ import ru.ikarenkov.teamaker.store.StoreFactory
 
 typealias PaginationStore<T> = Store<PaginationFeature.Msg, PaginationFeature.State<T>, PaginationFeature.Eff>
 
-object PaginationFeature {
-
-    fun <T> create(
-        storeFactory: StoreFactory,
-        name: String,
-        dataFetcher: PaginationEffectHandler.DataFetcher<T>
-    ): Store<Msg, State<T>, Eff> = storeFactory.create(
-        name = name,
-        initialState = State.Initial(),
-        reducer = reducer<T>()::invoke,
-        initEffects = Eff.Initial(),
-        PaginationEffectHandler(dataFetcher).adaptCast()
-    )
+class PaginationFeature<T>(
+    name: String,
+    storeFactory: StoreFactory,
+    dataFetcher: PaginationEffectHandler.DataFetcher<T>
+) : Store<PaginationFeature.Msg, PaginationFeature.State<T>, PaginationFeature.Eff> by storeFactory.create(
+    name = name,
+    initialState = State.Initial(),
+    reducer = paginationReduces<T>()::invoke,
+    initEffects = Eff.Initial(),
+    PaginationEffectHandler(dataFetcher).adaptCast()
+) {
 
     data class State<out T>(
         val items: List<T>,
@@ -78,59 +76,59 @@ object PaginationFeature {
 
     }
 
-    class Item(val name: String)
+}
 
-    const val PAGE_SIZE = 10
+class Item(val name: String)
 
-    fun <T> reducer(): Reducer<Msg, State<T>, Eff> = dslReducer { msg ->
-        when (msg) {
-            Msg.LoadNext -> {
-                if (state.nextPageLoadingState == State.PageLoadingState.Idle) {
-                    state {
-                        copy(nextPageLoadingState = State.PageLoadingState.Loading)
-                    }
-                    eff(
-                        Eff.Load(
-                            page = state.pagesLoaded + 1,
-                            size = PAGE_SIZE
-                        )
-                    )
+const val PAGE_SIZE = 10
+
+fun <T> paginationReduces(): Reducer<PaginationFeature.Msg, PaginationFeature.State<T>, PaginationFeature.Eff> = dslReducer { msg ->
+    when (msg) {
+        PaginationFeature.Msg.LoadNext -> {
+            if (state.nextPageLoadingState == PaginationFeature.State.PageLoadingState.Idle) {
+                state {
+                    copy(nextPageLoadingState = PaginationFeature.State.PageLoadingState.Loading)
                 }
-            }
-
-            Msg.RetryLoadNext -> {
-                if (state.nextPageLoadingState is State.PageLoadingState.Error) {
-                    state {
-                        copy(nextPageLoadingState = State.PageLoadingState.Loading)
-                    }
-                    eff(
-                        Eff.Load(
-                            page = state.pagesLoaded + 1,
-                            size = PAGE_SIZE
-                        )
+                eff(
+                    PaginationFeature.Eff.Load(
+                        page = state.pagesLoaded + 1,
+                        size = PAGE_SIZE
                     )
-                }
-            }
-
-            is Msg.Internal.LoadResult<*> -> {
-                msg.result
-                    .onSuccess { resultList ->
-                        // ignoring old requests
-                        if (msg.requestedPage == state.pagesLoaded + 1) {
-                            state {
-                                State(
-                                    items + resultList as List<T>,
-                                    pagesLoaded = pagesLoaded + 1,
-                                    nextPageLoadingState = State.PageLoadingState.Idle
-                                )
-                            }
-                        }
-                    }
-                    .onFailure {
-                        state { copy(nextPageLoadingState = State.PageLoadingState.Error(it)) }
-                    }
+                )
             }
         }
-    }
 
+        PaginationFeature.Msg.RetryLoadNext -> {
+            if (state.nextPageLoadingState is PaginationFeature.State.PageLoadingState.Error) {
+                state {
+                    copy(nextPageLoadingState = PaginationFeature.State.PageLoadingState.Loading)
+                }
+                eff(
+                    PaginationFeature.Eff.Load(
+                        page = state.pagesLoaded + 1,
+                        size = PAGE_SIZE
+                    )
+                )
+            }
+        }
+
+        is PaginationFeature.Msg.Internal.LoadResult<*> -> {
+            msg.result
+                .onSuccess { resultList ->
+                    // ignoring old requests
+                    if (msg.requestedPage == state.pagesLoaded + 1) {
+                        state {
+                            PaginationFeature.State(
+                                items + resultList as List<T>,
+                                pagesLoaded = pagesLoaded + 1,
+                                nextPageLoadingState = PaginationFeature.State.PageLoadingState.Idle
+                            )
+                        }
+                    }
+                }
+                .onFailure {
+                    state { copy(nextPageLoadingState = PaginationFeature.State.PageLoadingState.Error(it)) }
+                }
+        }
+    }
 }

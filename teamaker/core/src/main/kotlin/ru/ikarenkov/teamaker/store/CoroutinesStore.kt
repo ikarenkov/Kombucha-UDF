@@ -3,7 +3,6 @@ package ru.ikarenkov.teamaker.store
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
@@ -14,18 +13,19 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import ru.ikarenkov.teamaker.Cancelable
 import ru.ikarenkov.teamaker.eff_handler.FlowEffectHandler
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.EmptyCoroutineContext
 
 open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
-    initialState: Model,
+    name: String?,
     private val reducer: (Model, Msg) -> Pair<Model, Set<Eff>>,
     private val effHandlers: List<FlowEffectHandler<Eff, Msg>> = listOf(),
+    initialState: Model,
     initialEffects: Set<Eff> = setOf(),
-    name: String? = null,
-    coroutineExceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, _ -> }
+    coroutineExceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        System.err.println("Unhandled error in Coroutine store named \"$name\".")
+        throwable.printStackTrace()
+    }
 ) : Store<Msg, Model, Eff> {
 
     private val _state = MutableStateFlow(initialState)

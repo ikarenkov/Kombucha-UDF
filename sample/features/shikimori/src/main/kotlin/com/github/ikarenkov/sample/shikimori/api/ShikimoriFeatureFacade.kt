@@ -3,7 +3,6 @@ package com.github.ikarenkov.sample.shikimori.api
 import com.github.ikarenkov.sample.shikimori.impl.AnimesScreenModel
 import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeatureAgregatorFactory
 import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
-import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeatureFactory
 import com.github.ikarenkov.sample.shikimori.impl.data.AuthDataLocalStorage
 import com.github.ikarenkov.sample.shikimori.impl.data.HttpClientFactory
 import com.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
@@ -17,8 +16,7 @@ val shikimoriFeatureFacade by lazy {
         scoped { ShikimoriBackendApi(get()) }
         scoped { AuthDataLocalStorage(get()) }
 
-        factory { AuthFeatureFactory(get(), get()) }
-        scoped { get<AuthFeatureFactory>().createAuthFeature() }
+        scoped { AuthFeature(get(), get()) }
 
         factory { AnimesScreenModel(get()) }
         factory { AnimesFeatureAgregatorFactory(get(), get(), get(), get()) }

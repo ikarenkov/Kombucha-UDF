@@ -1,34 +1,28 @@
 package com.github.ikarenkov.sample.shikimori.impl.animes
 
 import com.github.ikarenkov.sample.shikimori.api.ShikimoriDeps
+import com.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
 import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import com.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationEffectHandler
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
-import ru.ikarenkov.teamaker.eff_handler.adaptCast
 import ru.ikarenkov.teamaker.store.Store
 import ru.ikarenkov.teamaker.store.StoreFactory
 
 internal class AnimesFeatureAgregatorFactory(
     private val storeFactory: StoreFactory,
     private val animesDataFetcher: AnimesDataFetcher,
-    private val authEffectHandler: AuthFeature.AuthEffHandler,
     private val deps: ShikimoriDeps
 ) {
 
     fun createStore(): Store<AnimesAggregatorFeature.Msg, AnimesAggregatorFeature.State, AnimesAggregatorFeature.Eff> {
-        val paginationFeature = PaginationFeature.create(
+        val paginationFeature = PaginationFeature(
             storeFactory = storeFactory,
             name = "AnimePagination",
             dataFetcher = animesDataFetcher
         )
-        val authFeature = storeFactory.create<AuthFeature.Msg, AuthFeature.State, AuthFeature.Eff>(
-            name = "AuthFeature",
-            initialState = AuthFeature.State.NotAuthorized,
-            reducer = AuthFeature.reducer::invoke,
-            effectHandlers = arrayOf(authEffectHandler.adaptCast()),
-        )
-        return AnimesAggregatorFeature(AnimesFeature(), paginationFeature, authFeature, deps)
+        val authFeature = shikimoriFeatureFacade.scope.get<AuthFeature>()
+        return AnimesAggregatorFeature(AnimesFeature(storeFactory), paginationFeature, authFeature, deps)
     }
 
     data class Anime(val id: String, val name: String)

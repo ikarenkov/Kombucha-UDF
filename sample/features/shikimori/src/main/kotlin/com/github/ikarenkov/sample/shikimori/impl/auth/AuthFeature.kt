@@ -10,13 +10,20 @@ import com.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.ikarenkov.teamaker.eff_handler.FlowEffectHandler
-import ru.ikarenkov.teamaker.reducer.Reducer
+import ru.ikarenkov.teamaker.eff_handler.adaptCast
 import ru.ikarenkov.teamaker.reducer.dslReducer
 import ru.ikarenkov.teamaker.store.Store
+import ru.ikarenkov.teamaker.store.StoreFactory
 
-internal typealias AuthStore = Store<AuthFeature.Msg, AuthFeature.State, AuthFeature.Eff>
-
-internal object AuthFeature {
+internal class AuthFeature(
+    storeFactory: StoreFactory,
+    authEffectHandler: AuthEffHandler
+) : Store<AuthFeature.Msg, AuthFeature.State, AuthFeature.Eff> by storeFactory.create(
+    name = "AuthFeature",
+    initialState = State.NotAuthorized,
+    reducer = Reducer::invoke,
+    effectHandlers = arrayOf(authEffectHandler.adaptCast()),
+) {
 
     sealed interface State {
 
@@ -64,7 +71,7 @@ internal object AuthFeature {
 
     }
 
-    val reducer: Reducer<Msg, State, Eff> = dslReducer<Msg, State, Eff> { msg ->
+    internal object Reducer : ru.ikarenkov.teamaker.reducer.Reducer<Msg, State, Eff> by dslReducer({ msg ->
         when (msg) {
             Msg.Init -> {
                 val state = state
@@ -113,7 +120,7 @@ internal object AuthFeature {
                 }
             }
         }
-    }
+    })
 
     internal class AuthEffHandler(
         private val context: Context,

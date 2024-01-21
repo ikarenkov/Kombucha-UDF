@@ -2,7 +2,6 @@ package com.github.ikarenkov.sample.shikimori.impl.animes
 
 import com.github.ikarenkov.sample.shikimori.api.ShikimoriDeps
 import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
-import com.github.ikarenkov.sample.shikimori.impl.auth.AuthStore
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationStore
 import com.github.ikarenkov.sample.shikimori.impl.storeCoroutineExceptionHandler
@@ -18,7 +17,7 @@ import ru.ikarenkov.teamaker.store.AggregatorStore
 internal class AnimesAggregatorFeature(
     private val animesFeature: AnimesFeature,
     private val paginationStore: PaginationStore<AnimesFeatureAgregatorFactory.Anime>,
-    private val authStore: AuthStore,
+    private val authStore: AuthFeature,
     private val deps: ShikimoriDeps
 ) : AggregatorStore<AnimesAggregatorFeature.Msg, AnimesAggregatorFeature.State, AnimesAggregatorFeature.Eff>(
     name = "AnimesAggregator",

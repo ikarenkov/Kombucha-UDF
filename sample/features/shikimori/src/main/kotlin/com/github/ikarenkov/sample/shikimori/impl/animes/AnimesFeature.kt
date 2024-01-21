@@ -3,16 +3,16 @@ package com.github.ikarenkov.sample.shikimori.impl.animes
 import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Eff
 import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Msg
 import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.State
-import com.github.ikarenkov.sample.shikimori.impl.storeCoroutineExceptionHandler
 import ru.ikarenkov.teamaker.reducer.dslReducer
-import ru.ikarenkov.teamaker.store.CoroutinesStore
+import ru.ikarenkov.teamaker.store.Store
+import ru.ikarenkov.teamaker.store.StoreFactory
 
-internal class AnimesFeature : CoroutinesStore<Msg, State, Eff>(
+internal class AnimesFeature(
+    val storeFactory: StoreFactory
+) : Store<Msg, State, Eff> by storeFactory.create(
     name = "Animes",
     initialState = State.NotAuthorized,
     reducer = reducer::invoke,
-    effHandlers = emptyList(),
-    coroutineExceptionHandler = storeCoroutineExceptionHandler("Animes")
 ) {
 
     sealed interface Msg {
