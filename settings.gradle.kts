@@ -17,10 +17,10 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Kombucha"
+rootProject.name = "KombuchaUdf"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-apply(from = "teamaker/modules.gradle.kts")
+apply(from = "kombucha/modules.gradle.kts")
 apply(from = "sample/modules.gradle.kts")
 include(":modo-compose")
 include(":sample")

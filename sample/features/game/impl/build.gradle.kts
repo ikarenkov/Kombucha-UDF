@@ -16,7 +16,7 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.constraintLayout)
 
-    implementation(projects.teamaker.core)
+    implementation(projects.kombucha.core)
 
     implementation(projects.sample.core.feature)
 

@@ -30,7 +30,7 @@ dependencies {
 
     implementation(libs.debug.logcat)
 
-    implementation(projects.teamaker.core)
+    implementation(projects.kombucha.core)
     implementation(projects.sample.core.feature)
 
     implementation(projects.sample.features.counter.impl)

@@ -24,7 +24,7 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastorePreferences)
 
-    implementation(projects.teamaker.core)
+    implementation(projects.kombucha.core)
 
     implementation(projects.sample.core.feature)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")

@@ -11,5 +11,5 @@ dependencies {
     implementation(libs.essenty.instanceKeeper)
     implementation(libs.androidx.lifecycle.viewmodel)
 
-    implementation(projects.teamaker.core)
+    implementation(projects.kombucha.core)
 }

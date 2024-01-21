@@ -8,7 +8,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.teamaker.core)
+    implementation(projects.kombucha.core)
 
     implementation(libs.essenty.instanceKeeper)
     implementation(libs.androidx.lifecycle.viewmodel)
