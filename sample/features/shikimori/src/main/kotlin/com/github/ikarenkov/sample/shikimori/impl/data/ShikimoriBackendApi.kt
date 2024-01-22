@@ -29,7 +29,7 @@ internal class ShikimoriBackendApi(
                 .filterIsInstance<BearerAuthProvider>()
                 .first()
                 .clearToken()
-        } catch (e: IllegalStateException) {
+        } catch (ignored: IllegalStateException) {
             // No-op; plugin not installed
         }
     }
@@ -53,7 +53,7 @@ internal class ShikimoriBackendApi(
                 contentType(ContentType.Application.Json)
                 setBody(
                     RefreshTokenRequest(
-                        grant_type = "refresh_token",
+                        grantType = "refresh_token",
                         clientId = ShikimoriCredentials.CLIENT_ID,
                         clientSecret = ShikimoriCredentials.CLIENT_SECRET,
                         refreshToken = refreshToken
@@ -73,7 +73,7 @@ internal class ShikimoriBackendApi(
                 }
                 setBody(
                     AccessTokenRequest(
-                        grant_type = "authorization_code",
+                        grantType = "authorization_code",
                         clientId = ShikimoriCredentials.CLIENT_ID,
                         clientSecret = ShikimoriCredentials.CLIENT_SECRET,
                         code = oauthCode

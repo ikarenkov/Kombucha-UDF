@@ -43,6 +43,7 @@ internal class LearnComposeScreen(
     override val screenKey: ScreenKey = generateScreenKey()
 ) : Screen {
 
+    @Suppress("MagicNumber")
     @Composable
     override fun Content() {
         val items = remember {
@@ -89,6 +90,7 @@ data class RowItem(
     val items: List<String>
 )
 
+@Suppress("MagicNumber")
 @Composable
 private fun Row(item: RowItem) {
     Column {

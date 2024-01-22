@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.ikarenkov.sample.game.R
 import ru.ikarenkov.kombucha.game.impl.details.ui.theme.Typography
+import java.util.Locale
 
 @Composable
 fun DetailsBottomContent(
@@ -112,7 +113,7 @@ private fun ReviewHeader(rating: Float, reviewsCount: Int) {
         Spacer(modifier = Modifier.size(12.dp))
         Row {
             Text(
-                text = String.format("%.1f", rating),
+                text = String.format(Locale.US, "%.1f", rating),
                 modifier = Modifier.alignByBaseline(),
                 style = MaterialTheme.typography.h3,
             )
@@ -123,6 +124,7 @@ private fun ReviewHeader(rating: Float, reviewsCount: Int) {
             ) {
                 StarsRating(rating = rating)
                 Spacer(modifier = Modifier.size(8.dp))
+                @Suppress("MagicNumber")
                 Text(
                     text = reviewsCount.formatReviewCount() + " Reviews",
                     style = MaterialTheme.typography.subtitle1,
@@ -201,6 +203,7 @@ fun PreviewDetailsVideo() {
     DetailsMediaContent(mockDetailsMediaVideo)
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun GenreCell(text: String, modifier: Modifier = Modifier) {
     Box(
@@ -209,7 +212,7 @@ fun GenreCell(text: String, modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(percent = 50))
             .background(Color(0x3D44A9F4))
             .padding(horizontal = 10.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Center
     ) {
         Text(
             text = text.uppercase(),

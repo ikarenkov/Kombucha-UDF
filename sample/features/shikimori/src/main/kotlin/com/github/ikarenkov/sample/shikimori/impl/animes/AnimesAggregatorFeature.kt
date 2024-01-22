@@ -18,7 +18,6 @@ internal class AnimesAggregatorFeature(
     private val animesFeature: AnimesFeature,
     private val paginationStore: PaginationStore<AnimesFeatureAgregatorFactory.Anime>,
     private val authStore: AuthFeature,
-    private val deps: ShikimoriDeps
 ) : AggregatorStore<AnimesAggregatorFeature.Msg, AnimesAggregatorFeature.State, AnimesAggregatorFeature.Eff>(
     name = "AnimesAggregator",
     coroutineExceptionHandler = storeCoroutineExceptionHandler("AnimesAggregator")

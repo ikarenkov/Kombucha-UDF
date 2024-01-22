@@ -66,6 +66,7 @@ val LocalContentPadding = staticCompositionLocalOf { contentPadding }
 
 fun Modifier.contentPadding(): Modifier = this.composed { padding(horizontal = LocalContentPadding.current) }
 
+@Suppress("LongMethod", "MagicNumber")
 @OptIn(ExperimentalMotionApi::class, ExperimentalMaterialApi::class)
 @Preview
 @Composable
@@ -223,7 +224,6 @@ val Float.reversed get() = (this * -1) + 1
 private fun expandedConstraintSet(
     horizontalMargin: Dp,
     installButtonHeight: Dp,
-    installButtonBottomOffset: Dp
 ) = ConstraintSet {
     val back = createRefFor(constraints.back)
     val contentBackground = createRefFor(constraints.contentBackground)
@@ -355,6 +355,7 @@ enum class SwipingStates {
     COLLAPSED
 }
 
+@Suppress("EnumNaming", "ClassNaming")
 enum class constraints {
     contentBackground,
     content,

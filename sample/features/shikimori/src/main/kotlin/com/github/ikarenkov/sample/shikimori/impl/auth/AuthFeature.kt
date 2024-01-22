@@ -150,7 +150,13 @@ internal class AuthFeature(
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     launchUrl(
                         context,
-                        Uri.parse("https://shikimori.one/oauth/authorize?client_id=Ty0gZ-tS9LCWcuRov-a2rLvkHqE7kcYkgwelAdmxxIk&redirect_uri=kombucha.shikimori%3A%2F%2Foauth&response_type=code&scope=user_rates+comments+topics")
+                        Uri.parse(
+                            "https://shikimori.one/oauth/authorize?" +
+                                    "client_id=Ty0gZ-tS9LCWcuRov-a2rLvkHqE7kcYkgwelAdmxxIk" +
+                                    "&redirect_uri=kombucha.shikimori%3A%2F%2Foauth" +
+                                    "&response_type=code" +
+                                    "&scope=user_rates+comments+topics"
+                        )
                     )
                 }
             }

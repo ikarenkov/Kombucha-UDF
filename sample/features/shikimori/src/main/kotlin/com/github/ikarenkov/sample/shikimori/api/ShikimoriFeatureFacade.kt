@@ -10,7 +10,7 @@ import io.ktor.client.HttpClient
 import ru.ikarenkov.core.feature.featureFacade
 
 val shikimoriFeatureFacade by lazy {
-    featureFacade<ShikimoriDeps, ShikimoriApi>("items") {
+    featureFacade<ShikimoriDeps, ShikimoriApi>("Shikimori") {
         scoped { ShikimoriApi(get()) }
         scoped<HttpClient> { HttpClientFactory().createClient() }
         scoped { ShikimoriBackendApi(get()) }
@@ -19,7 +19,7 @@ val shikimoriFeatureFacade by lazy {
         scoped { AuthFeature(get(), get()) }
 
         factory { AnimesScreenModel(get()) }
-        factory { AnimesFeatureAgregatorFactory(get(), get(), get()) }
+        factory { AnimesFeatureAgregatorFactory(get(), get()) }
         factory { AnimesFeatureAgregatorFactory.AnimesDataFetcher(get()) }
         factory { AuthFeature.AuthEffHandler(get(), get(), get()) }
     }

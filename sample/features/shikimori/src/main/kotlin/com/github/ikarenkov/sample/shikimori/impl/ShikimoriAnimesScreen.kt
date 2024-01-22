@@ -56,101 +56,7 @@ internal class AnimesScreen(
         val model = rememberScreenModel {
             shikimoriFeatureFacade.scope.get<AnimesScreenModel>()
         }
-        Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(onClick = { model.store.dispatch(AnimesAggregatorFeature.Msg.Animes(AnimesFeature.Msg.Authorize)) }) {
-                    Icon(
-                        painter = rememberVectorPainter(image = Icons.Outlined.AccountCircle),
-                        contentDescription = "Auth"
-                    )
-                }
-            }
-        ) { paddingValues ->
-            val state by model.store.state.collectAsState()
-            val paginationState by remember { derivedStateOf { state.paginationState } }
-            val lazyListState = rememberLazyListState()
-            LaunchedEffect(key1 = Unit) {
-                snapshotFlow { lazyListState.layoutInfo }
-                    .map {
-                        it.visibleItemsInfo.isNotEmpty() &&
-                                paginationState.items.size - 1 <= it.visibleItemsInfo.last().index
-                    }
-                    .collect { needLoadMore ->
-                        withContext(Dispatchers.IO) {
-                            if (needLoadMore) {
-                                model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.LoadNext))
-                            }
-                        }
-                    }
-            }
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyListState,
-                contentPadding = WindowInsets.systemBars.asPaddingValues()
-            ) {
-                items(items = paginationState.items) { anime ->
-                    Box(Modifier.padding(vertical = 8.dp)) {
-                        Card(
-                            Modifier
-                                .padding(horizontal = 16.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                text = anime.name,
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .height(60.dp)
-                            )
-                        }
-                    }
-                }
-                if (paginationState.items.isNotEmpty()) {
-                    when (paginationState.nextPageLoadingState) {
-                        PaginationFeature.State.PageLoadingState.Loading -> item {
-                            Card(
-                                Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                Box(Modifier.fillMaxWidth()) {
-                                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                                }
-                            }
-                        }
-
-                        is PaginationFeature.State.PageLoadingState.Error -> item {
-                            Card(
-                                Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                Box(Modifier.fillMaxWidth()) {
-                                    Button(
-                                        onClick = {
-                                            model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext))
-                                        }
-                                    ) {
-                                        Text(text = "Error, try again")
-                                    }
-                                }
-                            }
-                        }
-
-                        PaginationFeature.State.PageLoadingState.Idle -> {}
-                    }
-                }
-            }
-            if (paginationState.items.isEmpty()) {
-                if (paginationState.nextPageLoadingState is PaginationFeature.State.PageLoadingState.Error) {
-                    Button(onClick = { model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext)) }) {
-                        Text(text = "Error, try again")
-                    }
-                } else {
-                    CircularProgressIndicator()
-                }
-            }
-        }
-
+        AnimesScreenContent(model)
     }
 
 }
@@ -167,3 +73,121 @@ internal class AnimesScreenModel(
 
 }
 
+@Composable
+private fun AnimesScreenContent(model: AnimesScreenModel) {
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = { model.store.dispatch(AnimesAggregatorFeature.Msg.Animes(AnimesFeature.Msg.Authorize)) }) {
+                Icon(
+                    painter = rememberVectorPainter(image = Icons.Outlined.AccountCircle),
+                    contentDescription = "Auth"
+                )
+            }
+        }
+    ) { paddingValues ->
+        val state by model.store.state.collectAsState()
+        val paginationState by remember { derivedStateOf { state.paginationState } }
+        val lazyListState = rememberLazyListState()
+        LaunchedEffect(key1 = Unit) {
+            snapshotFlow { lazyListState.layoutInfo }
+                .map {
+                    it.visibleItemsInfo.isNotEmpty() &&
+                            paginationState.items.size - 1 <= it.visibleItemsInfo.last().index
+                }
+                .collect { needLoadMore ->
+                    withContext(Dispatchers.IO) {
+                        if (needLoadMore) {
+                            model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.LoadNext))
+                        }
+                    }
+                }
+        }
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = lazyListState,
+            contentPadding = WindowInsets.systemBars.asPaddingValues()
+        ) {
+            items(items = paginationState.items) { anime ->
+                ItemAnime(anime)
+            }
+            if (paginationState.items.isNotEmpty()) {
+                when (paginationState.nextPageLoadingState) {
+                    PaginationFeature.State.PageLoadingState.Loading -> item {
+                        ItemLoading()
+                    }
+                    is PaginationFeature.State.PageLoadingState.Error -> item {
+                        ItemError(model)
+                    }
+                    PaginationFeature.State.PageLoadingState.Idle -> {}
+                }
+            }
+        }
+        if (paginationState.items.isEmpty()) {
+            EmptyStateContent(paginationState, model)
+        }
+    }
+}
+
+@Composable
+private fun EmptyStateContent(
+    paginationState: PaginationFeature.State<AnimesFeatureAgregatorFactory.Anime>,
+    model: AnimesScreenModel
+) {
+    if (paginationState.nextPageLoadingState is PaginationFeature.State.PageLoadingState.Error) {
+        Button(onClick = { model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext)) }) {
+            Text(text = "Error, try again")
+        }
+    } else {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun ItemError(model: AnimesScreenModel) {
+    Card(
+        Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+    ) {
+        Box(Modifier.fillMaxWidth()) {
+            Button(
+                onClick = {
+                    model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext))
+                }
+            ) {
+                Text(text = "Error, try again")
+            }
+        }
+    }
+}
+
+@Composable
+private fun ItemLoading() {
+    Card(
+        Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+    ) {
+        Box(Modifier.fillMaxWidth()) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
+    }
+}
+
+@Composable
+private fun ItemAnime(anime: AnimesFeatureAgregatorFactory.Anime) {
+    Box(Modifier.padding(vertical = 8.dp)) {
+        Card(
+            Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = anime.name,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .height(60.dp)
+            )
+        }
+    }
+}

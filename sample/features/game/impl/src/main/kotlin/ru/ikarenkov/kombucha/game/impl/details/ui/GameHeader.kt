@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.github.ikarenkov.sample.game.R
 import ru.ikarenkov.kombucha.game.impl.details.ui.theme.Typography
 
+@Suppress("MagicNumber")
 @Composable
 fun GameHeader(
     name: String,
@@ -84,16 +85,18 @@ fun PreviewGameHeader() {
     )
 }
 
+private const val STARS_COUNT = 5
+
 // TODO: support float
 @Composable
 fun StarsRating(rating: Float, modifier: Modifier = Modifier) {
-    val actualRating = rating.coerceIn(0f, 5f)
+    val actualRating = rating.coerceIn(0f, STARS_COUNT.toFloat())
     Row(
         modifier
             .height(14.dp)
             .padding(vertical = 1.dp)
     ) {
-        for (i in 0 until 5) {
+        for (i in 0 until STARS_COUNT) {
             Image(
                 painter = painterResource(id = R.drawable.icon_star),
                 contentDescription = null,
@@ -103,6 +106,7 @@ fun StarsRating(rating: Float, modifier: Modifier = Modifier) {
                             drawContent()
                             if (i >= actualRating.toInt()) {
                                 val fraction = (actualRating - i).let { if (it >= 1f) 0f else it }
+                                @Suppress("MagicNumber")
                                 drawRect(
                                     color = Color(0xFF282E3E),
                                     topLeft = Offset(x = fraction * size.width, y = 0f),
@@ -112,7 +116,7 @@ fun StarsRating(rating: Float, modifier: Modifier = Modifier) {
                         }
                     }
             )
-            if (i != 4) {
+            if (i != STARS_COUNT - 1) {
                 Spacer(modifier = Modifier.size(4.dp))
             }
         }

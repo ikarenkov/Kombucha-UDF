@@ -37,6 +37,7 @@ import kotlin.math.absoluteValue
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+@Suppress("MagicNumber")
 @Composable
 fun <T> CardsStack(
     items: List<T>,
@@ -96,6 +97,7 @@ fun <T> CardsStack(
     }
 }
 
+@Suppress("MagicNumber")
 private fun Modifier.swipeToDismiss(
     offset: Animatable<Offset, AnimationVector2D>,
     onDismissed: () -> Unit,
@@ -128,7 +130,8 @@ private fun Modifier.swipeToDismiss(
                     }
                 }
                 // Dragging finished. Calculate the velocity of the fling.
-                val velocity = velocityTracker.calculateVelocity()
+                val velocity = velocityTracker
+                    .calculateVelocity()
                     .let { Offset(it.x, it.y) }
                 val targetOffset = decay.calculateTargetValue(Offset.VectorConverter, offset.value, velocity)
                 offset.updateBounds(
@@ -155,6 +158,7 @@ private fun Modifier.swipeToDismiss(
         )
 }
 
+@Suppress("MagicNumber")
 private fun Modifier.scaleAndOffset(relativePos: Int, relativeOffset: Float) = composed {
     val scale = 1f - 0.1f * relativePos + 0.1f * relativeOffset
     val offset = 16.dp * (relativePos - relativeOffset) * scale

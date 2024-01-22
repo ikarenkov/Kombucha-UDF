@@ -71,6 +71,8 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref =
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
+detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.4" }
+
 kombucha-buildLogic = { id = "kombucha-build-logic", version = "unspecified" }
 kombucha-jetpackCompose-library = { id = "kombucha-jetpack-compose-library", version = "unspecified" }
 kombucha-jetpackCompose-app = { id = "kombucha-jetpack-compose-app", version = "unspecified" }

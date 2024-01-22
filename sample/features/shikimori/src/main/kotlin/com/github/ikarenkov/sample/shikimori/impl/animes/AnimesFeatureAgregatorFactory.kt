@@ -12,7 +12,6 @@ import ru.ikarenkov.kombucha.store.StoreFactory
 internal class AnimesFeatureAgregatorFactory(
     private val storeFactory: StoreFactory,
     private val animesDataFetcher: AnimesDataFetcher,
-    private val deps: ShikimoriDeps
 ) {
 
     fun createStore(): Store<AnimesAggregatorFeature.Msg, AnimesAggregatorFeature.State, AnimesAggregatorFeature.Eff> {
@@ -22,7 +21,7 @@ internal class AnimesFeatureAgregatorFactory(
             dataFetcher = animesDataFetcher
         )
         val authFeature = shikimoriFeatureFacade.scope.get<AuthFeature>()
-        return AnimesAggregatorFeature(AnimesFeature(storeFactory), paginationFeature, authFeature, deps)
+        return AnimesAggregatorFeature(AnimesFeature(storeFactory), paginationFeature, authFeature)
     }
 
     data class Anime(val id: String, val name: String)
