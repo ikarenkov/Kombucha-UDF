@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
-import ru.ikarenkov.kombucha.Cancelable
+import ru.ikarenkov.kombucha.store_legacy.Cancelable
 import ru.ikarenkov.kombucha.store_legacy.Store
 
 /**
@@ -16,7 +16,7 @@ import ru.ikarenkov.kombucha.store_legacy.Store
  * @param Model - model of screen that can be observed
  * @param UiEff - single event effects that can be consumed by compose screen (WIP)
  */
-interface ComposeTea<UiMsg : Any, Model : Any, UiEff : Any> : Cancelable {
+interface ComposeKombucha<UiMsg : Any, Model : Any, UiEff : Any> : Cancelable {
 
     fun dispatch(msg: UiMsg)
 
@@ -24,9 +24,9 @@ interface ComposeTea<UiMsg : Any, Model : Any, UiEff : Any> : Cancelable {
 
 }
 
-open class ComposeTeaImpl<Msg : Any, UiMsg : Msg, Model : Any, Eff : Any, UiEff : Any>(
+open class ComposeKombuchaImpl<Msg : Any, UiMsg : Msg, Model : Any, Eff : Any, UiEff : Any>(
     protected val tea: Store<Msg, Model, Eff>,
-) : ComposeTea<UiMsg, Model, UiEff> {
+) : ComposeKombucha<UiMsg, Model, UiEff> {
 
     override var state: Model by mutableStateOf(tea.currentState)
 
@@ -45,26 +45,26 @@ open class ComposeTeaImpl<Msg : Any, UiMsg : Msg, Model : Any, Eff : Any, UiEff 
 
 }
 
-class ComposeTeaInstance<UiMsg : Any, Model : Any, UiEff : Any>(
-    composeTea: ComposeTea<UiMsg, Model, UiEff>
-) : ComposeTea<UiMsg, Model, UiEff> by composeTea, InstanceKeeper.Instance {
+class ComposeKombuchaInstance<UiMsg : Any, Model : Any, UiEff : Any>(
+    composeKombucha: ComposeKombucha<UiMsg, Model, UiEff>
+) : ComposeKombucha<UiMsg, Model, UiEff> by composeKombucha, InstanceKeeper.Instance {
     override fun onDestroy() {
         cancel()
     }
 }
 
-fun <UiMsg : Any, Model : Any, UiEff : Any> ComposeTea<UiMsg, Model, UiEff>.adaptInstanceKeeper(): ComposeTeaInstance<UiMsg, Model, UiEff> =
-    ComposeTeaInstance<UiMsg, Model, UiEff>(this)
+fun <UiMsg : Any, Model : Any, UiEff : Any> ComposeKombucha<UiMsg, Model, UiEff>.adaptInstanceKeeper(): ComposeKombuchaInstance<UiMsg, Model, UiEff> =
+    ComposeKombuchaInstance<UiMsg, Model, UiEff>(this)
 
 /**
- * Return [ComposeTea] instance from [ViewModelStoreOwner.getViewModelStore] if instance already exists,
+ * Return [ComposeKombucha] instance from [ViewModelStoreOwner.getViewModelStore] if instance already exists,
  * or creates and put new instance to [ViewModelStoreOwner]
  */
 fun <Msg : Any, UiMsg : Msg, Model : Any, Eff : Any, UiEff : Any> ViewModelStoreOwner.brewComposeTea(
-    key: Any = ComposeTeaInstance::class,
+    key: Any = ComposeKombuchaInstance::class,
     storeFactory: () -> Store<Msg, Model, Eff>
-): ComposeTea<UiMsg, Model, UiEff> = instanceKeeper().getOrCreate(key) {
-    ComposeTeaImpl<Msg, UiMsg, Model, Eff, UiEff>(storeFactory()).adaptInstanceKeeper()
+): ComposeKombucha<UiMsg, Model, UiEff> = instanceKeeper().getOrCreate(key) {
+    ComposeKombuchaImpl<Msg, UiMsg, Model, Eff, UiEff>(storeFactory()).adaptInstanceKeeper()
 }
 
 // TODO: do we really need this? Maybe it will be better to write specific extension or delegate for specific case,
@@ -75,4 +75,4 @@ fun <Msg : Any, UiMsg : Msg, Model : Any, Eff : Any, UiEff : Any> ViewModelStore
  * !!! You mast manually call [ComposeTeaInstanceKeeperImpl.onDestroy] to cancel feature
  */
 fun <Msg : Any, UiMsg : Msg, Model : Any, Eff : Any, UiEff : Any> Store<Msg, Model, Eff>.asCompose() =
-    ComposeTeaImpl<Msg, UiMsg, Model, Eff, UiEff>(this)
+    ComposeKombuchaImpl<Msg, UiMsg, Model, Eff, UiEff>(this)

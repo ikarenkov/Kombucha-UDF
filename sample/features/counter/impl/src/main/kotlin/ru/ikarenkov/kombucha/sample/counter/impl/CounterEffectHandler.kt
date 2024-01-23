@@ -2,7 +2,7 @@ package ru.ikarenkov.kombucha.sample.counter.impl
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.ikarenkov.kombucha.Cancelable
+import ru.ikarenkov.kombucha.store_legacy.Cancelable
 import ru.ikarenkov.kombucha.eff_handler.EffectHandler
 import ru.ikarenkov.kombucha.eff_handler.FlowEffectHandler
 import ru.ikarenkov.kombucha.eff_handler_legacy.effectHandler

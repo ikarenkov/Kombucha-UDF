@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import ru.ikarenkov.kombucha.Cancelable
+import ru.ikarenkov.kombucha.store_legacy.Cancelable
 import ru.ikarenkov.kombucha.eff_handler.EffectHandler
 import java.util.concurrent.ConcurrentHashMap
 

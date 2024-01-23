@@ -8,6 +8,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -28,11 +29,11 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     }
 ) : Store<Msg, Model, Eff> {
 
-    private val _state = MutableStateFlow(initialState)
-    override val state: StateFlow<Model> = _state
+    private val mutableState = MutableStateFlow(initialState)
+    override val state: StateFlow<Model> = mutableState
 
-    private val _effects = MutableSharedFlow<Eff>()
-    override val effects: Flow<Eff> = _effects
+    private val mutableEffects = MutableSharedFlow<Eff>()
+    override val effects: Flow<Eff> = mutableEffects
 
     private val isCanceled: Boolean
         get() = !coroutinesScope.isActive
@@ -45,24 +46,38 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
 
     private val stateUpdateMutex = Mutex()
 
+    private val mutableStoreUpdates: MutableSharedFlow<StoreUpdate<Msg, Model, Eff>> = MutableSharedFlow()
+    val storeUpdates: SharedFlow<StoreUpdate<Msg, Model, Eff>> = mutableStoreUpdates
+
     init {
         initEffHandlers(initialEffects)
     }
 
     override fun dispatch(msg: Msg) {
         coroutinesScope.launch {
-            val effs = stateUpdateMutex.withLock {
+            val storeUpdate = stateUpdateMutex.withLock {
                 if (!isCanceled) {
-                    val (newState, effs) = reducer(state.value, msg)
-                    _state.value = newState
-                    effs
+                    val oldState = state.value
+                    val (newState, effects) = reducer(oldState, msg)
+                    mutableState.value = newState
+                    StoreUpdate(
+                        msg = msg,
+                        oldState = oldState,
+                        newState = newState,
+                        effects = effects
+                    )
                 } else {
                     null
                 }
             }
-            effs?.forEach { eff ->
-                _effects.emit(eff)
-                handleEff(eff)
+            if (storeUpdate != null) {
+                mutableStoreUpdates.emit(storeUpdate)
+                storeUpdate.effects.forEach { eff ->
+                    launch {
+                        mutableEffects.emit(eff)
+                        handleEff(eff)
+                    }
+                }
             }
         }
     }
@@ -88,3 +103,10 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     }
 
 }
+
+data class StoreUpdate<Msg, State, Eff>(
+    val msg: Msg,
+    val oldState: State,
+    val newState: State,
+    val effects: Set<Eff>
+)

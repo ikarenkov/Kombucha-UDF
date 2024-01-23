@@ -1,4 +1,4 @@
-package ru.ikarenkov.kombucha
+package ru.ikarenkov.kombucha.store_legacy
 
 internal fun <T> List<(T) -> Unit>.notifyAll(msg: T) = forEach { listener -> listener.invoke(msg) }
 

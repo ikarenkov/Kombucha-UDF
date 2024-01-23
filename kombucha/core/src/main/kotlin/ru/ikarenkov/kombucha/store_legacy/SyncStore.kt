@@ -1,9 +1,6 @@
 package ru.ikarenkov.kombucha.store_legacy
 
-import ru.ikarenkov.kombucha.Cancelable
-import ru.ikarenkov.kombucha.addListenerAndMakeCancelable
 import ru.ikarenkov.kombucha.eff_handler_legacy.EffectHandler
-import ru.ikarenkov.kombucha.notifyAll
 
 class SyncStore<Msg : Any, Model : Any, Eff : Any>(
     initialState: Model,

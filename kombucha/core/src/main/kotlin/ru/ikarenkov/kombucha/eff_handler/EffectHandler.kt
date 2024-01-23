@@ -3,7 +3,7 @@ package ru.ikarenkov.kombucha.eff_handler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapNotNull
-import ru.ikarenkov.kombucha.Cancelable
+import ru.ikarenkov.kombucha.store_legacy.Cancelable
 
 interface EffectHandler<Eff : Any, Msg : Any> {
 

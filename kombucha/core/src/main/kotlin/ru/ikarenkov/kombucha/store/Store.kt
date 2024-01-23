@@ -2,7 +2,7 @@ package ru.ikarenkov.kombucha.store
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import ru.ikarenkov.kombucha.Cancelable
+import ru.ikarenkov.kombucha.store_legacy.Cancelable
 
 interface Store<Msg : Any, Model : Any, Eff : Any> : Cancelable {
 

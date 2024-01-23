@@ -1,6 +1,6 @@
 package ru.ikarenkov.kombucha.eff_handler_legacy
 
-import ru.ikarenkov.kombucha.Cancelable
+import ru.ikarenkov.kombucha.store_legacy.Cancelable
 import ru.ikarenkov.kombucha.store_legacy.Store
 
 interface EffectHandler<Eff : Any, Msg : Any> : Cancelable {
