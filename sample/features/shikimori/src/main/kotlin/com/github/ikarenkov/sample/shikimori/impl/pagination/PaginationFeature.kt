@@ -6,8 +6,6 @@ import ru.ikarenkov.kombucha.reducer.dslReducer
 import ru.ikarenkov.kombucha.store.Store
 import ru.ikarenkov.kombucha.store.StoreFactory
 
-typealias PaginationStore<T> = Store<PaginationFeature.Msg, PaginationFeature.State<T>, PaginationFeature.Eff>
-
 class PaginationFeature<T>(
     name: String,
     storeFactory: StoreFactory,
@@ -16,7 +14,7 @@ class PaginationFeature<T>(
     name = name,
     initialState = State.Initial(),
     reducer = paginationReduces<T>()::invoke,
-    initEffects = Eff.Initial(),
+    initialEffects = Eff.Initial(),
     PaginationEffectHandler(dataFetcher).adaptCast()
 ) {
 
@@ -77,8 +75,6 @@ class PaginationFeature<T>(
     }
 
 }
-
-class Item(val name: String)
 
 const val PAGE_SIZE = 10
 

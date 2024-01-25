@@ -1,6 +1,5 @@
 package com.github.ikarenkov.sample.shikimori.impl.animes
 
-import com.github.ikarenkov.sample.shikimori.api.ShikimoriDeps
 import com.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
 import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import com.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
@@ -33,9 +32,7 @@ internal class AnimesFeatureAgregatorFactory(
         override suspend fun fetch(input: PaginationFeature.Eff.Load): PaginationFeature.Msg.Internal.LoadResult<Anime> =
             api
                 .animes(input.page, input.size)
-                .map { animes ->
-                    animes.map { Anime(it.id.toString(), it.name) }
-                }
+                .map { animes -> animes.map { Anime(it.id.toString(), it.name) } }
                 .let {
                     PaginationFeature.Msg.Internal.LoadResult<Anime>(it, input.page, input.size)
                 }

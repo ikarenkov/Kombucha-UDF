@@ -20,7 +20,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     name: String?,
     private val reducer: (Model, Msg) -> Pair<Model, Set<Eff>>,
-    private val effHandlers: List<FlowEffectHandler<Eff, Msg>> = listOf(),
+    private val effectHandlers: List<FlowEffectHandler<Eff, Msg>> = listOf(),
     initialState: Model,
     initialEffects: Set<Eff> = setOf(),
     coroutineExceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -38,7 +38,7 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     private val isCanceled: Boolean
         get() = !coroutinesScope.isActive
 
-    private val coroutinesScope = CoroutineScope(
+    protected open val coroutinesScope = CoroutineScope(
         SupervisorJob() +
                 coroutineExceptionHandler +
                 (name?.let { CoroutineName(name) } ?: EmptyCoroutineContext)
@@ -93,7 +93,7 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     }
 
     private fun handleEff(eff: Eff) {
-        effHandlers.forEach { effHandler ->
+        effectHandlers.forEach { effHandler ->
             coroutinesScope.launch {
                 effHandler
                     .handleEff(eff = eff)

@@ -1,9 +1,7 @@
 package com.github.ikarenkov.sample.shikimori.impl.animes
 
-import com.github.ikarenkov.sample.shikimori.api.ShikimoriDeps
 import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
-import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationStore
 import com.github.ikarenkov.sample.shikimori.impl.storeCoroutineExceptionHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,8 +14,8 @@ import ru.ikarenkov.kombucha.store.AggregatorStore
 
 internal class AnimesAggregatorFeature(
     private val animesFeature: AnimesFeature,
-    private val paginationStore: PaginationStore<AnimesFeatureAgregatorFactory.Anime>,
-    private val authStore: AuthFeature,
+    private val paginationStore: PaginationFeature<AnimesFeatureAgregatorFactory.Anime>,
+    private val authFeature: AuthFeature,
 ) : AggregatorStore<AnimesAggregatorFeature.Msg, AnimesAggregatorFeature.State, AnimesAggregatorFeature.Eff>(
     name = "AnimesAggregator",
     coroutineExceptionHandler = storeCoroutineExceptionHandler("AnimesAggregator")
@@ -49,14 +47,14 @@ internal class AnimesAggregatorFeature(
         scope.launch {
             animesFeature.effects.collect { eff ->
                 when (eff) {
-                    AnimesFeature.Eff.Authorize -> authStore.dispatch(AuthFeature.Msg.Auth)
+                    AnimesFeature.Eff.Authorize -> authFeature.dispatch(AuthFeature.Msg.Auth)
                 }
             }
         }
         scope.launch {
             animesFeature.effects.collect { eff ->
                 when (eff) {
-                    AnimesFeature.Eff.Authorize -> authStore.dispatch(AuthFeature.Msg.Auth)
+                    AnimesFeature.Eff.Authorize -> authFeature.dispatch(AuthFeature.Msg.Auth)
                 }
             }
         }

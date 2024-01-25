@@ -5,9 +5,11 @@ package ru.ikarenkov.kombucha.reducer
  */
 fun interface Reducer<Msg : Any, State : Any, Eff : Any> {
 
-    operator fun invoke(state: State, msg: Msg): Pair<State, Set<Eff>>
+    operator fun invoke(state: State, msg: Msg): ReducerResult<State, Eff>
 
 }
+
+typealias ReducerResult<State, Eff> = Pair<State, Set<Eff>>
 
 infix fun <T, E> T.toEff(eff: E) = this to setOf(eff)
 

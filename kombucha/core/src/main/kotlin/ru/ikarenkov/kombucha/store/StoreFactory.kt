@@ -12,13 +12,12 @@ interface StoreFactory {
      * Creates an implementation of [Store].
      *
      * @param name a name of the [Store] being created, used for logging, time traveling, etc.
-     * otherwise call [Store.init] manually
      */
     fun <Msg : Any, State : Any, Eff : Any> create(
         name: String? = null,
         initialState: State,
         reducer: (State, Msg) -> Pair<State, Set<Eff>>,
-        initEffects: Set<Eff> = setOf(),
+        initialEffects: Set<Eff> = setOf(),
         vararg effectHandlers: FlowEffectHandler<Eff, Msg>
     ): Store<Msg, State, Eff>
 

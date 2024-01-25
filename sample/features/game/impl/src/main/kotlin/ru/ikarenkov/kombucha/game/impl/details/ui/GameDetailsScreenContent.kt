@@ -221,9 +221,11 @@ fun createNestedScrollConnection(swipeableState: SwipeableState<SwipingStates>) 
 
 val Float.reversed get() = (this * -1) + 1
 
+@Suppress("UnusedParameter")
 private fun expandedConstraintSet(
     horizontalMargin: Dp,
     installButtonHeight: Dp,
+    bottomOffset: Dp,
 ) = ConstraintSet {
     val back = createRefFor(constraints.back)
     val contentBackground = createRefFor(constraints.contentBackground)

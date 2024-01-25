@@ -70,10 +70,14 @@ internal class HttpClientFactory {
                 val newAuthData = authStore.state
                     // What if error happened? How to catch it here?
                     .first { state ->
-                        state is AuthFeature.State.Authorized && state.accessToken != oldTokens?.accessToken ||
-                                state is AuthFeature.State.NotAuthorized
-                    }
-                (newAuthData as? AuthFeature.State.Authorized)?.let {
+                        when (state) {
+                            is AuthFeature.State.Authorized -> {
+                                state.accessToken != oldTokens?.accessToken || state.failedRefreshAccessToken
+                            }
+                            is AuthFeature.State.NotAuthorized, is AuthFeature.State.Init -> false
+                        }
+                    } as AuthFeature.State.Authorized
+                newAuthData.takeIf { !it.failedRefreshAccessToken }?.let {
                     BearerTokens(it.accessToken, it.refreshToken)
                 }
             }

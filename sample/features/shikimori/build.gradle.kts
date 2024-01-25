@@ -9,6 +9,10 @@ android {
     namespace = "com.github.ikarenkov.sample.shikomori"
 }
 
+tasks.withType<Test>() {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation(libs.koin.android)
     implementation(libs.debug.logcat)
@@ -28,4 +32,10 @@ dependencies {
 
     implementation(projects.sample.core.feature)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+
+    testImplementation(libs.test.kotlin)
+    testImplementation(libs.test.junit.jupiter)
+    testImplementation(libs.test.mockk)
+    testImplementation(libs.test.coroutines)
+    testImplementation(projects.kombucha.test)
 }

@@ -8,6 +8,7 @@ import com.github.ikarenkov.sample.shikimori.impl.auth.data.AccessTokenResponse
 import com.github.ikarenkov.sample.shikimori.impl.data.AuthDataLocalStorage
 import com.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import ru.ikarenkov.kombucha.eff_handler.FlowEffectHandler
 import ru.ikarenkov.kombucha.eff_handler.adaptCast
@@ -20,10 +21,14 @@ internal class AuthFeature(
     authEffectHandler: AuthEffHandler
 ) : Store<AuthFeature.Msg, AuthFeature.State, AuthFeature.Eff> by storeFactory.create(
     name = "AuthFeature",
-    initialState = State.NotAuthorized,
+    initialState = State.Init(false),
     reducer = Reducer::invoke,
     effectHandlers = arrayOf(authEffectHandler.adaptCast()),
 ) {
+
+    init {
+        dispatch(Msg.Init)
+    }
 
     sealed interface State {
 
@@ -32,13 +37,17 @@ internal class AuthFeature(
         data class Authorized(
             val accessToken: String,
             val refreshToken: String,
+            // need to distinguish states when we have auth data
+            val failedRefreshAccessToken: Boolean = false
         ) : State
 
-        data object NotAuthorized : State
+        sealed interface NotAuthorized : State {
+            data class OAuthInProgress(
+                val authorizationCode: String
+            ) : NotAuthorized
 
-        data class OAuthInProgress(
-            val authorizationCode: String
-        ) : State
+            data object Idle : NotAuthorized
+        }
 
     }
 
@@ -50,7 +59,7 @@ internal class AuthFeature(
         data object Auth : Msg
         data object RefreshToken : Msg
 
-        data class AuthResult(val authData: State.Authorized) : Msg
+        data class AuthResult(val result: Result<State.Authorized>) : Msg
         data class LoadCacheAuthResult(val accessTokenResponse: AccessTokenResponse?) : Msg
 
         data class OAuthResult(
@@ -61,13 +70,16 @@ internal class AuthFeature(
 
     sealed interface Eff {
 
-        data object GetAuthorizationCode : Eff
-        data class UpdateToken(val refreshToken: String) : Eff
+        data object GetAuthorizationCodeBrouser : Eff
         data object LoadCachedData : Eff
         sealed interface GetAccessToken : Eff {
             data class AuthorizationCode(val code: String) : GetAccessToken
-            data class RefreshToken(val token: String) : GetAccessToken
+            data class RefreshToken(val refreshToken: String) : GetAccessToken
         }
+
+        data class OAuthErrorCodeIsEmpty(
+            val oauthUrl: String
+        ) : Eff
 
     }
 
@@ -82,23 +94,39 @@ internal class AuthFeature(
             }
             Msg.Auth -> {
                 if (state is State.NotAuthorized) {
-                    eff(Eff.GetAuthorizationCode)
+                    eff(Eff.GetAuthorizationCodeBrouser)
                 }
             }
             is Msg.AuthResult -> {
-                state { msg.authData }
+                msg.result.fold(
+                    onSuccess = {
+                        state { it }
+                    },
+                    onFailure = {
+                        when (val state = state) {
+                            is State.NotAuthorized -> state { State.NotAuthorized.Idle }
+                            is State.Authorized -> {
+                                state { state.copy(failedRefreshAccessToken = true) }
+                            }
+                            is State.Init -> {}
+                        }
+                    }
+                )
             }
             is Msg.OAuthResult -> {
                 val code = msg.oauthUrl.substringAfter("kombucha.shikimori://oauth?code=")
                 if (code.isNotEmpty()) {
-                    state { State.OAuthInProgress(code) }
+                    state { State.NotAuthorized.OAuthInProgress(code) }
                     eff(Eff.GetAccessToken.AuthorizationCode(code))
+                } else {
+                    eff(Eff.OAuthErrorCodeIsEmpty(msg.oauthUrl))
+                    state { State.NotAuthorized.Idle }
                 }
             }
             is Msg.LoadCacheAuthResult -> {
                 if (initialState is State.Init) {
                     if (msg.accessTokenResponse == null) {
-                        state { State.NotAuthorized }
+                        state { State.NotAuthorized.Idle }
                     } else {
                         state {
                             State.Authorized(
@@ -112,11 +140,10 @@ internal class AuthFeature(
             Msg.RefreshToken -> {
                 val state = state
                 when (state) {
-                    is State.Authorized -> eff(Eff.UpdateToken(state.refreshToken))
-                    is State.NotAuthorized -> eff(Eff.GetAuthorizationCode)
-                    else -> {
-                        // ignored
-                    }
+                    is State.Authorized -> eff(Eff.GetAccessToken.RefreshToken(state.refreshToken))
+                    // meybe it would be better to send effect out the fact, that we should inform user for auth?
+                    is State.NotAuthorized -> eff(Eff.GetAuthorizationCodeBrouser)
+                    is State.Init -> Unit
                 }
             }
         }
@@ -129,23 +156,12 @@ internal class AuthFeature(
     ) : FlowEffectHandler<Eff, Msg> {
 
         override fun handleEff(eff: Eff): Flow<Msg> = when (eff) {
-            is Eff.GetAccessToken.AuthorizationCode -> flow {
-                val response = shikimoriApi.getAccessToken(eff.code).getOrThrow()
-                localStorage.saveAccessTokens(response)
-                val msg = Msg.AuthResult(
-                    State.Authorized(
-                        accessToken = response.accessToken,
-                        refreshToken = response.refreshToken
-                    )
-                )
-                emit(msg)
-            }
-            is Eff.GetAccessToken.RefreshToken -> TODO()
+            is Eff.GetAccessToken -> getAccessToken(eff)
             is Eff.LoadCachedData -> flow {
                 emit(Msg.LoadCacheAuthResult(localStorage.getAccessTokensResponse()))
                 shikimoriApi.invalidateBearerTokens()
             }
-            Eff.GetAuthorizationCode -> flow {
+            Eff.GetAuthorizationCodeBrouser -> flow {
                 CustomTabsIntent.Builder().build().run {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     launchUrl(
@@ -160,18 +176,29 @@ internal class AuthFeature(
                     )
                 }
             }
-            is Eff.UpdateToken -> flow {
-                val response = shikimoriApi.refreshTokens(eff.refreshToken).getOrThrow()
-                localStorage.saveAccessTokens(response)
+            is Eff.OAuthErrorCodeIsEmpty -> emptyFlow()
+        }
+
+        private fun getAccessToken(eff: Eff.GetAccessToken) = flow {
+            val result = when (eff) {
+                is Eff.GetAccessToken.AuthorizationCode -> shikimoriApi.getAccessToken(eff.code)
+                is Eff.GetAccessToken.RefreshToken -> shikimoriApi.refreshTokens(eff.refreshToken)
+            }
+            result.onSuccess {
+                localStorage.saveAccessTokens(it)
+            }
+            if (eff is Eff.GetAccessToken.AuthorizationCode) {
                 shikimoriApi.invalidateBearerTokens()
-                val msg = Msg.AuthResult(
+            }
+            val msg = Msg.AuthResult(
+                result.map { response ->
                     State.Authorized(
                         accessToken = response.accessToken,
                         refreshToken = response.refreshToken
                     )
-                )
-                emit(msg)
-            }
+                }
+            )
+            emit(msg)
         }
 
     }

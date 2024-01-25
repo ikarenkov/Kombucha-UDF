@@ -1,5 +1,6 @@
 include(
     ":kombucha:core",
     ":kombucha:instanceKeeper",
-    ":kombucha:compose"
+    ":kombucha:compose",
+    ":kombucha:test",
 )
