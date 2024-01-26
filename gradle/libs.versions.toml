@@ -75,6 +75,7 @@ android-application = { id = "com.android.application", version.ref = "androidGr
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 
 detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.4" }
 
@@ -84,3 +85,4 @@ kombucha-jetpackCompose-app = { id = "kombucha-jetpack-compose-app", version = "
 kombucha-jvm-library = { id = "kombucha-jvm-library", version = "unspecified" }
 kombucha-android-library = { id = "kombucha-android-library", version = "unspecified" }
 kombucha-android-app = { id = "kombucha-android-app", version = "unspecified" }
+kombucha-kmp-library = { id = "kombucha-kmp-library", version = "unspecified" }

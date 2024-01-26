@@ -3,7 +3,6 @@ package io.github.ikarenkov.kombucha.test
 import io.github.ikarenkov.kombucha.reducer.Reducer
 import kotlin.test.assertContentEquals
 
-
 /**
  * Test given [reducer] by passing [initialState] and given messages described in [reducerResultsBuilder].
  * It is made by consequential passing msg and new provided states, starting with [initialState].

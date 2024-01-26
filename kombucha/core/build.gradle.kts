@@ -1,7 +1,17 @@
 plugins {
-    alias(libs.plugins.kombucha.jvm.library)
+    alias(libs.plugins.kombucha.kmp.library)
 }
 
-dependencies {
-    implementation(libs.kotlinx.coroutines.core)
+kotlin {
+    configureKmpLibrary("kombucha-udf-core")
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.kotlinx.coroutines.core)
+        }
+
+        commonTest.dependencies {
+            implementation(libs.test.kotlin)
+        }
+    }
 }

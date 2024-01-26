@@ -2,7 +2,6 @@ package io.github.ikarenkov.kombucha.test
 
 import io.github.ikarenkov.kombucha.reducer.ReducerResult
 
-
 data class ReducerTestData<Msg : Any, State : Any, Eff : Any>(
     val msg: Msg,
     val providedState: State,
