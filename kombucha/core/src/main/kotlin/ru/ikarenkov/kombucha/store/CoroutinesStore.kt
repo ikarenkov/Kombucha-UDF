@@ -14,13 +14,17 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import ru.ikarenkov.kombucha.eff_handler.FlowEffectHandler
+import ru.ikarenkov.kombucha.eff_handler.EffectHandler
+import ru.ikarenkov.kombucha.reducer.Reducer
 import kotlin.coroutines.EmptyCoroutineContext
 
+/**
+ * Basic coroutines safe implementation of [Store]. State modification is consequential with locking using [Mutex].
+ */
 open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     name: String?,
-    private val reducer: (Model, Msg) -> Pair<Model, Set<Eff>>,
-    private val effectHandlers: List<FlowEffectHandler<Eff, Msg>> = listOf(),
+    private val reducer: Reducer<Msg, Model, Eff>,
+    private val effectHandlers: List<EffectHandler<Eff, Msg>> = listOf(),
     initialState: Model,
     initialEffects: Set<Eff> = setOf(),
     coroutineExceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -53,12 +57,12 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
         initEffHandlers(initialEffects)
     }
 
-    override fun dispatch(msg: Msg) {
+    override fun accept(msg: Msg) {
         coroutinesScope.launch {
             val storeUpdate = stateUpdateMutex.withLock {
                 if (!isCanceled) {
                     val oldState = state.value
-                    val (newState, effects) = reducer(oldState, msg)
+                    val (newState, effects) = reducer(msg, oldState)
                     mutableState.value = newState
                     StoreUpdate(
                         msg = msg,
@@ -97,7 +101,7 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
             coroutinesScope.launch {
                 effHandler
                     .handleEff(eff = eff)
-                    .collect { dispatch(it) }
+                    .collect { accept(it) }
             }
         }
     }

@@ -7,7 +7,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import ru.ikarenkov.kombucha.eff_handler.FlowEffectHandler
+import ru.ikarenkov.kombucha.eff_handler.EffectHandler
+import ru.ikarenkov.kombucha.reducer.Reducer
 import ru.ikarenkov.kombucha.store.CoroutinesStore
 import ru.ikarenkov.kombucha.store.Store
 import ru.ikarenkov.kombucha.store.StoreFactory
@@ -36,7 +37,7 @@ fun <Msg : Any, State : Any, Eff : Any> testStoreReducer(
                 .collect { collectedUpdates += it }
         }
         testData.forEach {
-            store.dispatch(it.msg)
+            store.accept(it.msg)
         }
         // launch collecting results
         advanceUntilIdle()
@@ -61,9 +62,9 @@ class TestStoreFactory<FMsg : Any, FState : Any, FEff : Any>(
     override fun <Msg : Any, State : Any, Eff : Any> create(
         name: String?,
         initialState: State,
-        reducer: (State, Msg) -> Pair<State, Set<Eff>>,
+        reducer: Reducer<Msg, State, Eff>,
         initialEffects: Set<Eff>,
-        vararg effectHandlers: FlowEffectHandler<Eff, Msg>
+        vararg effectHandlers: EffectHandler<Eff, Msg>
     ): Store<Msg, State, Eff> = object : CoroutinesStore<Msg, State, Eff>(
         name = name,
         reducer = reducer,

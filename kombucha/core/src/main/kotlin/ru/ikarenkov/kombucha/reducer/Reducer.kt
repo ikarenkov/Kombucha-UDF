@@ -5,7 +5,7 @@ package ru.ikarenkov.kombucha.reducer
  */
 fun interface Reducer<Msg : Any, State : Any, Eff : Any> {
 
-    operator fun invoke(state: State, msg: Msg): ReducerResult<State, Eff>
+    operator fun invoke(msg: Msg, state: State): ReducerResult<State, Eff>
 
 }
 

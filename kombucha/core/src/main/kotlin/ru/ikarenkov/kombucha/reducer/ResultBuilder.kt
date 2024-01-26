@@ -31,7 +31,6 @@ open class ResultBuilder<State : Any, Eff : Any>(
         get() = currentState
 
     private var currentState: State = initialState
-//    private val effBuilder = OperationsBuilder<Eff>()
 
     private val effectsList = mutableListOf<Eff>()
 
@@ -66,11 +65,6 @@ open class ResultBuilder<State : Any, Eff : Any>(
     }
 
     @PublishedApi
-    internal fun build(): Pair<State, Set<Eff>> {
-//        val effs = mutableSetOf<Eff>().apply {
-//            addAll(effBuilder.build())
-//        }
-        return currentState to effectsList.toSet()
-    }
+    internal fun build(): ReducerResult<State, Eff> = currentState to effectsList.toSet()
 
 }

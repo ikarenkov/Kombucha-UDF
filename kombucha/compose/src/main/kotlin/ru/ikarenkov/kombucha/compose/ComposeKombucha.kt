@@ -1,14 +1,12 @@
 package ru.ikarenkov.kombucha.compose
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModelStoreOwner
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
-import ru.ikarenkov.kombucha.store_legacy.Cancelable
-import ru.ikarenkov.kombucha.store_legacy.Store
+import kotlinx.coroutines.flow.StateFlow
+import ru.ikarenkov.kombucha.Cancelable
+import ru.ikarenkov.kombucha.store.Store
 
 /**
  * This interface provides Ui related part of TEA for compose.
@@ -18,29 +16,24 @@ import ru.ikarenkov.kombucha.store_legacy.Store
  */
 interface ComposeKombucha<UiMsg : Any, Model : Any, UiEff : Any> : Cancelable {
 
-    fun dispatch(msg: UiMsg)
+    fun accept(msg: UiMsg)
 
-    val state: Model
+    val state: StateFlow<Model>
 
 }
 
 open class ComposeKombuchaImpl<Msg : Any, UiMsg : Msg, Model : Any, Eff : Any, UiEff : Any>(
-    protected val tea: Store<Msg, Model, Eff>,
+    protected val store: Store<Msg, Model, Eff>,
 ) : ComposeKombucha<UiMsg, Model, UiEff> {
 
-    override var state: Model by mutableStateOf(tea.currentState)
+    override var state: StateFlow<Model> = store.state
 
-    private val stateDisposable = tea.listenState {
-        state = it
-    }
-
-    override fun dispatch(msg: UiMsg) {
-        tea.dispatch(msg)
+    override fun accept(msg: UiMsg) {
+        store.accept(msg)
     }
 
     override fun cancel() {
-        stateDisposable.cancel()
-        tea.cancel()
+        store.cancel()
     }
 
 }

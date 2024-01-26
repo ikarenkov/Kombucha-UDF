@@ -18,7 +18,7 @@ package ru.ikarenkov.kombucha.reducer
  */
 fun <Msg : Any, State : Any, Eff : Any> dslReducer(
     reduce: ResultBuilder<State, Eff>.(msg: Msg) -> Unit
-) = Reducer<Msg, State, Eff> { state, msg ->
+) = Reducer<Msg, State, Eff> { msg, state ->
     ResultBuilder<State, Eff>(state).apply { reduce(msg) }.build()
 }
 
@@ -29,7 +29,7 @@ fun <Msg : Any, State : Any, Eff : Any> dslReducer(
 inline fun <Msg : Any, reified UiMsg : Msg, reified InternalMsg : Msg, State : Any, Eff : Any> screenDslReducer(
     noinline uiReducer: ResultBuilder<State, Eff>.(msg: UiMsg) -> Any?,
     noinline internalReducer: ResultBuilder<State, Eff>.(msg: InternalMsg) -> Any?,
-) = Reducer<Msg, State, Eff> { state, msg ->
+) = Reducer<Msg, State, Eff> { msg, state ->
     when (msg) {
         is UiMsg -> ResultBuilder<State, Eff>(state).apply { uiReducer(msg) }
         is InternalMsg -> ResultBuilder<State, Eff>(state).apply { internalReducer(msg) }

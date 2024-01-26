@@ -77,7 +77,7 @@ internal class AnimesScreenModel(
 private fun AnimesScreenContent(model: AnimesScreenModel) {
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { model.store.dispatch(AnimesAggregatorFeature.Msg.Animes(AnimesFeature.Msg.Authorize)) }) {
+            FloatingActionButton(onClick = { model.store.accept(AnimesAggregatorFeature.Msg.Animes(AnimesFeature.Msg.Authorize)) }) {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.AccountCircle),
                     contentDescription = "Auth"
@@ -97,7 +97,7 @@ private fun AnimesScreenContent(model: AnimesScreenModel) {
                 .collect { needLoadMore ->
                     withContext(Dispatchers.IO) {
                         if (needLoadMore) {
-                            model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.LoadNext))
+                            model.store.accept(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.LoadNext))
                         }
                     }
                 }
@@ -134,7 +134,7 @@ private fun EmptyStateContent(
     model: AnimesScreenModel
 ) {
     if (paginationState.nextPageLoadingState is PaginationFeature.State.PageLoadingState.Error) {
-        Button(onClick = { model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext)) }) {
+        Button(onClick = { model.store.accept(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext)) }) {
             Text(text = "Error, try again")
         }
     } else {
@@ -152,7 +152,7 @@ private fun ItemError(model: AnimesScreenModel) {
         Box(Modifier.fillMaxWidth()) {
             Button(
                 onClick = {
-                    model.store.dispatch(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext))
+                    model.store.accept(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext))
                 }
             ) {
                 Text(text = "Error, try again")

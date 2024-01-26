@@ -12,6 +12,6 @@ class ShikimoriApi internal constructor(
     fun createScreen(): Screen = AnimesScreen()
 
     fun onIntentResult(intent: Intent) {
-        authFeature.dispatch(AuthFeature.Msg.OAuthResult(intent.data.toString()))
+        authFeature.accept(AuthFeature.Msg.OAuthResult(intent.data.toString()))
     }
 }

@@ -24,6 +24,9 @@ import kotlinx.parcelize.Parcelize
 import logcat.logcat
 import org.koin.core.parameter.parametersOf
 import ru.ikarenkov.kombucha.sample.counter.api.counterFeatureFacade
+import ru.ikarenkov.kombucha.sample.counter.impl.CounterFeature.Eff
+import ru.ikarenkov.kombucha.sample.counter.impl.CounterFeature.Msg
+import ru.ikarenkov.kombucha.sample.counter.impl.CounterFeature.State
 import ru.ikarenkov.kombucha.store.Store
 
 @Parcelize
@@ -42,16 +45,15 @@ internal class CounterScreen(
         val state = tea.state.collectAsState()
         saveableState = state.value
         logcat { "CounterScreen Content, state is ${tea.state}" }
-        CounterContent(counter = state.value.counter, dispatch = tea.store::dispatch)
+        CounterContent(counter = state.value.counter, dispatch = tea.store::accept)
     }
 
 }
 
 internal class CounterScreenModel(
     private var saveableState: State = State(0),
-    counterStoreFactory: CounterCoroutineStoreFactory
 ) : ScreenModel {
-    val store: Store<Msg, State, Eff> = counterStoreFactory.create(saveableState)
+    val store: Store<Msg, State, Eff> = counterFeatureFacade.scope.get<CounterFeature> { parametersOf(saveableState) }
     val state = store.state
 
     override fun onDispose() {

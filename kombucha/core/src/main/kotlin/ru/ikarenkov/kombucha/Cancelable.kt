@@ -1,4 +1,4 @@
-package ru.ikarenkov.kombucha.store_legacy
+package ru.ikarenkov.kombucha
 
 fun interface Cancelable {
 

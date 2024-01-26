@@ -1,6 +1,7 @@
 package ru.ikarenkov.kombucha.store
 
-import ru.ikarenkov.kombucha.eff_handler.FlowEffectHandler
+import ru.ikarenkov.kombucha.eff_handler.EffectHandler
+import ru.ikarenkov.kombucha.reducer.Reducer
 
 /**
  * Creates instances of [Store]s using the provided components.
@@ -16,9 +17,9 @@ interface StoreFactory {
     fun <Msg : Any, State : Any, Eff : Any> create(
         name: String? = null,
         initialState: State,
-        reducer: (State, Msg) -> Pair<State, Set<Eff>>,
+        reducer: Reducer<Msg, State, Eff>,
         initialEffects: Set<Eff> = setOf(),
-        vararg effectHandlers: FlowEffectHandler<Eff, Msg>
+        vararg effectHandlers: EffectHandler<Eff, Msg>
     ): Store<Msg, State, Eff>
 
 }

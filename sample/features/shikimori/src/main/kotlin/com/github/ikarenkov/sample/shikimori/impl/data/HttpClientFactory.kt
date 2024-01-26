@@ -66,7 +66,7 @@ internal class HttpClientFactory {
             }
             refreshTokens {
                 val authStore = shikimoriFeatureFacade.scope.get<AuthFeature>()
-                authStore.dispatch(AuthFeature.Msg.RefreshToken)
+                authStore.accept(AuthFeature.Msg.RefreshToken)
                 val newAuthData = authStore.state
                     // What if error happened? How to catch it here?
                     .first { state ->

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import ru.ikarenkov.kombucha.store.AggregatorStore
+import ru.ikarenkov.kombucha.aggregator.AggregatorStore
 
 internal class AnimesAggregatorFeature(
     private val animesFeature: AnimesFeature,
@@ -47,23 +47,23 @@ internal class AnimesAggregatorFeature(
         scope.launch {
             animesFeature.effects.collect { eff ->
                 when (eff) {
-                    AnimesFeature.Eff.Authorize -> authFeature.dispatch(AuthFeature.Msg.Auth)
+                    AnimesFeature.Eff.Authorize -> authFeature.accept(AuthFeature.Msg.Auth)
                 }
             }
         }
         scope.launch {
             animesFeature.effects.collect { eff ->
                 when (eff) {
-                    AnimesFeature.Eff.Authorize -> authFeature.dispatch(AuthFeature.Msg.Auth)
+                    AnimesFeature.Eff.Authorize -> authFeature.accept(AuthFeature.Msg.Auth)
                 }
             }
         }
     }
 
-    override fun dispatch(msg: Msg) {
+    override fun accept(msg: Msg) {
         when (msg) {
-            is Msg.Animes -> animesFeature.dispatch(msg.msg)
-            is Msg.Pagination -> paginationStore.dispatch(msg.msg)
+            is Msg.Animes -> animesFeature.accept(msg.msg)
+            is Msg.Pagination -> paginationStore.accept(msg.msg)
         }
     }
 

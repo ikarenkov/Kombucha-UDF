@@ -2,11 +2,11 @@ package com.github.ikarenkov.sample.shikimori.impl.pagination
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.ikarenkov.kombucha.eff_handler.FlowEffectHandler
+import ru.ikarenkov.kombucha.eff_handler.EffectHandler
 
 open class PaginationEffectHandler<T>(
     private val dataFetcher: DataFetcher<T>
-) : FlowEffectHandler<PaginationFeature.Eff, PaginationFeature.Msg.Internal> {
+) : EffectHandler<PaginationFeature.Eff, PaginationFeature.Msg.Internal> {
 
     override fun handleEff(eff: PaginationFeature.Eff): Flow<PaginationFeature.Msg.Internal> = flow {
         when (eff) {

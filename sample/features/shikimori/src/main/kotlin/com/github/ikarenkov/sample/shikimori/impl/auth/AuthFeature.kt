@@ -10,7 +10,7 @@ import com.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
-import ru.ikarenkov.kombucha.eff_handler.FlowEffectHandler
+import ru.ikarenkov.kombucha.eff_handler.EffectHandler
 import ru.ikarenkov.kombucha.eff_handler.adaptCast
 import ru.ikarenkov.kombucha.reducer.dslReducer
 import ru.ikarenkov.kombucha.store.Store
@@ -27,7 +27,7 @@ internal class AuthFeature(
 ) {
 
     init {
-        dispatch(Msg.Init)
+        accept(Msg.Init)
     }
 
     sealed interface State {
@@ -153,7 +153,7 @@ internal class AuthFeature(
         private val context: Context,
         private val shikimoriApi: ShikimoriBackendApi,
         private val localStorage: AuthDataLocalStorage
-    ) : FlowEffectHandler<Eff, Msg> {
+    ) : EffectHandler<Eff, Msg> {
 
         override fun handleEff(eff: Eff): Flow<Msg> = when (eff) {
             is Eff.GetAccessToken -> getAccessToken(eff)
