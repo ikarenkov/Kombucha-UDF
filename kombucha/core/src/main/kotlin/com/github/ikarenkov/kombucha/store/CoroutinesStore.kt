@@ -1,5 +1,7 @@
 package com.github.ikarenkov.kombucha.store
 
+import com.github.ikarenkov.kombucha.eff_handler.EffectHandler
+import com.github.ikarenkov.kombucha.reducer.Reducer
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -14,12 +16,17 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import com.github.ikarenkov.kombucha.eff_handler.EffectHandler
-import com.github.ikarenkov.kombucha.reducer.Reducer
 import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Basic coroutines safe implementation of [Store]. State modification is consequential with locking using [Mutex].
+ * @param name - the name that is used in base [EffectHandler] and in [coroutinesScope] as [CoroutineName], to help you in debugging.
+ * @param reducer - the main logic component that describes how new state and side effects are provides. Must be a pure function.
+ * @param effectHandlers - the list of objects that are intended to handle all effects that [reducer] provides.
+ * @param initialState - the initial state that is stored in our store.
+ * @param initialEffects - the set of effect which are going to be send to [effectHandlers] after creation of this objects.
+ * Can be used to initialise some subscriptions or to make some set up actions.
+ * @param coroutineExceptionHandler - the handler to handle all unhandled exceptions from [reducer] and [effectHandlers].
  */
 open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     name: String?,
