@@ -1,0 +1,88 @@
+[versions]
+
+kotlin = "1.9.21"
+kotlinCompilerExtension = "1.5.7"
+kotlinxCoroutines = "1.8.0-RC2"
+minSdk = "21"
+compileSdk = "34"
+androidTools = "31.2.0"
+androidGradlePlugin = "8.2.0"
+junit = "4.13.2"
+androidxComposeBom = "2023.10.01"
+androidxActivityCompose = "1.8.2"
+androidxLifecycle = "2.6.2"
+androidxCore = "1.12.0"
+androidxFragment = "1.5.7"
+androidxAppCompat = "1.6.1"
+androidxJunit = "1.1.5"
+koin = "3.5.3"
+ktor = "2.3.7"
+
+[libraries]
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
+androidx-compose-material = { group = "androidx.compose.material", name = "material" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+
+androidx-compose-constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.0.1" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivityCompose" }
+
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
+
+androidx-browser = { module = "androidx.browser:browser", version = "1.7.0" }
+androidx-datastore = { module = "androidx.datastore:datastore", version = "1.0.0" }
+androidx-datastorePreferences = { module = "androidx.datastore:datastore-preferences", version = "1.0.0" }
+
+modo = { group = "com.github.terrakok", name = "modo-compose", version = "0.8.0-dev1" }
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-kotlinxSerializationJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+
+# Dependencies of the included build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+work-testing = { group = "androidx.work", name = "work-testing", version = "2.9.0" }
+
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+
+essenty-instanceKeeper = { group = "com.arkivanov.essenty", name = "instance-keeper", version = "1.3.0" }
+
+debug-logcat = { group = "com.squareup.logcat", name = "logcat", version = "0.1" }
+
+test-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version = "5.10.1" }
+test-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+test-mockk = { group = "io.mockk", name = "mockk", version = "1.13.9" }
+test-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+
+[plugins]
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+
+detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.4" }
+
+kombucha-buildLogic = { id = "kombucha-build-logic", version = "unspecified" }
+kombucha-jetpackCompose-library = { id = "kombucha-jetpack-compose-library", version = "unspecified" }
+kombucha-jetpackCompose-app = { id = "kombucha-jetpack-compose-app", version = "unspecified" }
+kombucha-jvm-library = { id = "kombucha-jvm-library", version = "unspecified" }
+kombucha-android-library = { id = "kombucha-android-library", version = "unspecified" }
+kombucha-android-app = { id = "kombucha-android-app", version = "unspecified" }
+kombucha-kmp-library = { id = "kombucha-kmp-library", version = "unspecified" }
