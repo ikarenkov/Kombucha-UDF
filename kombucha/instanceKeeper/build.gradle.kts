@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.ikarenkov.kobucha.instanceKeeper"
+    namespace = "io.github.ikarenkov.kobucha.instanceKeeper"
 }
 
 dependencies {

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.ikarenkov.sample.shikomori"
+    namespace = "io.github.ikarenkov.sample.shikomori"
 }
 
 tasks.withType<Test>() {

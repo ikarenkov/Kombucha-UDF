@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.ikarenkov.sample.counter"
+    namespace = "io.github.ikarenkov.sample.counter"
 }
 
 dependencies {

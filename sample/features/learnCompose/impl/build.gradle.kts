@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.ikarenkov.sample.learn_compose"
+    namespace = "io.github.ikarenkov.sample.learn_compose"
 }
 
 dependencies {

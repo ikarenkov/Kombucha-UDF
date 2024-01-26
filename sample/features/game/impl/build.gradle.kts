@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.ikarenkov.sample.game"
+    namespace = "io.github.ikarenkov.sample.game"
 }
 
 dependencies {

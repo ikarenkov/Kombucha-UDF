@@ -5,10 +5,10 @@ plugins {
 }
 
 android {
-    namespace = "com.github.ikarenkov.kombucha.sample"
+    namespace = "io.github.ikarenkov.kombucha.sample"
 
     defaultConfig {
-        applicationId = "com.github.ikarenkov.kombucha.sample"
+        applicationId = "io.github.ikarenkov.kombucha.sample"
         targetSdk = libs.versions.compileSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"

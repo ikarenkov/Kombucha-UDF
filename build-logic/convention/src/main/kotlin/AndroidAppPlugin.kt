@@ -1,6 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
-import com.github.ikarenkov.kombucha.configureKotlinAndroid
-import com.github.ikarenkov.kombucha.withVersionCatalog
+import io.github.ikarenkov.kombucha.configureKotlinAndroid
+import io.github.ikarenkov.kombucha.withVersionCatalog
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType

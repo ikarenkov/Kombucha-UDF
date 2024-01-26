@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.ikarenkov.kobucha.compose"
+    namespace = "io.github.ikarenkov.kobucha.compose"
 }
 
 dependencies {

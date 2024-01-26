@@ -1,5 +1,5 @@
-import com.github.ikarenkov.kombucha.configureKotlinJvm
-import com.github.ikarenkov.kombucha.withVersionCatalog
+import io.github.ikarenkov.kombucha.configureKotlinJvm
+import io.github.ikarenkov.kombucha.withVersionCatalog
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
