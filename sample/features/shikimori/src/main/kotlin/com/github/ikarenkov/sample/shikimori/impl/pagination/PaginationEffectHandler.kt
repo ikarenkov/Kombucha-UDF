@@ -2,7 +2,7 @@ package com.github.ikarenkov.sample.shikimori.impl.pagination
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.ikarenkov.kombucha.eff_handler.EffectHandler
+import com.github.ikarenkov.kombucha.eff_handler.EffectHandler
 
 open class PaginationEffectHandler<T>(
     private val dataFetcher: DataFetcher<T>

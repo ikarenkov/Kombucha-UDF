@@ -4,11 +4,11 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
-import ru.ikarenkov.kombucha.eff_handler.EffectHandler
-import ru.ikarenkov.kombucha.reducer.Reducer
-import ru.ikarenkov.kombucha.store.CoroutinesStore
-import ru.ikarenkov.kombucha.store.Store
-import ru.ikarenkov.kombucha.store.StoreFactory
+import com.github.ikarenkov.kombucha.eff_handler.EffectHandler
+import com.github.ikarenkov.kombucha.reducer.Reducer
+import com.github.ikarenkov.kombucha.store.CoroutinesStore
+import com.github.ikarenkov.kombucha.store.Store
+import com.github.ikarenkov.kombucha.store.StoreFactory
 
 class KombuchaStoreFactory : StoreFactory {
     override fun <Msg : Any, State : Any, Eff : Any> create(

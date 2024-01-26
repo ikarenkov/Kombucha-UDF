@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/build-logic" name="build-logic">
+                <projects>
+                  <project path="$PROJECT_DIR$/build-logic" />
+                  <project path="$PROJECT_DIR$/build-logic/convention" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/build-logic" />
+            <option value="$PROJECT_DIR$/build-logic/convention" />
+            <option value="$PROJECT_DIR$/kombucha" />
+            <option value="$PROJECT_DIR$/kombucha/compose" />
+            <option value="$PROJECT_DIR$/kombucha/core" />
+            <option value="$PROJECT_DIR$/kombucha/instanceKeeper" />
+            <option value="$PROJECT_DIR$/kombucha/test" />
+            <option value="$PROJECT_DIR$/modo-compose" />
+            <option value="$PROJECT_DIR$/sample" />
+            <option value="$PROJECT_DIR$/sample/app" />
+            <option value="$PROJECT_DIR$/sample/core" />
+            <option value="$PROJECT_DIR$/sample/core/feature" />
+            <option value="$PROJECT_DIR$/sample/features" />
+            <option value="$PROJECT_DIR$/sample/features/counter" />
+            <option value="$PROJECT_DIR$/sample/features/counter/impl" />
+            <option value="$PROJECT_DIR$/sample/features/game" />
+            <option value="$PROJECT_DIR$/sample/features/game/impl" />
+            <option value="$PROJECT_DIR$/sample/features/learnCompose" />
+            <option value="$PROJECT_DIR$/sample/features/learnCompose/impl" />
+            <option value="$PROJECT_DIR$/sample/features/shikimori" />
+          </set>
+        </option>
+        <option name="resolveExternalAnnotations" value="false" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

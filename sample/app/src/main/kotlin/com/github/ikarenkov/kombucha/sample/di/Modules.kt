@@ -7,8 +7,8 @@ import com.github.ikarenkov.kombucha.sample.deps.ShikimoryDepsImpl
 import com.github.ikarenkov.kombucha.sample.kombucha.KombuchaStoreFactory
 import com.github.ikarenkov.sample.shikimori.api.ShikimoriDeps
 import org.koin.dsl.module
-import ru.ikarenkov.kombucha.sample.counter.api.CounterDeps
-import ru.ikarenkov.kombucha.store.StoreFactory
+import com.github.ikarenkov.kombucha.sample.counter.api.CounterDeps
+import com.github.ikarenkov.kombucha.store.StoreFactory
 
 fun appModule(context: Context) = module {
     single<Context> { context }

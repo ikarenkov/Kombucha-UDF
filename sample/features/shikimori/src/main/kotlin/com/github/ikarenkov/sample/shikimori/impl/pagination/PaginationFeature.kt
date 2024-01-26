@@ -1,10 +1,10 @@
 package com.github.ikarenkov.sample.shikimori.impl.pagination
 
-import ru.ikarenkov.kombucha.eff_handler.adaptCast
-import ru.ikarenkov.kombucha.reducer.Reducer
-import ru.ikarenkov.kombucha.reducer.dslReducer
-import ru.ikarenkov.kombucha.store.Store
-import ru.ikarenkov.kombucha.store.StoreFactory
+import com.github.ikarenkov.kombucha.eff_handler.adaptCast
+import com.github.ikarenkov.kombucha.reducer.Reducer
+import com.github.ikarenkov.kombucha.reducer.dslReducer
+import com.github.ikarenkov.kombucha.store.Store
+import com.github.ikarenkov.kombucha.store.StoreFactory
 
 class PaginationFeature<T>(
     name: String,

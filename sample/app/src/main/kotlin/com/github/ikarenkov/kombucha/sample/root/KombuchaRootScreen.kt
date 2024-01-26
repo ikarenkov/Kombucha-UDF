@@ -11,6 +11,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.github.ikarenkov.kombucha.game.api.gameFeatureFacade
+import com.github.ikarenkov.kombucha.learn_compose.api.learnComposeFeatureFacade
+import com.github.ikarenkov.kombucha.sample.counter.api.counterFeatureFacade
 import com.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
 import com.github.terrakok.modo.LocalContainerScreen
 import com.github.terrakok.modo.Screen
@@ -19,9 +22,6 @@ import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.stack.StackScreen
 import com.github.terrakok.modo.stack.forward
 import kotlinx.parcelize.Parcelize
-import ru.ikarenkov.kombucha.game.api.gameFeatureFacade
-import ru.ikarenkov.kombucha.learn_compose.api.learnComposeFeatureFacade
-import ru.ikarenkov.kombucha.sample.counter.api.counterFeatureFacade
 
 @Parcelize
 internal class KombuchaRootScreen(

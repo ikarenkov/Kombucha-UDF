@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="1.8">
+      <module name="build-logic.convention" target="17" />
+      <module name="build-logic.convention.main" target="17" />
+      <module name="build-logic.convention.test" target="17" />
+      <module name="Kombucha.kombucha.compose" target="17" />
+      <module name="Kombucha.kombucha.instanceKeeper" target="17" />
+      <module name="Kombucha.sample.app" target="17" />
+      <module name="Kombucha.sample.features.counter.impl" target="17" />
+      <module name="Kombucha.sample.features.game.impl" target="17" />
+      <module name="Kombucha.sample.features.learnCompose.impl" target="17" />
+      <module name="Kombucha.sample.features.shikimori" target="17" />
+      <module name="Kombucha.teamaker.compose" target="17" />
+      <module name="Kombucha.teamaker.instanceKeeper" target="17" />
+      <module name="KombuchaRoot.kombucha.compose" target="17" />
+      <module name="KombuchaRoot.kombucha.instanceKeeper" target="17" />
+      <module name="KombuchaRoot.sample.app" target="17" />
+      <module name="KombuchaRoot.sample.features.counter.impl" target="17" />
+      <module name="KombuchaRoot.sample.features.game.impl" target="17" />
+      <module name="KombuchaRoot.sample.features.learnCompose.impl" target="17" />
+      <module name="KombuchaRoot.sample.features.shikimori" target="17" />
+      <module name="KombuchaUdf.kombucha.compose" target="17" />
+      <module name="KombuchaUdf.kombucha.instanceKeeper" target="17" />
+      <module name="KombuchaUdf.sample.app" target="17" />
+      <module name="KombuchaUdf.sample.features.counter.impl" target="17" />
+      <module name="KombuchaUdf.sample.features.game.impl" target="17" />
+      <module name="KombuchaUdf.sample.features.learnCompose.impl" target="17" />
+      <module name="KombuchaUdf.sample.features.shikimori" target="17" />
+      <module name="TeaMaker.sample.core.modo.modo.commonMain" target="1.8" />
+      <module name="TeaMaker.sample.core.modo.modo.commonTest" target="1.8" />
+      <module name="TeaMaker.sample.core.modo.modo.jvmMain" target="1.8" />
+      <module name="TeaMaker.sample.core.modo.modo.jvmTest" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

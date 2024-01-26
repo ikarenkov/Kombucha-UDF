@@ -1,5 +1,6 @@
 package com.github.ikarenkov.sample.shikimori.impl.animes
 
+import com.github.ikarenkov.kombucha.aggregator.AggregatorStore
 import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
 import com.github.ikarenkov.sample.shikimori.impl.storeCoroutineExceptionHandler
@@ -10,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import ru.ikarenkov.kombucha.aggregator.AggregatorStore
 
 internal class AnimesAggregatorFeature(
     private val animesFeature: AnimesFeature,

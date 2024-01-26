@@ -3,9 +3,9 @@ package com.github.ikarenkov.sample.shikimori.impl.animes
 import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Eff
 import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Msg
 import com.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.State
-import ru.ikarenkov.kombucha.reducer.dslReducer
-import ru.ikarenkov.kombucha.store.Store
-import ru.ikarenkov.kombucha.store.StoreFactory
+import com.github.ikarenkov.kombucha.reducer.dslReducer
+import com.github.ikarenkov.kombucha.store.Store
+import com.github.ikarenkov.kombucha.store.StoreFactory
 
 internal class AnimesFeature(
     val storeFactory: StoreFactory

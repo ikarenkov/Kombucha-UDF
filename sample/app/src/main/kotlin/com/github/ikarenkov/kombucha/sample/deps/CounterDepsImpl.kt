@@ -2,8 +2,8 @@ package com.github.ikarenkov.kombucha.sample.deps
 
 import com.github.ikarenkov.kombucha.sample.NavigationHolder
 import com.github.terrakok.modo.stack.Forward
-import ru.ikarenkov.kombucha.sample.counter.api.CounterDeps
-import ru.ikarenkov.kombucha.sample.counter.api.counterFeatureFacade
+import com.github.ikarenkov.kombucha.sample.counter.api.CounterDeps
+import com.github.ikarenkov.kombucha.sample.counter.api.counterFeatureFacade
 
 internal class CounterDepsImpl(
     val navigationHolder: NavigationHolder
