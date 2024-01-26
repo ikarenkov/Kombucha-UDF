@@ -5,10 +5,11 @@ import com.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import com.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
 import com.github.ikarenkov.sample.shikimori.impl.storeCoroutineExceptionHandler
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -21,36 +22,20 @@ internal class AnimesAggregatorFeature(
     coroutineExceptionHandler = storeCoroutineExceptionHandler("AnimesAggregator")
 ) {
 
-    override val state: StateFlow<State>
-        get() =
-            combine(paginationStore.state, animesFeature.state, ::State)
-                .stateIn(
-                    scope = scope,
-                    started = SharingStarted.Eagerly,
-                    initialValue = State(paginationStore.state.value, animesFeature.state.value)
-                )
+    override val state: StateFlow<State> =
+        combine(paginationStore.state, animesFeature.state, ::State)
+            .stateIn(
+                scope = scope,
+                started = SharingStarted.Lazily,
+                initialValue = State(paginationStore.state.value, animesFeature.state.value)
+            )
 
-    private val _effects: MutableSharedFlow<Eff> = MutableSharedFlow()
-    override val effects: Flow<Eff> = _effects
+    override val effects: Flow<Eff> = merge(
+        animesFeature.effects.map { Eff.Animes(it) },
+        paginationStore.effects.map { Eff.Pagination(it) }
+    )
 
     init {
-        scope.launch {
-            animesFeature.effects.collect {
-                _effects.emit(Eff.Animes(it))
-            }
-        }
-        scope.launch {
-            paginationStore.effects.collect {
-                _effects.emit(Eff.Pagination(it))
-            }
-        }
-        scope.launch {
-            animesFeature.effects.collect { eff ->
-                when (eff) {
-                    AnimesFeature.Eff.Authorize -> authFeature.accept(AuthFeature.Msg.Auth)
-                }
-            }
-        }
         scope.launch {
             animesFeature.effects.collect { eff ->
                 when (eff) {
