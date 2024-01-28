@@ -3,6 +3,7 @@ import io.github.ikarenkov.kombucha.withVersionCatalog
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.assign
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -13,6 +14,9 @@ class KotlinMultiplatformLibraryPlugin : Plugin<Project> {
         with(target) {
             withVersionCatalog { libs ->
                 pluginManager.apply(libs.plugins.kotlin.multiplatform.get().pluginId)
+            }
+            configure<KotlinMultiplatformExtension> {
+                configureKmpLibrary("kombucha-$name")
             }
             configureKotlinJvm()
         }
@@ -43,11 +47,10 @@ fun KotlinMultiplatformExtension.iosLibrary(libraryName: String) {
     }
 }
 
-fun KotlinMultiplatformExtension.configureKmpLibrary(libraryName: String) {
+internal fun KotlinMultiplatformExtension.configureKmpLibrary(libraryName: String) {
     jvm()
     jsLibrary(libraryName)
     iosLibrary(libraryName)
-
 
     //https://kotlinlang.org/docs/native-objc-interop.html#export-of-kdoc-comments-to-generated-objective-c-headers
     targets.withType<KotlinNativeTarget> {

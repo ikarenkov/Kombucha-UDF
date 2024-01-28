@@ -3,4 +3,5 @@ include(
     ":kombucha:instanceKeeper",
     ":kombucha:compose",
     ":kombucha:test",
+    ":kombucha:ui-adapter",
 )

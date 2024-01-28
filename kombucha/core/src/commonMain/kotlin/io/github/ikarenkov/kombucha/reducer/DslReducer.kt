@@ -33,6 +33,6 @@ inline fun <Msg : Any, reified UiMsg : Msg, reified InternalMsg : Msg, State : A
     when (msg) {
         is UiMsg -> ResultBuilder<State, Eff>(state).apply { uiReducer(msg) }
         is InternalMsg -> ResultBuilder<State, Eff>(state).apply { internalReducer(msg) }
-        else -> error("Msg ${msg.javaClass} is neither UI nor Internal")
+        else -> error("Msg ${msg::class} is neither UI nor Internal")
     }.build()
 }

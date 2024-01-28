@@ -35,7 +35,7 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     initialState: Model,
     initialEffects: Set<Eff> = setOf(),
     coroutineExceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        System.err.println("Unhandled error in Coroutine store named \"$name\".")
+        println("Unhandled error in Coroutine store named \"$name\".")
         throwable.printStackTrace()
     }
 ) : Store<Msg, Model, Eff> {
@@ -49,7 +49,7 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     private val isCanceled: Boolean
         get() = !coroutinesScope.isActive
 
-    protected open val coroutinesScope = CoroutineScope(
+    open val coroutinesScope = CoroutineScope(
         SupervisorJob() +
                 coroutineExceptionHandler +
                 (name?.let { CoroutineName(name) } ?: EmptyCoroutineContext)
