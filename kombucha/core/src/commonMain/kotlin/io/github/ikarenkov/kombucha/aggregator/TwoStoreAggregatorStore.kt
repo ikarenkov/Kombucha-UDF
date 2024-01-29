@@ -23,7 +23,7 @@ class TwoStoreAggregatorStore<
 
     override val state: StateFlow<Pair<State1, State2>> =
         combine(store1.state, store2.state, ::Pair).stateIn(
-            scope,
+            coroutineScope,
             started = SharingStarted.Lazily,
             store1.state.value to store2.state.value
         )
@@ -45,7 +45,6 @@ class TwoStoreAggregatorStore<
         store1.cancel()
         store2.cancel()
     }
-
 
 }
 

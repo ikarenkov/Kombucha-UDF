@@ -1,6 +1,8 @@
 package io.github.ikarenkov.sample.shikimori.impl.animes
 
 import io.github.ikarenkov.kombucha.aggregator.AggregatorStore
+import io.github.ikarenkov.kombucha.aggregator.bindEffToMsg
+import io.github.ikarenkov.kombucha.aggregator.bindStateToMsg
 import io.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
 import io.github.ikarenkov.sample.shikimori.impl.storeCoroutineExceptionHandler
@@ -11,7 +13,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 internal class AnimesAggregatorFeature(
     private val animesFeature: AnimesFeature,
@@ -25,7 +26,7 @@ internal class AnimesAggregatorFeature(
     override val state: StateFlow<State> =
         combine(paginationStore.state, animesFeature.state, AnimesAggregatorFeature::State)
             .stateIn(
-                scope = scope,
+                scope = coroutineScope,
                 started = SharingStarted.Lazily,
                 initialValue = State(paginationStore.state.value, animesFeature.state.value)
             )
@@ -36,22 +37,16 @@ internal class AnimesAggregatorFeature(
     )
 
     init {
-        scope.launch {
-            animesFeature.effects.collect { eff ->
-                when (eff) {
-                    AnimesFeature.Eff.Authorize -> authFeature.accept(AuthFeature.Msg.Auth)
-                }
+        bindEffToMsg(coroutineScope, animesFeature, authFeature) { eff ->
+            when (eff) {
+                AnimesFeature.Eff.Authorize -> AuthFeature.Msg.Auth
             }
         }
-        scope.launch {
-            authFeature.state.collect { state ->
-                animesFeature.accept(
-                    when (state) {
-                        is AuthFeature.State.Authorized -> AnimesFeature.Msg.AuthorizationResult.Authorized
-                        is AuthFeature.State.Init, is AuthFeature.State.NotAuthorized.OAuthInProgress -> AnimesFeature.Msg.AuthorizationResult.Loading
-                        AuthFeature.State.NotAuthorized.Idle -> AnimesFeature.Msg.AuthorizationResult.NotAuthorized
-                    }
-                )
+        bindStateToMsg(coroutineScope, authFeature, animesFeature) { state ->
+            when (state) {
+                is AuthFeature.State.Authorized -> AnimesFeature.Msg.AuthorizationResult.Authorized
+                is AuthFeature.State.Init, is AuthFeature.State.NotAuthorized.OAuthInProgress -> AnimesFeature.Msg.AuthorizationResult.Loading
+                AuthFeature.State.NotAuthorized.Idle -> AnimesFeature.Msg.AuthorizationResult.NotAuthorized
             }
         }
     }
