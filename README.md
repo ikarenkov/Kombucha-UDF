@@ -3,9 +3,9 @@
 Kombucha UDF is a UDF library based on The Elm Architecture (TEA) concepts that helps to focus on logic of you application, rather then understanding
 what is going on.
 
-## Core concept
+# Core concept
 
-### Store
+## Store
 
 Store maintains the application's state and orchestrates the interactions between components.
 Basicly, Store is a base UDF components to interact, that holds state and can accept some messages to handle. It has one input and two outputs:
@@ -19,7 +19,7 @@ Lets take a look to Store main components:
 * Reducer - *pure function*, generates a new state and produces effects that require handling. 
 * EffectHandler - receives effects from the reducer and has the ability to send messages back to trigger the reducer. Our way to comunicate with the outer world, including any operations that are not pure. F.e. requesting data from db or api or saving data, requesting random and e.t.c.
 
-### Models
+## Models
 
 There are 3 main model: Msg, State, Eff.
 Msg - describes intention to do something. It can be user click, result from your back end or anything else.
