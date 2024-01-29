@@ -1,11 +1,11 @@
 package io.github.ikarenkov.sample.shikimori.impl.animes
 
-import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Eff
-import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Msg
-import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.State
 import io.github.ikarenkov.kombucha.reducer.dslReducer
 import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Eff
+import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Msg
+import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.State
 
 internal class AnimesFeature(
     val storeFactory: StoreFactory
@@ -16,10 +16,11 @@ internal class AnimesFeature(
 ) {
 
     sealed interface Msg {
-        data object Authorize : Msg
+        data object OnAuthClick : Msg
         sealed interface AuthorizationResult : Msg {
-            data class Error(val throwable: Throwable) : AuthorizationResult
-            data object Success : AuthorizationResult
+            data object Authorized : AuthorizationResult
+            data object NotAuthorized : AuthorizationResult
+            data object Loading : AuthorizationResult
         }
     }
 
@@ -37,13 +38,17 @@ internal class AnimesFeature(
 
 internal val reducer = dslReducer<Msg, State, Eff> { msg ->
     when (msg) {
-        is Msg.AuthorizationResult.Error -> state { State.NotAuthorized }
-        Msg.AuthorizationResult.Success -> state { State.Authorized }
-        Msg.Authorize -> {
-            if (state is State.NotAuthorized) {
-                state { State.AuthInProgress }
-                eff(Eff.Authorize)
+        Msg.OnAuthClick -> {
+            when (state) {
+                is State.NotAuthorized -> eff(Eff.Authorize)
+                State.AuthInProgress -> {}
+                State.Authorized -> {
+                    // todo: logout
+                }
             }
         }
+        Msg.AuthorizationResult.Authorized -> state { State.Authorized }
+        Msg.AuthorizationResult.Loading -> state { State.AuthInProgress }
+        Msg.AuthorizationResult.NotAuthorized -> state { State.NotAuthorized }
     }
 }

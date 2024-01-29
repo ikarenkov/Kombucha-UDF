@@ -14,3 +14,5 @@ typealias ReducerResult<State, Eff> = Pair<State, Set<Eff>>
 infix fun <T, E> T.toEff(eff: E) = this to setOf(eff)
 
 infix fun <T, E> T.toEff(eff: Set<E>) = this to eff
+
+fun <T, E> T.withoutEff() = this to emptySet<E>()

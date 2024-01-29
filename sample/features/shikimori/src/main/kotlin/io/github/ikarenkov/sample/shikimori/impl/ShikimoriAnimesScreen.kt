@@ -19,6 +19,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,16 +32,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
-import io.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
-import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesAggregatorFeature
-import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature
-import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeatureAgregatorFactory
-import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
 import com.github.terrakok.modo.Screen
 import com.github.terrakok.modo.ScreenKey
 import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.model.ScreenModel
 import com.github.terrakok.modo.model.rememberScreenModel
+import io.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
+import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesAggregatorFeature
+import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature
+import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeatureAgregatorFactory
+import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -75,17 +76,31 @@ internal class AnimesScreenModel(
 
 @Composable
 private fun AnimesScreenContent(model: AnimesScreenModel) {
+    val state by model.store.state.collectAsState()
+    val animesState by remember { derivedStateOf { state.animesState } }
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { model.store.accept(AnimesAggregatorFeature.Msg.Animes(AnimesFeature.Msg.Authorize)) }) {
-                Icon(
-                    painter = rememberVectorPainter(image = Icons.Outlined.AccountCircle),
-                    contentDescription = "Auth"
-                )
+            FloatingActionButton(onClick = { model.store.accept(AnimesAggregatorFeature.Msg.Animes(AnimesFeature.Msg.OnAuthClick)) }) {
+                when (animesState) {
+                    is AnimesFeature.State.AuthInProgress -> {
+                        CircularProgressIndicator()
+                    }
+                    AnimesFeature.State.Authorized -> {
+                        Icon(
+                            painter = rememberVectorPainter(image = Icons.Filled.AccountCircle),
+                            contentDescription = "Auth"
+                        )
+                    }
+                    AnimesFeature.State.NotAuthorized -> {
+                        Icon(
+                            painter = rememberVectorPainter(image = Icons.Outlined.AccountCircle),
+                            contentDescription = "Auth"
+                        )
+                    }
+                }
             }
         }
     ) { paddingValues ->
-        val state by model.store.state.collectAsState()
         val paginationState by remember { derivedStateOf { state.paginationState } }
         val lazyListState = rememberLazyListState()
         LaunchedEffect(key1 = Unit) {

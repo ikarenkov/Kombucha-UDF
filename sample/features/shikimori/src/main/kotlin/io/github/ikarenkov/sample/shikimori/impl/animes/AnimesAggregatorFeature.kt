@@ -43,6 +43,17 @@ internal class AnimesAggregatorFeature(
                 }
             }
         }
+        scope.launch {
+            authFeature.state.collect { state ->
+                animesFeature.accept(
+                    when (state) {
+                        is AuthFeature.State.Authorized -> AnimesFeature.Msg.AuthorizationResult.Authorized
+                        is AuthFeature.State.Init, is AuthFeature.State.NotAuthorized.OAuthInProgress -> AnimesFeature.Msg.AuthorizationResult.Loading
+                        AuthFeature.State.NotAuthorized.Idle -> AnimesFeature.Msg.AuthorizationResult.NotAuthorized
+                    }
+                )
+            }
+        }
     }
 
     override fun accept(msg: Msg) {
