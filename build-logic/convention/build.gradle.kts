@@ -56,5 +56,9 @@ gradlePlugin {
             id = "kombucha-kmp-library"
             implementationClass = "KotlinMultiplatformLibraryPlugin"
         }
+        register("kombucha-publishing") {
+            id = "kombucha-publishing"
+            implementationClass = "PublishingPlugin"
+        }
     }
 }

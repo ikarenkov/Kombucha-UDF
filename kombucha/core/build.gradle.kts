@@ -1,10 +1,9 @@
 plugins {
     alias(libs.plugins.kombucha.kmp.library)
+    alias(libs.plugins.kombucha.publishing)
 }
 
 kotlin {
-    configureKmpLibrary("kombucha-udf-core")
-
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)

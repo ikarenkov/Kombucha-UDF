@@ -1,5 +1,7 @@
 [versions]
 
+kombucha = "0.1"
+
 kotlin = "1.9.21"
 kotlinCompilerExtension = "1.5.7"
 kotlinxCoroutines = "1.8.0-RC2"
@@ -51,14 +53,16 @@ ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
 work-testing = { group = "androidx.work", name = "work-testing", version = "2.9.0" }
 
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-core-jvm = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core-jvm", version.ref = "kotlinxCoroutines" }
 
 essenty-instanceKeeper = { group = "com.arkivanov.essenty", name = "instance-keeper", version = "1.3.0" }
 
@@ -86,3 +90,4 @@ kombucha-jvm-library = { id = "kombucha-jvm-library", version = "unspecified" }
 kombucha-android-library = { id = "kombucha-android-library", version = "unspecified" }
 kombucha-android-app = { id = "kombucha-android-app", version = "unspecified" }
 kombucha-kmp-library = { id = "kombucha-kmp-library", version = "unspecified" }
+kombucha-publishing = { id = "kombucha-publishing", version = "unspecified" }
