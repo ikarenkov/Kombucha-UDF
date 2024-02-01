@@ -1,5 +1,7 @@
 # Kombucha UDF
 
+[![Maven Central Version](https://img.shields.io/maven-central/v/io.github.ikarenkov/kombucha-core?style=flat&label=kombucha-core&link=https%3A%2F%2Fcentral.sonatype.com%2Fartifact%2Fio.github.ikarenkov%2Fkombucha-core)](https://central.sonatype.com/artifact/io.github.ikarenkov/kombucha-core)
+
 Kombucha UDF is a UDF library based on The Elm Architecture (TEA) concepts that helps to focus on logic of you application, rather then understanding
 what is going on.
 
