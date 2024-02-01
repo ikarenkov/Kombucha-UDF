@@ -4,6 +4,7 @@ import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPom
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.configure
@@ -12,6 +13,7 @@ import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 import java.util.Properties
 
@@ -22,7 +24,23 @@ internal fun Project.setupPublishing() {
         archiveClassifier.set("javadoc")
     }
 
+    val isSigningEnabled = getExtraString("signing.keyId") != null
+
+    if (isSigningEnabled) {
+        // Workaround for https://github.com/gradle/gradle/issues/26091 and https://youtrack.jetbrains.com/issue/KT-46466
+        val signingTasks = tasks.withType<Sign>()
+        tasks.withType<AbstractPublishToMaven>().configureEach {
+            dependsOn(signingTasks)
+        }
+    }
+
     configure<PublishingExtension> {
+        if (isSigningEnabled) {
+            configure<SigningExtension> {
+                // Signing artifacts. Signing.* extra properties values will be used
+                sign(publications)
+            }
+        }
         // Configure maven central repository
         repositories {
             maven("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
@@ -47,8 +65,8 @@ internal fun Project.setupPublishing() {
             pom {
                 name = "Kombucha UDF"
                 description =
-                    "UDF library for state hosting based on ELM principles. " +
-                            "It helps distinguish pure functions from the othe ones and keep logic inside pure function."
+                    "UDF library based on The Elm Architecture (TEA) concepts that helps to focus on logic of you application, " +
+                            "rather then understanding what is going on."
                 url = "https://github.com/ikarenkov/kombucha-udf"
 
                 setupLicense()
@@ -61,15 +79,6 @@ internal fun Project.setupPublishing() {
     }
 
     val publications = extensions.findByType<PublishingExtension>()?.publications
-
-    configure<SigningExtension> {
-        if (getExtraString("signing.keyId") != null) {
-            // Signing artifacts. Signing.* extra properties values will be used
-            publications?.let {
-                sign(it)
-            }
-        }
-    }
 
     afterEvaluate {
         publications?.withType<MavenPublication> {
