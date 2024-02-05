@@ -1,10 +1,23 @@
 plugins {
-    alias(libs.plugins.kombucha.android.library)
+    alias(libs.plugins.kombucha.kmp.library)
 }
 
-android.namespace = "io.github.ikarenkov.kombucha.ui_adapter"
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
 
-dependencies {
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(projects.kombucha.core)
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(projects.kombucha.core)
+        }
+        commonTest.dependencies {
+            implementation(libs.test.kotlin)
+            implementation(libs.test.coroutines)
+        }
+        jvmTest.dependencies {
+            implementation(libs.test.junit.jupiter)
+        }
+    }
 }

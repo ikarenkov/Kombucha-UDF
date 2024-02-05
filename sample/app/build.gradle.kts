@@ -37,4 +37,5 @@ dependencies {
     implementation(projects.sample.features.game.impl)
     implementation(projects.sample.features.learnCompose.impl)
     implementation(projects.sample.features.shikimori)
+    implementation(projects.sample.features.ui)
 }

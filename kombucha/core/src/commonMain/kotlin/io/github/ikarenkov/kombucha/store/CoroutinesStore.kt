@@ -1,11 +1,10 @@
 package io.github.ikarenkov.kombucha.store
 
+import io.github.ikarenkov.kombucha.DefaultStoreCoroutineExceptionHandler
 import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.reducer.Reducer
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,7 +15,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Basic coroutines safe implementation of [Store]. State modification is consequential with locking using [Mutex].
@@ -34,10 +32,7 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     private val effectHandlers: List<EffectHandler<Eff, Msg>> = listOf(),
     initialState: Model,
     initialEffects: Set<Eff> = setOf(),
-    coroutineExceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        println("Unhandled error in Coroutine store named \"$name\".")
-        throwable.printStackTrace()
-    }
+    coroutineExceptionHandler: CoroutineExceptionHandler = DefaultStoreCoroutineExceptionHandler()
 ) : Store<Msg, Model, Eff> {
 
     private val mutableState = MutableStateFlow(initialState)
@@ -49,11 +44,7 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     private val isCanceled: Boolean
         get() = !coroutinesScope.isActive
 
-    open val coroutinesScope = CoroutineScope(
-        SupervisorJob() +
-                coroutineExceptionHandler +
-                (name?.let { CoroutineName(name) } ?: EmptyCoroutineContext)
-    )
+    open val coroutinesScope = StoreScope(name, coroutineExceptionHandler)
 
     private val stateUpdateMutex = Mutex()
 
