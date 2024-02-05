@@ -3,4 +3,5 @@ include(
     "sample:features:learnCompose:impl",
     "sample:features:game:impl",
     "sample:features:shikimori",
+    "sample:features:ui",
 )

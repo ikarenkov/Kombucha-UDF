@@ -8,7 +8,9 @@ import io.github.ikarenkov.kombucha.sample.kombucha.KombuchaStoreFactory
 import io.github.ikarenkov.sample.shikimori.api.ShikimoriDeps
 import org.koin.dsl.module
 import io.github.ikarenkov.kombucha.sample.counter.api.CounterDeps
+import io.github.ikarenkov.kombucha.sample.deps.UiSampleDepsImpl
 import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.sample.ui.api.UiSampleDeps
 
 fun appModule(context: Context) = module {
     single<Context> { context }
@@ -18,4 +20,6 @@ fun appModule(context: Context) = module {
     single<CounterDeps> { CounterDepsImpl(get()) }
     single<ShikimoryDepsImpl> { ShikimoryDepsImpl() }
     single<ShikimoriDeps> { get<ShikimoryDepsImpl>() }
+    single<UiSampleDepsImpl> { UiSampleDepsImpl(get()) }
+    single<UiSampleDeps> { get<UiSampleDepsImpl>() }
 }

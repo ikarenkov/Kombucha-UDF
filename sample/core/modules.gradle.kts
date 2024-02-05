@@ -1,3 +1,4 @@
 include(
-    ":sample:core:feature-library",
+    ":sample:core:feature",
+    ":sample:core:modo-kombucha",
 )
