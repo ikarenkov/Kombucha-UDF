@@ -64,6 +64,21 @@ open class ResultBuilder<State : Any, Eff : Any>(
         }
     }
 
+    fun eff(eff1: Eff) {
+        effectsList += eff1
+    }
+
+    fun eff(eff1: Eff, eff2: Eff) {
+        effectsList += eff1
+        effectsList += eff2
+    }
+
+    fun eff(eff1: Eff, eff2: Eff, eff3: Eff) {
+        effectsList += eff1
+        effectsList += eff2
+        effectsList += eff3
+    }
+
     @PublishedApi
     internal fun build(): ReducerResult<State, Eff> = currentState to effectsList.toSet()
 
