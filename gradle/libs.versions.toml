@@ -1,6 +1,6 @@
 [versions]
 
-kombucha = "0.1.1"
+kombucha = "0.1.2"
 
 kotlin = "1.9.21"
 kotlinCompilerExtension = "1.5.7"

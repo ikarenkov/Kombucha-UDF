@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kombucha.kmp.library)
+    alias(libs.plugins.kombucha.publishing)
 }
 
 tasks.withType<Test> {
