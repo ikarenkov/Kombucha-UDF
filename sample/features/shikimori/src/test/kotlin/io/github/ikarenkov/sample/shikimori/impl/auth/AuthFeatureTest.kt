@@ -3,7 +3,6 @@ package io.github.ikarenkov.sample.shikimori.impl.auth
 import io.github.ikarenkov.kombucha.test.ReducerTestData
 import io.github.ikarenkov.kombucha.test.testReducer
 import io.github.ikarenkov.kombucha.test.testStoreReducer
-import io.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import io.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature.Eff
 import io.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature.Msg
 import io.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature.State
@@ -15,7 +14,7 @@ class AuthFeatureTest {
     @Test
     fun testAuthStoreReducer() {
         testStoreReducer(
-            createStore = { AuthFeature(it, mockk()) }
+            createStore = { AuthStore(it, mockk()) }
         ) {
             Msg.LoadCacheAuthResult(null) returns State.NotAuthorized.Idle
         }

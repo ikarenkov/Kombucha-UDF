@@ -4,32 +4,33 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
+import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
+import io.github.ikarenkov.kombucha.eff_handler.adaptCast
+import io.github.ikarenkov.kombucha.reducer.dslReducer
+import io.github.ikarenkov.kombucha.store.Store
+import io.github.ikarenkov.kombucha.store.StoreFactory
 import io.github.ikarenkov.sample.shikimori.impl.auth.data.AccessTokenResponse
 import io.github.ikarenkov.sample.shikimori.impl.data.AuthDataLocalStorage
 import io.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
-import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
-import io.github.ikarenkov.kombucha.eff_handler.adaptCast
-import io.github.ikarenkov.kombucha.reducer.Reducer
-import io.github.ikarenkov.kombucha.reducer.dslReducer
-import io.github.ikarenkov.kombucha.store.Store
-import io.github.ikarenkov.kombucha.store.StoreFactory
 
-internal class AuthFeature(
+internal class AuthStore(
     storeFactory: StoreFactory,
-    authEffectHandler: AuthEffHandler
+    authEffectHandler: AuthFeature.AuthEffHandler
 ) : Store<AuthFeature.Msg, AuthFeature.State, AuthFeature.Eff> by storeFactory.create(
     name = "AuthFeature",
-    initialState = State.Init(false),
-    reducer = Reducer::invoke,
+    initialState = AuthFeature.State.Init(false),
+    reducer = AuthFeature.Reducer,
     effectHandlers = arrayOf(authEffectHandler.adaptCast()),
 ) {
-
     init {
-        accept(Msg.Init)
+        accept(AuthFeature.Msg.Init)
     }
+}
+
+internal object AuthFeature {
 
     sealed interface State {
 

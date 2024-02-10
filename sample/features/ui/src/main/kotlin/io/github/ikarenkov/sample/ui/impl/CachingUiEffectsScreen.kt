@@ -46,11 +46,9 @@ internal class CachingUiEffectsScreen(
     override fun Content() {
         val resources = LocalContext.current.resources
         val store = rememberScreenModel {
-            val store = uiSampleFeatureFacade.scope.get<CachingUiEffectsFeature>()
+            val store = uiSampleFeatureFacade.scope.get<CachingUiEffectsStore>()
             val uiStore = store.uiBuilder().using<Msg.Ext, UiState, Eff.Ext> { state ->
-                UiState(
-                    state.itemsIds.map { resources.getString(R.string.item_title, it) }
-                )
+                UiState(state.itemsIds.map { resources.getString(R.string.item_title, it) })
             }
             ModoKombuchaScreenModel(uiStore)
         }.store

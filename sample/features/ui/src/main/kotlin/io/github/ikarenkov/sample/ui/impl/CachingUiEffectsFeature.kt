@@ -17,20 +17,26 @@ import kotlinx.coroutines.isActive
 import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
-internal class CachingUiEffectsFeature(
+internal class CachingUiEffectsStore(
     storeFactory: StoreFactory,
     updatedEffHandler: UpdatesEffectHandler,
     navigationEffHandler: NavigationEffHandler
 ) : Store<Msg, State, Eff> by storeFactory.create(
     name = "CachingUiEffectsFeature",
     initialState = State(emptyList()),
-    reducer = reducer,
+    reducer = CachingUiEffectsFeature.reducer,
     initialEffects = setOf(Eff.Int.ObserveUpdates),
     effectHandlers = arrayOf(
         updatedEffHandler.adaptCast(),
         navigationEffHandler.adaptCast()
     )
-) {
+)
+
+internal object CachingUiEffectsFeature {
+
+    data class State(
+        val itemsIds: List<String>
+    )
 
     sealed interface Msg {
         sealed interface Int : Msg {
@@ -60,20 +66,16 @@ internal class CachingUiEffectsFeature(
 
     }
 
-    data class State(
-        val itemsIds: List<String>
-    )
-
-}
-
-internal val reducer = dslReducer<Msg, State, Eff> { msg ->
-    when (msg) {
-        is Msg.Int.OnNewElement -> {
-            state { copy(itemsIds = itemsIds + msg.id) }
-            eff(Eff.Ext.OnNewElement(msg.id))
+    internal val reducer = dslReducer<Msg, State, Eff> { msg ->
+        when (msg) {
+            is Msg.Int.OnNewElement -> {
+                state { copy(itemsIds = itemsIds + msg.id) }
+                eff(Eff.Ext.OnNewElement(msg.id))
+            }
+            is Msg.Ext.ItemClick -> eff(Eff.Int.OpenDetails(msg.id))
         }
-        is Msg.Ext.ItemClick -> eff(Eff.Int.OpenDetails(msg.id))
     }
+
 }
 
 internal class UpdatesEffectHandler : EffectHandler<Eff.Int.ObserveUpdates, Msg.Int.OnNewElement> {

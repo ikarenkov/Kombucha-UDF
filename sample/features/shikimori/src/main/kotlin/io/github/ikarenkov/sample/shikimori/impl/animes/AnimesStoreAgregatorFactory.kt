@@ -1,26 +1,27 @@
 package io.github.ikarenkov.sample.shikimori.impl.animes
 
+import io.github.ikarenkov.kombucha.store.Store
+import io.github.ikarenkov.kombucha.store.StoreFactory
 import io.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
-import io.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
+import io.github.ikarenkov.sample.shikimori.impl.auth.AuthStore
 import io.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
 import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationEffectHandler
 import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
-import io.github.ikarenkov.kombucha.store.Store
-import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationStore
 
-internal class AnimesFeatureAgregatorFactory(
+internal class AnimesStoreAgregatorFactory(
     private val storeFactory: StoreFactory,
     private val animesDataFetcher: AnimesDataFetcher,
 ) {
 
-    fun createStore(): Store<AnimesAggregatorFeature.Msg, AnimesAggregatorFeature.State, AnimesAggregatorFeature.Eff> {
-        val paginationFeature = PaginationFeature(
+    fun createStore(): Store<AnimesAggregatorStore.Msg, AnimesAggregatorStore.State, AnimesAggregatorStore.Eff> {
+        val paginationFeature = PaginationStore(
             storeFactory = storeFactory,
             name = "AnimePagination",
             dataFetcher = animesDataFetcher
         )
-        val authFeature = shikimoriFeatureFacade.scope.get<AuthFeature>()
-        return AnimesAggregatorFeature(AnimesFeature(storeFactory), paginationFeature, authFeature)
+        val authStore = shikimoriFeatureFacade.scope.get<AuthStore>()
+        return AnimesAggregatorStore(AnimesStore(storeFactory), paginationFeature, authStore)
     }
 
     data class Anime(val id: String, val name: String)

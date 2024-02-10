@@ -53,7 +53,7 @@ internal class CounterScreen(
 internal class CounterScreenModel(
     private var saveableState: State = State(0),
 ) : ScreenModel {
-    val store: Store<Msg, State, Eff> = counterFeatureFacade.scope.get<CounterFeature> { parametersOf(saveableState) }
+    val store: Store<Msg, State, Eff> = counterFeatureFacade.scope.get<CounterStore> { parametersOf(saveableState) }
     val state = store.state
 
     override fun onDispose() {

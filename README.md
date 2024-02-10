@@ -51,12 +51,14 @@ simple counter store implementation.
 <details>
   <summary>To create you store you need:</summary>
 
-1. Define your `Msg`, `State` and `Eff`. It's more convenient to put it inside your Store class.
+1. Create an object named ${YourFeatureName}Feature and define your `Msg`, `State` and `Eff` inside.
 2. Create reducer, that implements your business logic. Take a look to
    the [counterDslReducerReducer](sample/features/counter/impl/src/main/kotlin/io/github/ikarenkov/kombucha/sample/counter/impl/CounterFeature.kt#L70)
 3. Create `EffectHandler` for side effects and unstable behavior.
    [CounterEffectHandle](sample/features/counter/impl/src/main/kotlin/io/github/ikarenkov/kombucha/sample/counter/impl/CounterEffectHandler.kt)
-4. Create store, defining initial state, using created `counterDslReducerReducer` and `CounterEffectHandler`.
+4. Create a store named ${YourFeatureName}Store and inherited
+   from [Store](kombucha/core/src/commonMain/kotlin/io/github/ikarenkov/kombucha/store/Store.kt), defining initial state, using
+   created `counterDslReducerReducer` and `CounterEffectHandler`.
 
 </details>
 
@@ -66,9 +68,9 @@ simple counter store implementation.
 // to send a message
 store.accept(Msg.OnIncreaseClick)
 // to observe states
-store.state.collect{ ... }
+store.state.collect { ... }
 // to observe effectts
-store.effects.collect{ ... }
+store.effects.collect { ... }
 ```
 
 # Core concept
@@ -95,6 +97,11 @@ Msg - describes intention to do something. It can be user click, result from you
 State - the state that is stored in store. It represents the state of your feature.
 Eff - describes side effects, that should be executed. It's just a description of your intention to something that is not a pure function. F.e. it
 can be request to load some data from backend, saving or reading data from database and e.t.c.
+
+## Store factory
+
+You can implement [StoreFactory](kombucha/core/src/commonMain/kotlin/io/github/ikarenkov/kombucha/store/StoreFactory.kt) to customize creation of the
+store instead of using direct inheritance. It helps to implement dependency inversion principe. F.e. it can be used to implement exception logging
 
 # Thanks
 
