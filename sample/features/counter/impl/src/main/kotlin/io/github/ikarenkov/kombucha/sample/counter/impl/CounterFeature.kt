@@ -1,7 +1,6 @@
 package io.github.ikarenkov.kombucha.sample.counter.impl
 
 import android.os.Parcelable
-import io.github.ikarenkov.kombucha.eff_handler.adaptCast
 import io.github.ikarenkov.kombucha.reducer.Reducer
 import io.github.ikarenkov.kombucha.reducer.dslReducer
 import io.github.ikarenkov.kombucha.reducer.toEff
@@ -13,16 +12,18 @@ import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.store.StoreFactory
 import kotlinx.parcelize.Parcelize
 
-internal class CounterFeature(
+internal class CounterStore(
     initialState: State,
     storeFactory: StoreFactory,
     counterEffectHandler: CounterEffectHandler
 ) : Store<Msg, State, Eff> by storeFactory.create(
     name = "Counter",
     initialState = initialState,
-    reducer = counterDslReducerReducer,
-    effectHandlers = arrayOf(counterEffectHandler.adaptCast())
-) {
+    reducer = CounterFeature.dslReducer,
+    effectHandlers = arrayOf(counterEffectHandler)
+)
+
+internal object CounterFeature {
 
     @Parcelize
     internal data class State(
@@ -31,48 +32,49 @@ internal class CounterFeature(
 
     internal sealed interface Msg {
 
-        sealed interface Ui : Msg {
-
-            data object OnIncreaseClick : Ui
-            data object OnDecreaseClick : Ui
-            data object OpenScreenClick : Ui
-
-        }
+        data object OnIncreaseClick : Msg
+        data object OnDecreaseClick : Msg
+        data object OnRandomClick : Msg
+        data object OpenScreenClick : Msg
+        data class RandomResult(val value: Int) : Msg
 
     }
 
     internal sealed interface Eff {
 
-        sealed interface Ext : Eff {
+        data object OpenScreen : Eff
+        data object GenerateRandom : Eff
 
-            data object OpenScreen : Ext
+    }
 
+    internal val reducerWithoutAdditionalApi: Reducer<Msg, State, Eff> = Reducer<Msg, State, Eff> { msg, state ->
+        when (msg) {
+            Msg.OnDecreaseClick -> State(state.counter - 1) to emptySet()
+            Msg.OnIncreaseClick -> State(state.counter + 1) to emptySet()
+            Msg.OpenScreenClick -> state to setOf(Eff.OpenScreen)
+            Msg.OnRandomClick -> state to setOf(Eff.GenerateRandom)
+            is Msg.RandomResult -> State(counter = msg.value) to emptySet()
         }
-
     }
 
-}
-
-internal val counterReducerNoAdditionalApi: Reducer<Msg, State, Eff> = Reducer<Msg, State, Eff> { msg, state ->
-    when (msg) {
-        Msg.Ui.OnDecreaseClick -> State(state.counter - 1) to emptySet()
-        Msg.Ui.OnIncreaseClick -> State(state.counter + 1) to emptySet()
-        Msg.Ui.OpenScreenClick -> state to setOf(Eff.Ext.OpenScreen)
+    internal val reducerWithAdditionalApi: Reducer<Msg, State, Eff> = Reducer<Msg, State, Eff> { msg, state ->
+        when (msg) {
+            Msg.OnDecreaseClick -> State(state.counter - 1).withoutEff()
+            Msg.OnIncreaseClick -> State(state.counter + 1).withoutEff()
+            Msg.OpenScreenClick -> state toEff setOf(Eff.OpenScreen)
+            Msg.OnRandomClick -> state toEff Eff.GenerateRandom
+            is Msg.RandomResult -> State(counter = msg.value).withoutEff()
+        }
     }
-}
 
-internal val counterReducerWithAdditionalApi: Reducer<Msg, State, Eff> = Reducer<Msg, State, Eff> { msg, state ->
-    when (msg) {
-        Msg.Ui.OnDecreaseClick -> State(state.counter - 1).withoutEff()
-        Msg.Ui.OnIncreaseClick -> State(state.counter + 1).withoutEff()
-        Msg.Ui.OpenScreenClick -> state toEff setOf(Eff.Ext.OpenScreen)
+    internal val dslReducer: Reducer<Msg, State, Eff> = dslReducer { msg ->
+        when (msg) {
+            Msg.OnIncreaseClick -> state { copy(counter = counter + 1) }
+            Msg.OnDecreaseClick -> state { copy(counter = counter - 1) }
+            Msg.OpenScreenClick -> eff(Eff.OpenScreen)
+            Msg.OnRandomClick -> eff(Eff.GenerateRandom)
+            is Msg.RandomResult -> state { State(counter = msg.value) }
+        }
     }
-}
 
-internal val counterDslReducerReducer: Reducer<Msg, State, Eff> = dslReducer { msg ->
-    when (msg) {
-        Msg.Ui.OnIncreaseClick -> state { copy(counter = counter + 1) }
-        Msg.Ui.OnDecreaseClick -> state { copy(counter = counter - 1) }
-        Msg.Ui.OpenScreenClick -> eff(Eff.Ext.OpenScreen)
-    }
 }

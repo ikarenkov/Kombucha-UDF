@@ -4,7 +4,9 @@ import io.github.ikarenkov.kombucha.aggregator.AggregatorStore
 import io.github.ikarenkov.kombucha.aggregator.bindEffToMsg
 import io.github.ikarenkov.kombucha.aggregator.bindStateToMsg
 import io.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
+import io.github.ikarenkov.sample.shikimori.impl.auth.AuthStore
 import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
+import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationStore
 import io.github.ikarenkov.sample.shikimori.impl.storeCoroutineExceptionHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,35 +16,35 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
 
-internal class AnimesAggregatorFeature(
-    private val animesFeature: AnimesFeature,
-    private val paginationStore: PaginationFeature<AnimesFeatureAgregatorFactory.Anime>,
-    private val authFeature: AuthFeature,
-) : AggregatorStore<AnimesAggregatorFeature.Msg, AnimesAggregatorFeature.State, AnimesAggregatorFeature.Eff>(
+internal class AnimesAggregatorStore(
+    private val animesStore: AnimesStore,
+    private val paginationStore: PaginationStore<AnimesStoreAgregatorFactory.Anime>,
+    authStore: AuthStore,
+) : AggregatorStore<AnimesAggregatorStore.Msg, AnimesAggregatorStore.State, AnimesAggregatorStore.Eff>(
     name = "AnimesAggregator",
     coroutineExceptionHandler = storeCoroutineExceptionHandler("AnimesAggregator")
 ) {
 
     override val state: StateFlow<State> =
-        combine(paginationStore.state, animesFeature.state, AnimesAggregatorFeature::State)
+        combine(paginationStore.state, animesStore.state, AnimesAggregatorStore::State)
             .stateIn(
                 scope = coroutineScope,
                 started = SharingStarted.Lazily,
-                initialValue = State(paginationStore.state.value, animesFeature.state.value)
+                initialValue = State(paginationStore.state.value, animesStore.state.value)
             )
 
     override val effects: Flow<Eff> = merge(
-        animesFeature.effects.map { Eff.Animes(it) },
+        animesStore.effects.map { Eff.Animes(it) },
         paginationStore.effects.map { Eff.Pagination(it) }
     )
 
     init {
-        bindEffToMsg(coroutineScope, animesFeature, authFeature) { eff ->
+        bindEffToMsg(coroutineScope, animesStore, authStore) { eff ->
             when (eff) {
                 AnimesFeature.Eff.Authorize -> AuthFeature.Msg.Auth
             }
         }
-        bindStateToMsg(coroutineScope, authFeature, animesFeature) { state ->
+        bindStateToMsg(coroutineScope, authStore, animesStore) { state ->
             when (state) {
                 is AuthFeature.State.Authorized -> AnimesFeature.Msg.AuthorizationResult.Authorized
                 is AuthFeature.State.Init, is AuthFeature.State.NotAuthorized.OAuthInProgress -> AnimesFeature.Msg.AuthorizationResult.Loading
@@ -53,18 +55,18 @@ internal class AnimesAggregatorFeature(
 
     override fun accept(msg: Msg) {
         when (msg) {
-            is Msg.Animes -> animesFeature.accept(msg.msg)
+            is Msg.Animes -> animesStore.accept(msg.msg)
             is Msg.Pagination -> paginationStore.accept(msg.msg)
         }
     }
 
     override fun cancel() {
         paginationStore.cancel()
-        animesFeature.cancel()
+        animesStore.cancel()
     }
 
     data class State(
-        val paginationState: PaginationFeature.State<AnimesFeatureAgregatorFactory.Anime>,
+        val paginationState: PaginationFeature.State<AnimesStoreAgregatorFactory.Anime>,
         val animesState: AnimesFeature.State
     )
 

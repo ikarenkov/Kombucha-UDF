@@ -38,9 +38,9 @@ import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.model.ScreenModel
 import com.github.terrakok.modo.model.rememberScreenModel
 import io.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
-import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesAggregatorFeature
+import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesAggregatorStore
 import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature
-import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeatureAgregatorFactory
+import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesStoreAgregatorFactory
 import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
@@ -63,10 +63,10 @@ internal class AnimesScreen(
 }
 
 internal class AnimesScreenModel(
-    private val animesFeatureAgregatorFactory: AnimesFeatureAgregatorFactory
+    private val animesStoreAgregatorFactory: AnimesStoreAgregatorFactory
 ) : ScreenModel {
 
-    val store = animesFeatureAgregatorFactory.createStore()
+    val store = animesStoreAgregatorFactory.createStore()
 
     override fun onDispose() {
         store.cancel()
@@ -80,7 +80,7 @@ private fun AnimesScreenContent(model: AnimesScreenModel) {
     val animesState by remember { derivedStateOf { state.animesState } }
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { model.store.accept(AnimesAggregatorFeature.Msg.Animes(AnimesFeature.Msg.OnAuthClick)) }) {
+            FloatingActionButton(onClick = { model.store.accept(AnimesAggregatorStore.Msg.Animes(AnimesFeature.Msg.OnAuthClick)) }) {
                 when (animesState) {
                     is AnimesFeature.State.AuthInProgress -> {
                         CircularProgressIndicator()
@@ -112,7 +112,7 @@ private fun AnimesScreenContent(model: AnimesScreenModel) {
                 .collect { needLoadMore ->
                     withContext(Dispatchers.IO) {
                         if (needLoadMore) {
-                            model.store.accept(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.LoadNext))
+                            model.store.accept(AnimesAggregatorStore.Msg.Pagination(PaginationFeature.Msg.LoadNext))
                         }
                     }
                 }
@@ -145,11 +145,11 @@ private fun AnimesScreenContent(model: AnimesScreenModel) {
 
 @Composable
 private fun EmptyStateContent(
-    paginationState: PaginationFeature.State<AnimesFeatureAgregatorFactory.Anime>,
+    paginationState: PaginationFeature.State<AnimesStoreAgregatorFactory.Anime>,
     model: AnimesScreenModel
 ) {
     if (paginationState.nextPageLoadingState is PaginationFeature.State.PageLoadingState.Error) {
-        Button(onClick = { model.store.accept(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext)) }) {
+        Button(onClick = { model.store.accept(AnimesAggregatorStore.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext)) }) {
             Text(text = "Error, try again")
         }
     } else {
@@ -167,7 +167,7 @@ private fun ItemError(model: AnimesScreenModel) {
         Box(Modifier.fillMaxWidth()) {
             Button(
                 onClick = {
-                    model.store.accept(AnimesAggregatorFeature.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext))
+                    model.store.accept(AnimesAggregatorStore.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext))
                 }
             ) {
                 Text(text = "Error, try again")
@@ -190,7 +190,7 @@ private fun ItemLoading() {
 }
 
 @Composable
-private fun ItemAnime(anime: AnimesFeatureAgregatorFactory.Anime) {
+private fun ItemAnime(anime: AnimesStoreAgregatorFactory.Anime) {
     Box(Modifier.padding(vertical = 8.dp)) {
         Card(
             Modifier

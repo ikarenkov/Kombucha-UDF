@@ -7,13 +7,15 @@ import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Eff
 import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Msg
 import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.State
 
-internal class AnimesFeature(
-    val storeFactory: StoreFactory
+internal class AnimesStore(
+    storeFactory: StoreFactory
 ) : Store<Msg, State, Eff> by storeFactory.create(
     name = "Animes",
     initialState = State.NotAuthorized,
     reducer = reducer::invoke,
-) {
+)
+
+internal object AnimesFeature {
 
     sealed interface Msg {
         data object OnAuthClick : Msg

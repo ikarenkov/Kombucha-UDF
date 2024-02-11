@@ -20,14 +20,14 @@ import com.github.terrakok.modo.ScreenKey
 import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.model.ScreenModel
 import com.github.terrakok.modo.model.rememberScreenModel
-import kotlinx.parcelize.Parcelize
-import logcat.logcat
-import org.koin.core.parameter.parametersOf
 import io.github.ikarenkov.kombucha.sample.counter.api.counterFeatureFacade
 import io.github.ikarenkov.kombucha.sample.counter.impl.CounterFeature.Eff
 import io.github.ikarenkov.kombucha.sample.counter.impl.CounterFeature.Msg
 import io.github.ikarenkov.kombucha.sample.counter.impl.CounterFeature.State
 import io.github.ikarenkov.kombucha.store.Store
+import kotlinx.parcelize.Parcelize
+import logcat.logcat
+import org.koin.core.parameter.parametersOf
 
 @Parcelize
 internal class CounterScreen(
@@ -53,7 +53,7 @@ internal class CounterScreen(
 internal class CounterScreenModel(
     private var saveableState: State = State(0),
 ) : ScreenModel {
-    val store: Store<Msg, State, Eff> = counterFeatureFacade.scope.get<CounterFeature> { parametersOf(saveableState) }
+    val store: Store<Msg, State, Eff> = counterFeatureFacade.scope.get<CounterStore> { parametersOf(saveableState) }
     val state = store.state
 
     override fun onDispose() {
@@ -64,7 +64,7 @@ internal class CounterScreenModel(
 
 @Preview
 @Composable
-internal fun CounterContent(counter: Int = 0, dispatch: (Msg.Ui) -> Unit = {}) {
+internal fun CounterContent(counter: Int = 0, dispatch: (Msg) -> Unit = {}) {
     Box(Modifier.fillMaxSize()) {
         Column(
             Modifier
@@ -73,13 +73,16 @@ internal fun CounterContent(counter: Int = 0, dispatch: (Msg.Ui) -> Unit = {}) {
         ) {
             Text(counter.toString(), Modifier.align(Alignment.CenterHorizontally))
             FocusableButton(text = "Increase") {
-                dispatch(Msg.Ui.OnIncreaseClick)
+                dispatch(Msg.OnIncreaseClick)
             }
             FocusableButton(text = "Decrease") {
-                dispatch(Msg.Ui.OnDecreaseClick)
+                dispatch(Msg.OnDecreaseClick)
+            }
+            FocusableButton(text = "Random") {
+                dispatch(Msg.OnRandomClick)
             }
             FocusableButton(text = "Open screen") {
-                dispatch(Msg.Ui.OpenScreenClick)
+                dispatch(Msg.OpenScreenClick)
             }
         }
     }

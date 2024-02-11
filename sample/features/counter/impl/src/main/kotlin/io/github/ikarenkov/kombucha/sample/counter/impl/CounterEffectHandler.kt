@@ -4,14 +4,16 @@ import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.sample.counter.api.CounterDeps
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlin.random.Random
 
 internal class CounterEffectHandler(
     private val deps: CounterDeps
-) : EffectHandler<CounterFeature.Eff.Ext, Any> {
+) : EffectHandler<CounterFeature.Eff, CounterFeature.Msg> {
 
-    override fun handleEff(eff: CounterFeature.Eff.Ext): Flow<Any> = flow {
+    override fun handleEff(eff: CounterFeature.Eff): Flow<CounterFeature.Msg> = flow {
         when (eff) {
-            CounterFeature.Eff.Ext.OpenScreen -> deps.openNewScreen()
+            CounterFeature.Eff.OpenScreen -> deps.openNewScreen()
+            CounterFeature.Eff.GenerateRandom -> emit(CounterFeature.Msg.RandomResult(Random.nextInt()))
         }
     }
 
