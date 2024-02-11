@@ -73,6 +73,14 @@ store.state.collect { ... }
 store.effects.collect { ... }
 ```
 
+# Artifacts
+
+There are 3 kotlin multiplatform libraries available for jvm, ios and js. Check out modules README.md for detailed description.
+
+1. [**kombucha-core**](kombucha/core) - core library that contains main logic, such as store, reducer, effectHandler and so on.
+2. [**kombucha-ui-adapter**](kombucha/ui-adapter) - extension of library that helps to adapt your store for UI.
+3. [**kombucha-test**](kombucha/test) - helper classes and functions that provides convenient dsl for tenting your store.
+
 # Core concept
 
 ## Store
