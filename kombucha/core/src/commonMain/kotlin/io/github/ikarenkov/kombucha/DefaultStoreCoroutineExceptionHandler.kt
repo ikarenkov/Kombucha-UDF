@@ -5,6 +5,6 @@ import kotlinx.coroutines.CoroutineName
 
 fun DefaultStoreCoroutineExceptionHandler() = CoroutineExceptionHandler { context, throwable ->
     val storeName = context[CoroutineName]
-    println("Unhandled error in Coroutine store named \"$storeName\".")
-    throwable.printStackTrace()
+    println("Unhandled error in Coroutine store named \"$storeName\", crushing.")
+    throw throwable
 }
