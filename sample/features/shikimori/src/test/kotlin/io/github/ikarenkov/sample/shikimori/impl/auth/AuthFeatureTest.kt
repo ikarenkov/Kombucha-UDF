@@ -17,6 +17,7 @@ class AuthFeatureTest {
             createStore = { AuthStore(it, mockk()) }
         ) {
             Msg.LoadCacheAuthResult(null) returns State.NotAuthorized.Idle
+            Msg.Auth returns State.NotAuthorized.Idle + Eff.GetAuthorizationCodeBrouser
         }
     }
 

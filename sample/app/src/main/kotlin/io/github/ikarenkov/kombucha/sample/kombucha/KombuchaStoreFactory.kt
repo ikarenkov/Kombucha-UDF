@@ -1,14 +1,15 @@
 package io.github.ikarenkov.kombucha.sample.kombucha
 
-import kotlinx.coroutines.CoroutineExceptionHandler
-import logcat.LogPriority
-import logcat.asLog
-import logcat.logcat
 import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.reducer.Reducer
+import io.github.ikarenkov.kombucha.sample.BuildConfig
 import io.github.ikarenkov.kombucha.store.CoroutinesStore
 import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.store.StoreFactory
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineName
+import logcat.LogPriority
+import logcat.logcat
 
 class KombuchaStoreFactory : StoreFactory {
     override fun <Msg : Any, State : Any, Eff : Any> create(
@@ -23,9 +24,14 @@ class KombuchaStoreFactory : StoreFactory {
         effectHandlers = effectHandlers.toList(),
         initialState = initialState,
         initialEffects = initialEffects,
-        coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        coroutineExceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            val debug = BuildConfig.DEBUG
+            val crushLogEnd = if (debug) "Crushing" else "Ignoring, it is release"
             logcat(LogPriority.ERROR) {
-                "Unhandled coroutine error in the Store with name \"$name\".\n" + throwable.asLog()
+                "Unhandled coroutine error in the Store with name \"$name\", coroutine name is ${coroutineContext[CoroutineName]}. $crushLogEnd."
+            }
+            if (debug) {
+                throw throwable
             }
         }
     )
