@@ -21,7 +21,11 @@ internal class CounterStore(
     initialState = initialState,
     reducer = CounterFeature.dslReducer,
     effectHandlers = arrayOf(counterEffectHandler)
-)
+) {
+    init {
+        cancel()
+    }
+}
 
 internal object CounterFeature {
 

@@ -27,7 +27,7 @@ import kotlinx.coroutines.sync.withLock
  * @param coroutineExceptionHandler - the handler to handle all unhandled exceptions from [reducer] and [effectHandlers].
  */
 open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
-    name: String?,
+    private val name: String?,
     private val reducer: Reducer<Msg, Model, Eff>,
     private val effectHandlers: List<EffectHandler<Eff, Msg>> = listOf(),
     initialState: Model,
@@ -41,8 +41,7 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     private val mutableEffects = MutableSharedFlow<Eff>()
     override val effects: Flow<Eff> = mutableEffects
 
-    private val isCanceled: Boolean
-        get() = !coroutinesScope.isActive
+    override val isActive: Boolean get() = coroutinesScope.isActive
 
     open val coroutinesScope = StoreScope(name, coroutineExceptionHandler)
 
@@ -56,9 +55,12 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     }
 
     override fun accept(msg: Msg) {
+        if (!isActive) {
+            error("Trying to call accept in canceled store with name \"$name\".")
+        }
         coroutinesScope.launch {
             val storeUpdate = stateUpdateMutex.withLock {
-                if (!isCanceled) {
+                if (isActive) {
                     val oldState = state.value
                     val (newState, effects) = reducer(msg, oldState)
                     mutableState.value = newState
