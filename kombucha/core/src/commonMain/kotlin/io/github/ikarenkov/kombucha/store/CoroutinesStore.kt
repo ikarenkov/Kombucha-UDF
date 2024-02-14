@@ -26,29 +26,33 @@ import kotlinx.coroutines.sync.withLock
  * Can be used to initialise some subscriptions or to make some set up actions.
  * @param coroutineExceptionHandler - the handler to handle all unhandled exceptions from [reducer] and [effectHandlers].
  */
-open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
+open class CoroutinesStore<Msg : Any, State : Any, Eff : Any>(
     private val name: String?,
-    private val reducer: Reducer<Msg, Model, Eff>,
+    private val reducer: Reducer<Msg, State, Eff>,
     private val effectHandlers: List<EffectHandler<Eff, Msg>> = listOf(),
-    initialState: Model,
+    initialState: State,
     initialEffects: Set<Eff> = setOf(),
     coroutineExceptionHandler: CoroutineExceptionHandler = DefaultStoreCoroutineExceptionHandler()
-) : Store<Msg, Model, Eff> {
+) : Store<Msg, State, Eff> {
 
     private val mutableState = MutableStateFlow(initialState)
-    override val state: StateFlow<Model> = mutableState
+    override val state: StateFlow<State> = mutableState
 
     private val mutableEffects = MutableSharedFlow<Eff>()
     override val effects: Flow<Eff> = mutableEffects
 
     override val isActive: Boolean get() = coroutinesScope.isActive
 
-    open val coroutinesScope = StoreScope(name, coroutineExceptionHandler)
-
     private val stateUpdateMutex = Mutex()
 
-    private val mutableStoreUpdates: MutableSharedFlow<StoreUpdate<Msg, Model, Eff>> = MutableSharedFlow()
-    val storeUpdates: SharedFlow<StoreUpdate<Msg, Model, Eff>> = mutableStoreUpdates
+    private val mutableStoreUpdates: MutableSharedFlow<StoreUpdate<Msg, State, Eff>> = MutableSharedFlow()
+
+    /**
+     * Represents cycles of reducer work. You can observe reducers inputs and outputs in one place.
+     */
+    val storeUpdates: SharedFlow<StoreUpdate<Msg, State, Eff>> = mutableStoreUpdates
+
+    protected open val coroutinesScope = StoreScope(name, coroutineExceptionHandler)
 
     init {
         initEffHandlers(initialEffects)
@@ -107,10 +111,3 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     }
 
 }
-
-data class StoreUpdate<Msg, State, Eff>(
-    val msg: Msg,
-    val oldState: State,
-    val newState: State,
-    val effects: Set<Eff>
-)

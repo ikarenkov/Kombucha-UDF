@@ -16,5 +16,5 @@ class TestStore<Msg : Any, State : Any, Eff : Any>(
     initialState = initialState,
     initialEffects = initialEffects
 ) {
-    override val coroutinesScope: TestScope = TestScope()
+    public override val coroutinesScope: TestScope = TestScope()
 }
