@@ -61,6 +61,7 @@ internal class AnimesAggregatorStore(
     }
 
     override fun cancel() {
+        super.cancel()
         paginationStore.cancel()
         animesStore.cancel()
     }

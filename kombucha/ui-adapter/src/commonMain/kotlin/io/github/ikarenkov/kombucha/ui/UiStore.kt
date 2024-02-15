@@ -14,20 +14,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
 
 /**
  * Wrapper for store, that allows handle basic UI scenarios:
  * 1. Convert models to Ui Models
  * 2. Cache ui effects when there is no subscribers and emit cached effects with a first subscription
+ * @param cancelOriginalStoreOnCancel shows if we need to call [Store.cancel] on the [store] when this store is canceling.
  */
 class UiStore<UiMsg : Any, UiState : Any, UiEff : Any, Msg : Any, State : Any, Eff : Any>(
     private val store: Store<Msg, State, Eff>,
     private val uiMsgToMsgConverter: (UiMsg) -> Msg,
     private val uiStateConverter: (State) -> UiState,
     private val uiEffConverter: (Eff) -> UiEff?,
+    private val cancelOriginalStoreOnCancel: Boolean = true,
     coroutineExceptionHandler: CoroutineExceptionHandler = DefaultStoreCoroutineExceptionHandler(),
     uiDispatcher: CoroutineDispatcher = Dispatchers.Main,
-    cacheUiEffects: Boolean = true
+    cacheUiEffects: Boolean = true,
 ) : Store<UiMsg, UiState, UiEff> {
 
     private val coroutineScope = StoreScope(
@@ -55,6 +58,7 @@ class UiStore<UiMsg : Any, UiState : Any, UiEff : Any, Msg : Any, State : Any, E
                     originalFlow
                 }
             }
+    override val isActive: Boolean get() = coroutineScope.isActive
 
     override fun accept(msg: UiMsg) {
         store.accept(uiMsgToMsgConverter(msg))
@@ -62,7 +66,9 @@ class UiStore<UiMsg : Any, UiState : Any, UiEff : Any, Msg : Any, State : Any, E
 
     override fun cancel() {
         coroutineScope.cancel()
-        store.cancel()
+        if (cancelOriginalStoreOnCancel) {
+            store.cancel()
+        }
     }
 
 }

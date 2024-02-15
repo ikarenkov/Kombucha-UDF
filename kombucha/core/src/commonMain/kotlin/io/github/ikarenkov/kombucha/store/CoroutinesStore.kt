@@ -26,39 +26,45 @@ import kotlinx.coroutines.sync.withLock
  * Can be used to initialise some subscriptions or to make some set up actions.
  * @param coroutineExceptionHandler - the handler to handle all unhandled exceptions from [reducer] and [effectHandlers].
  */
-open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
-    name: String?,
-    private val reducer: Reducer<Msg, Model, Eff>,
+open class CoroutinesStore<Msg : Any, State : Any, Eff : Any>(
+    private val name: String?,
+    private val reducer: Reducer<Msg, State, Eff>,
     private val effectHandlers: List<EffectHandler<Eff, Msg>> = listOf(),
-    initialState: Model,
+    initialState: State,
     initialEffects: Set<Eff> = setOf(),
     coroutineExceptionHandler: CoroutineExceptionHandler = DefaultStoreCoroutineExceptionHandler()
-) : Store<Msg, Model, Eff> {
+) : Store<Msg, State, Eff> {
 
     private val mutableState = MutableStateFlow(initialState)
-    override val state: StateFlow<Model> = mutableState
+    override val state: StateFlow<State> = mutableState
 
     private val mutableEffects = MutableSharedFlow<Eff>()
     override val effects: Flow<Eff> = mutableEffects
 
-    private val isCanceled: Boolean
-        get() = !coroutinesScope.isActive
-
-    open val coroutinesScope = StoreScope(name, coroutineExceptionHandler)
+    override val isActive: Boolean get() = coroutinesScope.isActive
 
     private val stateUpdateMutex = Mutex()
 
-    private val mutableStoreUpdates: MutableSharedFlow<StoreUpdate<Msg, Model, Eff>> = MutableSharedFlow()
-    val storeUpdates: SharedFlow<StoreUpdate<Msg, Model, Eff>> = mutableStoreUpdates
+    private val mutableStoreUpdates: MutableSharedFlow<StoreUpdate<Msg, State, Eff>> = MutableSharedFlow()
+
+    /**
+     * Represents cycles of reducer work. You can observe reducers inputs and outputs in one place.
+     */
+    val storeUpdates: SharedFlow<StoreUpdate<Msg, State, Eff>> = mutableStoreUpdates
+
+    protected open val coroutinesScope = StoreScope(name, coroutineExceptionHandler)
 
     init {
         initEffHandlers(initialEffects)
     }
 
     override fun accept(msg: Msg) {
+        if (!isActive) {
+            error("Trying to call accept in canceled store with name \"$name\".")
+        }
         coroutinesScope.launch {
             val storeUpdate = stateUpdateMutex.withLock {
-                if (!isCanceled) {
+                if (isActive) {
                     val oldState = state.value
                     val (newState, effects) = reducer(msg, oldState)
                     mutableState.value = newState
@@ -105,10 +111,3 @@ open class CoroutinesStore<Msg : Any, Model : Any, Eff : Any>(
     }
 
 }
-
-data class StoreUpdate<Msg, State, Eff>(
-    val msg: Msg,
-    val oldState: State,
-    val newState: State,
-    val effects: Set<Eff>
-)

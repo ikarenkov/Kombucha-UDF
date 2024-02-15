@@ -42,6 +42,7 @@ class TwoStoreAggregatorStore<
     }
 
     override fun cancel() {
+        super.cancel()
         store1.cancel()
         store2.cancel()
     }

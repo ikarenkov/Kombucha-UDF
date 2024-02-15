@@ -1,6 +1,8 @@
 package io.github.ikarenkov.kombucha.ui
 
 import io.github.ikarenkov.kombucha.store.Store
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Builder that helps to avoid explicit declaration of generic types in [UiStore] and provides different builder functions to build [UiStore].
@@ -15,12 +17,16 @@ class UiStoreBuilder<Msg : Any, State : Any, Eff : Any>(
         uiStateConverter: (State) -> UiState,
         uiEffConverter: (Eff) -> UiEff?,
         cacheUiEffects: Boolean = true,
+        cancelOriginalStoreOnCancel: Boolean = true,
+        uiDispatcher: CoroutineDispatcher = Dispatchers.Main,
     ): UiStore<UiMsg, UiState, UiEff, Msg, State, Eff> = UiStore(
         store = store,
         uiMsgToMsgConverter = uiMsgToMsgConverter,
         uiStateConverter = uiStateConverter,
         uiEffConverter = uiEffConverter,
-        cacheUiEffects = cacheUiEffects
+        cancelOriginalStoreOnCancel = cancelOriginalStoreOnCancel,
+        cacheUiEffects = cacheUiEffects,
+        uiDispatcher = uiDispatcher
     )
 
     /**
@@ -28,12 +34,16 @@ class UiStoreBuilder<Msg : Any, State : Any, Eff : Any>(
      */
     inline fun <UiMsg : Msg, UiState : Any, reified UiEff : Eff> using(
         cacheUiEffects: Boolean = true,
+        cancelOriginalStoreOnCancel: Boolean = true,
+        uiDispatcher: CoroutineDispatcher = Dispatchers.Main,
         noinline uiStateConverter: (State) -> UiState,
     ): UiStore<UiMsg, UiState, UiEff, Msg, State, Eff> = UiStore(
         store = store,
         uiMsgToMsgConverter = { it },
         uiStateConverter = uiStateConverter,
         uiEffConverter = { it as? UiEff },
+        uiDispatcher = uiDispatcher,
+        cancelOriginalStoreOnCancel = cancelOriginalStoreOnCancel,
         cacheUiEffects = cacheUiEffects
     )
 

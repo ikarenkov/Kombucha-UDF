@@ -74,6 +74,7 @@ internal class AnimesScreenModel(
 
 }
 
+@Suppress("LongMethod")
 @Composable
 private fun AnimesScreenContent(model: AnimesScreenModel) {
     val state by model.store.state.collectAsState()
