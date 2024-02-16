@@ -5,14 +5,14 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 
-class CoroutinesStoreCancellationTest {
+class CoroutinesStoreCloseTest {
 
     @Test
     @JsName("test1")
     fun `When accept on canceled store - Then crush`() {
         val store = NoOpTestStore()
         store.accept(Any())
-        store.cancel()
+        store.close()
         assertFails {
             store.accept(Any())
         }
@@ -22,7 +22,7 @@ class CoroutinesStoreCancellationTest {
     @JsName("test2")
     fun `When canceled - Then isActive false`() {
         val store = NoOpTestStore()
-        store.cancel()
+        store.close()
         assertEquals(false, store.isActive)
     }
 

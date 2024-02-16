@@ -8,7 +8,7 @@ class ModoKombuchaScreenModel<UiMsg : Any, UiState : Any, UiEff : Any>(
 ) : ScreenModel {
 
     override fun onDispose() {
-        store.cancel()
+        store.close()
     }
 
 }

@@ -60,7 +60,7 @@ open class CoroutinesStore<Msg : Any, State : Any, Eff : Any>(
 
     override fun accept(msg: Msg) {
         if (!isActive) {
-            error("Trying to call accept in canceled store with name \"$name\".")
+            error("Trying to call accept in closed store with name \"$name\".")
         }
         coroutinesScope.launch {
             val storeUpdate = stateUpdateMutex.withLock {
@@ -90,7 +90,7 @@ open class CoroutinesStore<Msg : Any, State : Any, Eff : Any>(
         }
     }
 
-    override fun cancel() {
+    override fun close() {
         coroutinesScope.cancel()
     }
 
