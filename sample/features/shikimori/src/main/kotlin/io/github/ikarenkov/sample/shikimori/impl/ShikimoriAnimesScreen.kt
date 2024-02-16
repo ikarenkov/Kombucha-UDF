@@ -69,7 +69,7 @@ internal class AnimesScreenModel(
     val store = animesStoreAgregatorFactory.createStore()
 
     override fun onDispose() {
-        store.cancel()
+        store.close()
     }
 
 }

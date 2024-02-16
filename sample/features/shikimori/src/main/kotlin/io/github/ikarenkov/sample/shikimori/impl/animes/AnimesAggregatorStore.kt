@@ -60,10 +60,10 @@ internal class AnimesAggregatorStore(
         }
     }
 
-    override fun cancel() {
-        super.cancel()
-        paginationStore.cancel()
-        animesStore.cancel()
+    override fun close() {
+        super.close()
+        paginationStore.close()
+        animesStore.close()
     }
 
     data class State(

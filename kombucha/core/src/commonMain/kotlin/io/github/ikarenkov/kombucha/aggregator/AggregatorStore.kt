@@ -19,7 +19,7 @@ abstract class AggregatorStore<Msg : Any, State : Any, Eff : Any>(
         coroutineExceptionHandler: CoroutineExceptionHandler = DefaultStoreCoroutineExceptionHandler()
     ) : this(StoreScope(name, coroutineExceptionHandler))
 
-    override fun cancel() {
+    override fun close() {
         coroutineScope.cancel()
     }
 

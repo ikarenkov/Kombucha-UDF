@@ -23,7 +23,7 @@ private class StoreInstance<out T : Store<*, *, *>>(
 ) : InstanceKeeper.Instance {
 
     override fun onDestroy() {
-        store.cancel()
+        store.close()
     }
 
 }

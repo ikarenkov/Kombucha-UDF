@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModelStoreOwner
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
-import kotlinx.coroutines.flow.StateFlow
-import io.github.ikarenkov.kombucha.Cancelable
 import io.github.ikarenkov.kombucha.store.Store
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * This interface provides Ui related part of TEA for compose.
@@ -14,7 +13,7 @@ import io.github.ikarenkov.kombucha.store.Store
  * @param Model - model of screen that can be observed
  * @param UiEff - single event effects that can be consumed by compose screen (WIP)
  */
-interface ComposeKombucha<UiMsg : Any, Model : Any, UiEff : Any> : Cancelable {
+interface ComposeKombucha<UiMsg : Any, Model : Any, UiEff : Any> : AutoCloseable {
 
     fun accept(msg: UiMsg)
 
@@ -32,8 +31,8 @@ open class ComposeKombuchaImpl<Msg : Any, UiMsg : Msg, Model : Any, Eff : Any, U
         store.accept(msg)
     }
 
-    override fun cancel() {
-        store.cancel()
+    override fun close() {
+        store.close()
     }
 
 }
@@ -42,7 +41,7 @@ class ComposeKombuchaInstance<UiMsg : Any, Model : Any, UiEff : Any>(
     composeKombucha: ComposeKombucha<UiMsg, Model, UiEff>
 ) : ComposeKombucha<UiMsg, Model, UiEff> by composeKombucha, InstanceKeeper.Instance {
     override fun onDestroy() {
-        cancel()
+        close()
     }
 }
 

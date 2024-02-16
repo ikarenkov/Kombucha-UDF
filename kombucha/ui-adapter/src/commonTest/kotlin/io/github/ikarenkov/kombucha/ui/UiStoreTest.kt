@@ -12,30 +12,30 @@ class UiStoreTest {
 
     @Test
     @JsName("test1")
-    fun `When cancel original is false - original is not canceled`() {
+    fun `When close original is false - original is not closed`() {
         val store = DummyStore()
         val uiStore = store.uiBuilder()
             .using<Any, Any, Any>(
-                cancelOriginalStoreOnCancel = false,
+                propagateCloseToOriginal = false,
                 uiDispatcher = StandardTestDispatcher()
             ) { it }
 
-        uiStore.cancel()
+        uiStore.close()
 
         assertTrue(store.isActive)
     }
 
     @Test
     @JsName("test2")
-    fun `When cancel original is true - original is canceled`() {
+    fun `When close original is true - original is closed`() {
         val store = DummyStore()
         val uiStore = store.uiBuilder()
             .using<Any, Any, Any>(
-                cancelOriginalStoreOnCancel = true,
+                propagateCloseToOriginal = true,
                 uiDispatcher = StandardTestDispatcher()
             ) { it }
 
-        uiStore.cancel()
+        uiStore.close()
 
         assertFalse(store.isActive)
     }

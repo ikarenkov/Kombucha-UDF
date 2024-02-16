@@ -57,7 +57,7 @@ internal class CounterScreenModel(
     val state = store.state
 
     override fun onDispose() {
-        store.cancel()
+        store.close()
     }
 
 }

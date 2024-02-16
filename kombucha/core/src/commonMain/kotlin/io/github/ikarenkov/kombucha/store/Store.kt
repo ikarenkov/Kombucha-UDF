@@ -1,6 +1,5 @@
 package io.github.ikarenkov.kombucha.store
 
-import io.github.ikarenkov.kombucha.Cancelable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -8,7 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
  * The base component of library that hold state and converst incoming [Msg] to a new [State] and [Eff].
  * Take a look and the main implementation: [CoroutinesStore]
  */
-interface Store<Msg : Any, State : Any, Eff : Any> : Cancelable {
+@OptIn(ExperimentalStdlibApi::class)
+interface Store<Msg : Any, State : Any, Eff : Any> : AutoCloseable {
 
     /**
      * Represent current state of this store. Can be modified only through [accept].
