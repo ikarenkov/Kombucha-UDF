@@ -26,9 +26,9 @@ class KombuchaStoreFactory : StoreFactory {
         initialEffects = initialEffects,
         coroutineExceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             val debug = BuildConfig.DEBUG
-            val crushLogEnd = if (debug) "Crushing" else "Ignoring, it is release"
+            val crashLogEnd = if (debug) "Crashing" else "Ignoring, it is release"
             logcat(LogPriority.ERROR) {
-                "Unhandled coroutine error in the Store with name \"$name\", coroutine name is ${coroutineContext[CoroutineName]}. $crushLogEnd."
+                "Unhandled coroutine error in the Store with name \"$name\", coroutine name is ${coroutineContext[CoroutineName]}. $crashLogEnd."
             }
             if (debug) {
                 throw throwable
