@@ -28,8 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.github.terrakok.modo.Screen
 import com.github.terrakok.modo.ScreenKey
 import com.github.terrakok.modo.generateScreenKey
-import com.github.terrakok.modo.model.rememberScreenModel
-import io.github.ikarenkov.kombucha.sample.modo_kombucha.ModoKombuchaScreenModel
+import io.github.ikarenkov.kombucha.sample.modo_kombucha.rememberKombuchaStore
 import io.github.ikarenkov.kombucha.ui.uiBuilder
 import io.github.ikarenkov.sample.ui.R
 import io.github.ikarenkov.sample.ui.api.uiSampleFeatureFacade
@@ -45,13 +44,12 @@ internal class CachingUiEffectsScreen(
     @Composable
     override fun Content() {
         val resources = LocalContext.current.resources
-        val store = rememberScreenModel {
+        val store = rememberKombuchaStore {
             val store = uiSampleFeatureFacade.scope.get<CachingUiEffectsStore>()
-            val uiStore = store.uiBuilder().using<Msg.Ext, UiState, Eff.Ext> { state ->
+            store.uiBuilder().using<Msg.Ext, UiState, Eff.Ext> { state ->
                 UiState(state.itemsIds.map { resources.getString(R.string.item_title, it) })
             }
-            ModoKombuchaScreenModel(uiStore)
-        }.store
+        }
         val state by store.state.collectAsState()
         val scaffoldState = rememberScaffoldState()
         LaunchedEffect(key1 = store) {

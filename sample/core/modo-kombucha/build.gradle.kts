@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kombucha.android.library)
+    alias(libs.plugins.kombucha.jetpackCompose.library)
 }
 
 android.namespace = "io.github.ikarenkov.kombucha.sample.modo_kombucha"

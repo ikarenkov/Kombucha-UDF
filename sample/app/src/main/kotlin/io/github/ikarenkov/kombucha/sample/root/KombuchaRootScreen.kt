@@ -21,6 +21,7 @@ import com.github.terrakok.modo.ScreenKey
 import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.stack.StackScreen
 import com.github.terrakok.modo.stack.forward
+import io.github.ikarenkov.sample.favorite.api.favoriteSampleFacade
 import io.github.ikarenkov.sample.ui.api.uiSampleFeatureFacade
 import kotlinx.parcelize.Parcelize
 
@@ -50,6 +51,7 @@ private fun RootScreen(parent: StackScreen) {
                 "Game" to { gameFeatureFacade.api.createScreen() },
                 "Shikimori" to { shikimoriFeatureFacade.api.createScreen() },
                 "Ui adapter sample" to { uiSampleFeatureFacade.api.cachingUiEffectsScreen() },
+                "Favorite" to { favoriteSampleFacade.api.favoriteListScreen() },
             ).forEach { (text, screen) ->
                 Button(
                     modifier = Modifier.fillMaxWidth(),

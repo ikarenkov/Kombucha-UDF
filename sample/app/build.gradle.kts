@@ -40,4 +40,5 @@ dependencies {
     implementation(projects.sample.features.learnCompose.impl)
     implementation(projects.sample.features.shikimori)
     implementation(projects.sample.features.ui)
+    implementation(projects.sample.features.favorite)
 }

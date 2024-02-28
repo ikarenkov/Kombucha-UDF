@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="favorite_toolbar_title">Favorite items</string>
+    <string name="favorite_item_added">Added item #%s</string>
+    <string name="favorite_item_removed">Removed item #%s</string>
+    <string name="favorite_item_remove_error">Error removing item #%1$s</string>
+    <string name="favorite_item_clicked">Clicked on item #%1$s</string>
+</resources>
