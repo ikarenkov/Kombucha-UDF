@@ -13,7 +13,7 @@ import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
 // Repository, simulating api working with api.
-internal class DemoFavRepository {
+internal class FavoriteRepository {
 
     companion object {
         private val LOAD_DELAY = 3.seconds
@@ -22,9 +22,13 @@ internal class DemoFavRepository {
         private const val ID_TOP_BOUND = 99_999
     }
 
-    suspend fun loadFavoriteItems(): List<FavoriteItem> {
+    suspend fun loadFavoriteItems(): Result<List<FavoriteItem>> {
         delay(LOAD_DELAY)
-        return List(ITEMS_COUNT) { generateItem() }
+        return if (Random.nextBoolean()) {
+            Result.success(List(ITEMS_COUNT) { generateItem() })
+        } else {
+            Result.failure(IOException("Emulating fail on loading"))
+        }
     }
 
     @Suppress("detekt.UnusedPrivateMember")

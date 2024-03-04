@@ -11,8 +11,8 @@ import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Msg
 import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.State
 import io.github.ikarenkov.sample.favorite.impl.core.LCE
 import io.github.ikarenkov.sample.favorite.impl.core.toLce
-import io.github.ikarenkov.sample.favorite.impl.data.DemoFavRepository
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteItem
+import io.github.ikarenkov.sample.favorite.impl.data.FavoriteRepository
 import io.github.ikarenkov.sample.favorite.impl.data.changeFavorite
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.map
 
 internal class FavoriteStore(
     storeFactory: StoreFactory,
-    effectHandler: KombuchaFavEffHandler,
+    effectHandler: FavoriteEffHandler,
 ) : Store<Msg, State, Eff> by storeFactory.create(
     name = "FavoriteStore",
     reducer = FavoriteFeature.reducer,
@@ -62,8 +62,10 @@ internal object FavoriteFeature {
                 eff(Eff.Outer.ItemRemoveError(msg.id))
             }
             is Msg.Inner.AddItem -> {
-                state { addItem(msg.item) }
-                eff(Eff.Outer.ItemAdded(msg.item.id))
+                if (state.content is LCE.Data<*>) {
+                    state { addItem(msg.item) }
+                    eff(Eff.Outer.ItemAdded(msg.item.id))
+                }
             }
         }
     }
@@ -89,7 +91,8 @@ internal object FavoriteFeature {
                 }
             }
             is Msg.Outer.RetryLoad -> {
-                if (state.content is LCE.Error) {
+                if (state.content is LCE.Error && !state.content.inProgress) {
+                    state { State(LCE.Loading()) }
                     eff(Eff.Inner.LoadFav)
                 }
             }
@@ -125,7 +128,7 @@ internal object FavoriteFeature {
         }
 
     sealed interface Eff {
-        // внешние эффекты
+
         sealed interface Outer : Eff {
             data class ItemAdded(val id: String) : Outer
             data class ItemRemoved(val id: String) : Outer
@@ -133,7 +136,6 @@ internal object FavoriteFeature {
             data class ItemClick(val id: String) : Outer
         }
 
-        // внутренние эффекты
         sealed interface Inner : Eff {
             data object LoadFav : Inner
             data class RemoveItem(val id: String) : Inner
@@ -151,9 +153,6 @@ internal object FavoriteFeature {
 
         sealed interface Inner : Msg {
 
-            /**
-             * initial loading
-             */
             data class AddItem(val item: FavoriteItem) : Inner
             data class ItemLoadingResult(val result: Result<List<FavoriteItem>>) : Inner
             sealed interface ItemRemoveResult : Inner {
@@ -176,16 +175,14 @@ internal object FavoriteFeature {
     )
 }
 
-internal class KombuchaFavEffHandler(
-    private val repository: DemoFavRepository,
+internal class FavoriteEffHandler(
+    private val repository: FavoriteRepository,
 ) : EffectHandler<Eff.Inner, Msg.Inner> {
 
     override fun handleEff(eff: Eff.Inner): Flow<Msg.Inner> = when (eff) {
         is Eff.Inner.LoadFav -> flow {
             emit(
-                Msg.Inner.ItemLoadingResult(
-                    runCatching { repository.loadFavoriteItems() }
-                )
+                Msg.Inner.ItemLoadingResult(repository.loadFavoriteItems())
             )
         }
         is Eff.Inner.RemoveItem -> flow {

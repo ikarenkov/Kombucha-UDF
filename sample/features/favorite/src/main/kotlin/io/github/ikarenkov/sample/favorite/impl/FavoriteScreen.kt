@@ -2,6 +2,9 @@ package io.github.ikarenkov.sample.favorite.impl
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,9 +15,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -23,6 +28,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -33,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,12 +53,14 @@ import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.ui.uiBuilder
 import io.github.ikarenkov.sample.favorite.R
 import io.github.ikarenkov.sample.favorite.api.favoriteSampleFacade
+import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Msg
 import io.github.ikarenkov.sample.favorite.impl.core.LCE
 import io.github.ikarenkov.sample.favorite.impl.ui.DemoFavUiConverter
 import io.github.ikarenkov.sample.favorite.impl.ui.DemoFavUiState
 import io.github.ikarenkov.sample.favorite.impl.ui.FavoriteListItem
 import io.github.ikarenkov.sample.favorite.impl.ui.FavoriteListItemContent
 import kotlinx.parcelize.Parcelize
+import java.io.IOException
 
 @Parcelize
 class FavoriteScreen(
@@ -64,7 +74,7 @@ class FavoriteScreen(
             val store = favoriteSampleFacade.scope.get<FavoriteStore>()
             store
                 .uiBuilder()
-                .using<FavoriteFeature.Msg.Outer, DemoFavUiState, FavoriteFeature.Eff.Outer>(
+                .using<Msg.Outer, DemoFavUiState, FavoriteFeature.Eff.Outer>(
                     uiStateConverter = { state -> DemoFavUiConverter.convert(state) },
                 )
         }
@@ -89,8 +99,9 @@ class FavoriteScreen(
         FavoriteScreenContent(
             scaffoldState = scaffoldState,
             state = store.state.collectAsState().value,
-            removeFavoriteClick = { store.accept(FavoriteFeature.Msg.Outer.RemoveFavorite(it)) },
-            itemClick = { store.accept(FavoriteFeature.Msg.Outer.ItemClick(it)) }
+            removeFavoriteClick = { store.accept(Msg.Outer.RemoveFavorite(it)) },
+            itemClick = { store.accept(Msg.Outer.ItemClick(it)) },
+            retryLoad = { store.accept(Msg.Outer.RetryLoad) }
         )
     }
 
@@ -102,7 +113,8 @@ private fun FavoriteScreenContent(
     scaffoldState: ScaffoldState,
     state: DemoFavUiState,
     removeFavoriteClick: (id: String) -> Unit,
-    itemClick: (id: String) -> Unit
+    itemClick: (id: String) -> Unit,
+    retryLoad: () -> Unit
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -129,20 +141,48 @@ private fun FavoriteScreenContent(
             )
         }
     ) {
-        FavoriteList(
-            state = state,
-            removeFavoriteClick = removeFavoriteClick,
-            itemClick = itemClick
-        )
+        val items: List<FavoriteListItem> by remember(state) { derivedStateOf { state.listCells.data.orEmpty() } }
+        val showError: Boolean by remember(state) {
+            derivedStateOf {
+                state.listCells.data.isNullOrEmpty() && state.listCells is LCE.Error
+            }
+        }
+        if (showError) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    modifier = Modifier.size(80.dp),
+                    painter = rememberVectorPainter(image = Icons.Outlined.Warning),
+                    contentDescription = "Error"
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Error of loading")
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = retryLoad) {
+                    Text(text = "Retry")
+                }
+            }
+        } else {
+            FavoriteList(
+                items = items,
+                removeFavoriteClick = removeFavoriteClick,
+                itemClick = itemClick
+            )
+        }
     }
 }
 
-internal class FavScreenModel(
+internal class FavoriteScreenModel(
     store: FavoriteStore
 ) : ScreenModel {
 
-    val uiStore: Store<FavoriteFeature.Msg.Outer, DemoFavUiState, FavoriteFeature.Eff.Outer> = store.uiBuilder()
-        .using<FavoriteFeature.Msg.Outer, DemoFavUiState, FavoriteFeature.Eff.Outer>(
+    val uiStore: Store<Msg.Outer, DemoFavUiState, FavoriteFeature.Eff.Outer> = store.uiBuilder()
+        .using<Msg.Outer, DemoFavUiState, FavoriteFeature.Eff.Outer>(
             uiStateConverter = { state -> DemoFavUiConverter.convert(state) },
         )
 
@@ -156,11 +196,10 @@ internal class FavScreenModel(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun FavoriteList(
-    state: DemoFavUiState,
+    items: List<FavoriteListItem>,
     removeFavoriteClick: (id: String) -> Unit,
     itemClick: (id: String) -> Unit,
 ) {
-    val items by remember(state) { derivedStateOf { state.listCells.data.orEmpty() } }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(top = 8.dp)
@@ -207,7 +246,25 @@ private fun PreviewFavoriteScreenContent() {
                 )
             ),
             removeFavoriteClick = {},
-            itemClick = {}
+            itemClick = {},
+            retryLoad = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+@Suppress("MagicNumber")
+private fun PreviewFavoriteError() {
+    MaterialTheme {
+        FavoriteScreenContent(
+            scaffoldState = rememberScaffoldState(),
+            state = DemoFavUiState(
+                LCE.Error(IOException())
+            ),
+            removeFavoriteClick = {},
+            itemClick = {},
+            retryLoad = {}
         )
     }
 }
