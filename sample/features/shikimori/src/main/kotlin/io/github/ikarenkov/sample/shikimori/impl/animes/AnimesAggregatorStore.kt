@@ -3,10 +3,12 @@ package io.github.ikarenkov.sample.shikimori.impl.animes
 import io.github.ikarenkov.kombucha.aggregator.AggregatorStore
 import io.github.ikarenkov.kombucha.aggregator.bindEffToMsg
 import io.github.ikarenkov.kombucha.aggregator.bindStateToMsg
+import io.github.ikarenkov.sample.core.pagination.PaginationEff
+import io.github.ikarenkov.sample.core.pagination.PaginationMsg
+import io.github.ikarenkov.sample.core.pagination.PaginationState
+import io.github.ikarenkov.sample.core.pagination.PaginationStore
 import io.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import io.github.ikarenkov.sample.shikimori.impl.auth.AuthStore
-import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
-import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationStore
 import io.github.ikarenkov.sample.shikimori.impl.storeCoroutineExceptionHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -67,20 +69,20 @@ internal class AnimesAggregatorStore(
     }
 
     data class State(
-        val paginationState: PaginationFeature.State<AnimesStoreAgregatorFactory.Anime>,
+        val paginationState: PaginationState<AnimesStoreAgregatorFactory.Anime>,
         val animesState: AnimesFeature.State
     )
 
     sealed interface Msg {
 
-        data class Pagination(val msg: PaginationFeature.Msg) : Msg
+        data class Pagination(val msg: PaginationMsg) : Msg
         data class Animes(val msg: AnimesFeature.Msg) : Msg
 
     }
 
     sealed interface Eff {
 
-        data class Pagination(val msg: PaginationFeature.Eff) : Eff
+        data class Pagination(val msg: PaginationEff) : Eff
         data class Animes(val msg: AnimesFeature.Eff) : Eff
 
     }

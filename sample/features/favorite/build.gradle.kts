@@ -28,8 +28,5 @@ dependencies {
     testImplementation(libs.test.mockk)
     testImplementation(libs.test.coroutines)
     testImplementation(projects.kombucha.test)
-//    implementation(Libs.accompanist.shimmerPlaceholder)
-//    implementation(Libs.support.materialComponents)
-//    implementation(Libs.ui.shimmer)
 
 }

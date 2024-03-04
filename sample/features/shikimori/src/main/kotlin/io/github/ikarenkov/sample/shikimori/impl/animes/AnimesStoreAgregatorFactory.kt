@@ -2,12 +2,12 @@ package io.github.ikarenkov.sample.shikimori.impl.animes
 
 import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.sample.core.pagination.PaginationEff
+import io.github.ikarenkov.sample.core.pagination.PaginationMsg
+import io.github.ikarenkov.sample.core.pagination.PaginationStore
 import io.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
 import io.github.ikarenkov.sample.shikimori.impl.auth.AuthStore
 import io.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
-import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationEffectHandler
-import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
-import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationStore
 
 internal class AnimesStoreAgregatorFactory(
     private val storeFactory: StoreFactory,
@@ -28,14 +28,14 @@ internal class AnimesStoreAgregatorFactory(
 
     class AnimesDataFetcher(
         private val api: ShikimoriBackendApi
-    ) : PaginationEffectHandler.DataFetcher<Anime> {
+    ) : io.github.ikarenkov.sample.core.pagination.PaginationEffectHandler.DataFetcher<Anime> {
 
-        override suspend fun fetch(input: PaginationFeature.Eff.Load): PaginationFeature.Msg.Internal.LoadResult<Anime> =
+        override suspend fun fetch(input: PaginationEff.Load): PaginationMsg.Inner.LoadResult<Anime> =
             api
                 .animes(input.page, input.size)
                 .map { animes -> animes.map { Anime(it.id.toString(), it.name) } }
                 .let {
-                    PaginationFeature.Msg.Internal.LoadResult<Anime>(it, input.page, input.size)
+                    PaginationMsg.Inner.LoadResult<Anime>(it, input.page, input.size)
                 }
     }
 
