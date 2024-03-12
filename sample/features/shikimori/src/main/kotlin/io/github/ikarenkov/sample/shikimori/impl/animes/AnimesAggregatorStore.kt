@@ -28,12 +28,7 @@ internal class AnimesAggregatorStore(
 ) {
 
     override val state: StateFlow<State> =
-        combine(paginationStore.state, animesStore.state, AnimesAggregatorStore::State)
-            .stateIn(
-                scope = coroutineScope,
-                started = SharingStarted.Lazily,
-                initialValue = State(paginationStore.state.value, animesStore.state.value)
-            )
+        combineStates(paginationStore.state, animesStore.state, AnimesAggregatorStore::State)
 
     override val effects: Flow<Eff> = merge(
         animesStore.effects.map { Eff.Animes(it) },
@@ -41,12 +36,12 @@ internal class AnimesAggregatorStore(
     )
 
     init {
-        bindEffToMsg(coroutineScope, animesStore, authStore) { eff ->
+        bindEffToMsg(animesStore, authStore) { eff ->
             when (eff) {
                 AnimesFeature.Eff.Authorize -> AuthFeature.Msg.Auth
             }
         }
-        bindStateToMsg(coroutineScope, authStore, animesStore) { state ->
+        bindStateToMsg(authStore, animesStore) { state ->
             when (state) {
                 is AuthFeature.State.Authorized -> AnimesFeature.Msg.AuthorizationResult.Authorized
                 is AuthFeature.State.Init, is AuthFeature.State.NotAuthorized.OAuthInProgress -> AnimesFeature.Msg.AuthorizationResult.Loading
@@ -75,7 +70,7 @@ internal class AnimesAggregatorStore(
 
     sealed interface Msg {
 
-        data class Pagination(val msg: PaginationMsg) : Msg
+        data class Pagination(val msg: PaginationMsg<AnimesStoreAgregatorFactory.Anime>) : Msg
         data class Animes(val msg: AnimesFeature.Msg) : Msg
 
     }

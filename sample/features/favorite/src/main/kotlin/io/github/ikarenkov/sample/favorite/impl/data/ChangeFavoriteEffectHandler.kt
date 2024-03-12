@@ -6,12 +6,6 @@ import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Eff
 import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Msg
 import kotlinx.coroutines.flow.Flow
 
-internal class FavoriteUpdatesEffectHandler : EffectHandler<Eff.Inner.ObserveFavUpdates, Msg.Inner.AddItem> {
-    override fun handleEff(eff: Eff.Inner.ObserveFavUpdates): Flow<Msg.Inner.AddItem> {
-        TODO("Not yet implemented")
-    }
-}
-
 internal class ChangeFavoriteEffectHandler : EffectHandler<ChangeFavoriteEff, ChangeFavoriteMsg> {
     override fun handleEff(eff: ChangeFavoriteEff): Flow<ChangeFavoriteMsg> {
         TODO("Not yet implemented")

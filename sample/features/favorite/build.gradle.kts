@@ -22,6 +22,7 @@ dependencies {
     implementation(projects.kombucha.uiAdapter)
     implementation(projects.sample.core.feature)
     implementation(projects.sample.core.modoKombucha)
+    implementation(projects.sample.core.pagination)
 
     testImplementation(libs.test.kotlin)
     testImplementation(libs.test.junit.jupiter)

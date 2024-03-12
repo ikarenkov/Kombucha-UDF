@@ -17,17 +17,17 @@ internal class FavoriteRepository {
 
     companion object {
         private val LOAD_DELAY = 3.seconds
-        private val NEW_ITEM_PERIOD = 5.seconds
+        private val NEW_ITEM_PERIOD = 7.seconds
         private const val ITEMS_COUNT = 5
         private const val ID_TOP_BOUND = 99_999
     }
 
-    suspend fun loadFavoriteItems(): Result<List<FavoriteItem>> {
+    suspend fun loadFavoriteItems(): List<FavoriteItem> {
         delay(LOAD_DELAY)
         return if (Random.nextBoolean()) {
-            Result.success(List(ITEMS_COUNT) { generateItem() })
+            List(ITEMS_COUNT) { generateItem() }
         } else {
-            Result.failure(IOException("Emulating fail on loading"))
+            throw IOException("Emulating fail on loading")
         }
     }
 

@@ -37,7 +37,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -48,18 +51,20 @@ import com.github.terrakok.modo.Screen
 import com.github.terrakok.modo.ScreenKey
 import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.model.ScreenModel
-import io.github.ikarenkov.kombucha.sample.modo_kombucha.rememberKombuchaStore
+import com.github.terrakok.modo.model.rememberScreenModel
 import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.ui.uiBuilder
 import io.github.ikarenkov.sample.favorite.R
 import io.github.ikarenkov.sample.favorite.api.favoriteSampleFacade
+import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Eff
 import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Msg
 import io.github.ikarenkov.sample.favorite.impl.core.LCE
-import io.github.ikarenkov.sample.favorite.impl.ui.DemoFavUiConverter
-import io.github.ikarenkov.sample.favorite.impl.ui.DemoFavUiState
 import io.github.ikarenkov.sample.favorite.impl.ui.FavoriteListItem
 import io.github.ikarenkov.sample.favorite.impl.ui.FavoriteListItemContent
+import io.github.ikarenkov.sample.favorite.impl.ui.FavoriteUiConverter
+import io.github.ikarenkov.sample.favorite.impl.ui.FavoriteUiState
 import kotlinx.parcelize.Parcelize
+import org.koin.core.parameter.parametersOf
 import java.io.IOException
 
 @Parcelize
@@ -70,26 +75,32 @@ class FavoriteScreen(
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
     override fun Content() {
-        val store = rememberKombuchaStore {
-            val store = favoriteSampleFacade.scope.get<FavoriteStore>()
-            store
-                .uiBuilder()
-                .using<Msg.Outer, DemoFavUiState, FavoriteFeature.Eff.Outer>(
-                    uiStateConverter = { state -> DemoFavUiConverter.convert(state) },
-                )
+        // POC restoring state after process death (PD)
+        var state: FavoriteFeature.State by rememberSaveable {
+            mutableStateOf(FavoriteFeature.State(LCE.Loading()))
         }
+        val screenModel = rememberScreenModel {
+            val store = favoriteSampleFacade.scope.get<FavoriteStore> { parametersOf(state) }
+            FavoriteScreenModel(store)
+        }
+        LaunchedEffect(key1 = screenModel) {
+            screenModel.store.state.collect {
+                state = it
+            }
+        }
+        val uiStore: Store<Msg.Outer, FavoriteUiState, Eff.Outer> = screenModel.uiStore
         val resources = LocalContext.current.resources
         val scaffoldState = rememberScaffoldState()
-        LaunchedEffect(key1 = store) {
-            store.effects.collect { eff ->
+        LaunchedEffect(key1 = uiStore) {
+            uiStore.effects.collect { eff ->
                 val text = when (eff) {
-                    is FavoriteFeature.Eff.Outer.ItemAdded ->
+                    is Eff.Outer.ItemAdded ->
                         resources.getString(R.string.favorite_item_added, eff.id)
-                    is FavoriteFeature.Eff.Outer.ItemRemoved ->
+                    is Eff.Outer.ItemRemoved ->
                         resources.getString(R.string.favorite_item_removed, eff.id)
-                    is FavoriteFeature.Eff.Outer.ItemClick ->
+                    is Eff.Outer.ItemClick ->
                         resources.getString(R.string.favorite_item_clicked, eff.id)
-                    is FavoriteFeature.Eff.Outer.ItemRemoveError ->
+                    is Eff.Outer.ItemRemoveError ->
                         resources.getString(R.string.favorite_item_remove_error, eff.id)
                 }
                 scaffoldState.snackbarHostState.showSnackbar(text)
@@ -98,10 +109,10 @@ class FavoriteScreen(
 
         FavoriteScreenContent(
             scaffoldState = scaffoldState,
-            state = store.state.collectAsState().value,
-            removeFavoriteClick = { store.accept(Msg.Outer.RemoveFavorite(it)) },
-            itemClick = { store.accept(Msg.Outer.ItemClick(it)) },
-            retryLoad = { store.accept(Msg.Outer.RetryLoad) }
+            state = uiStore.state.collectAsState().value,
+            removeFavoriteClick = { uiStore.accept(Msg.Outer.RemoveFavorite(it)) },
+            itemClick = { uiStore.accept(Msg.Outer.ItemClick(it)) },
+            retryLoad = { uiStore.accept(Msg.Outer.RetryLoad) }
         )
     }
 
@@ -109,9 +120,9 @@ class FavoriteScreen(
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-private fun FavoriteScreenContent(
+internal fun FavoriteScreenContent(
     scaffoldState: ScaffoldState,
-    state: DemoFavUiState,
+    state: FavoriteUiState,
     removeFavoriteClick: (id: String) -> Unit,
     itemClick: (id: String) -> Unit,
     retryLoad: () -> Unit
@@ -122,21 +133,12 @@ private fun FavoriteScreenContent(
             TopAppBar(
                 contentPadding = WindowInsets.statusBars.asPaddingValues(),
                 content = {
-                    Row(
+                    TopBarContent(
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(1f)
-                            .padding(start = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ProvideTextStyle(value = MaterialTheme.typography.h6) {
-                            CompositionLocalProvider(
-                                LocalContentAlpha provides ContentAlpha.high
-                            ) {
-                                Text("Favorite")
-                            }
-                        }
-                    }
+                            .padding(start = 12.dp)
+                    )
                 }
             )
         }
@@ -177,14 +179,39 @@ private fun FavoriteScreenContent(
     }
 }
 
+@Composable
+private fun TopBarContent(modifier: Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ProvideTextStyle(value = MaterialTheme.typography.h6) {
+            CompositionLocalProvider(
+                LocalContentAlpha provides ContentAlpha.high
+            ) {
+                Text("Favorite")
+            }
+        }
+    }
+}
+
 internal class FavoriteScreenModel(
-    store: FavoriteStore
+    val store: FavoriteStore
 ) : ScreenModel {
 
-    val uiStore: Store<Msg.Outer, DemoFavUiState, FavoriteFeature.Eff.Outer> = store.uiBuilder()
-        .using<Msg.Outer, DemoFavUiState, FavoriteFeature.Eff.Outer>(
-            uiStateConverter = { state -> DemoFavUiConverter.convert(state) },
-        )
+    val uiStore: Store<Msg.Outer, FavoriteUiState, Eff.Outer> =
+        store.uiBuilder()
+            .using<Msg.Outer, FavoriteUiState, Eff.Outer>(
+                uiStateConverter = { state -> FavoriteUiConverter.convert(state) },
+            )
+
+    val uiStoreVerbose: Store<Msg.Outer, FavoriteUiState, Eff.Outer> =
+        store.uiBuilder()
+            .using<Msg.Outer, FavoriteUiState, Eff.Outer>(
+                uiStateConverter = { state -> FavoriteUiConverter.convert(state) },
+                uiMsgToMsgConverter = { it as Msg },
+                uiEffConverter = { it as? Eff.Outer }
+            )
 
     override fun onDispose() {
         super.onDispose()
@@ -238,7 +265,7 @@ private fun PreviewFavoriteScreenContent() {
     MaterialTheme {
         FavoriteScreenContent(
             scaffoldState = rememberScaffoldState(),
-            state = DemoFavUiState(
+            state = FavoriteUiState(
                 LCE.Data(
                     List(5) {
                         FavoriteListItem.Item(it.toString(), "Item: $it")
@@ -259,7 +286,7 @@ private fun PreviewFavoriteError() {
     MaterialTheme {
         FavoriteScreenContent(
             scaffoldState = rememberScaffoldState(),
-            state = DemoFavUiState(
+            state = FavoriteUiState(
                 LCE.Error(IOException())
             ),
             removeFavoriteClick = {},

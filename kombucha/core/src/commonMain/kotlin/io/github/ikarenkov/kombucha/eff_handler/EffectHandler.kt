@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.mapNotNull
 
-interface EffectHandler<Eff : Any, Msg : Any> {
+interface EffectHandler<in Eff : Any, out Msg : Any> {
 
     fun handleEff(eff: Eff): Flow<Msg>
 
