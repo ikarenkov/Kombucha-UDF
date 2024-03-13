@@ -15,13 +15,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlin.test.assertContentEquals
 
-fun <Msg : Any, State : Any, Eff : Any> testStoreReducer(
-    createStore: (StoreFactory) -> Store<Msg, State, Eff>,
-    testDataBuilder: TestReducerDslBuilder<Msg, State, Eff>.() -> Unit
-) {
-    testStoreReducer(createStore, TestReducerDslBuilder<Msg, State, Eff>().apply(testDataBuilder).build())
-}
-
 @OptIn(ExperimentalCoroutinesApi::class)
 fun <Msg : Any, State : Any, Eff : Any> testStoreReducer(
     createStore: (StoreFactory) -> Store<Msg, State, Eff>,

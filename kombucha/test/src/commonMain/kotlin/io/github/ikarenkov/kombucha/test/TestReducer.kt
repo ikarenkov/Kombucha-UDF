@@ -1,7 +1,7 @@
 package io.github.ikarenkov.kombucha.test
 
 import io.github.ikarenkov.kombucha.reducer.Reducer
-import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 
 /**
  * Test given [reducer] by passing [initialState] and given messages described in [reducerResultsBuilder].
@@ -25,9 +25,9 @@ import kotlin.test.assertContentEquals
 fun <Msg : Any, State : Any, Eff : Any> testReducer(
     initialState: State,
     reducer: Reducer<Msg, State, Eff>,
-    reducerResultsBuilder: TestReducerDslBuilder<Msg, State, Eff>.() -> Unit
+    reducerResultsBuilder: TestReducerDsl<Msg, State, Eff>.() -> Unit
 ) {
-    testReducer(initialState, reducer, TestReducerDslBuilder<Msg, State, Eff>().apply(reducerResultsBuilder).build())
+    TestReducerDsl<Msg, State, Eff>(initialState, reducer).apply(reducerResultsBuilder)
 }
 
 /**
@@ -55,14 +55,64 @@ fun <Msg : Any, State : Any, Eff : Any> testReducer(
     reducer: Reducer<Msg, State, Eff>,
     expectedReducerResults: List<ReducerTestData<Msg, State, Eff>>
 ) {
-    val actualReducerResults = mutableListOf<ReducerTestData<Msg, State, Eff>>()
-    for ((msg, _, _) in expectedReducerResults) {
-        val previousState = actualReducerResults.lastOrNull()?.providedState ?: initialState
-        val reducerResult = reducer(msg = msg, state = previousState)
-        actualReducerResults += ReducerTestData(msg, reducerResult)
+    var previousState: State = initialState
+    for ((index, reducerTestData) in expectedReducerResults.withIndex()) {
+        assertReducerRunCorrect(
+            testStep = index,
+            currentState = previousState,
+            reducerTestData = reducerTestData,
+            reducer = reducer
+        )
+        // if previous state is not failing then we can take state from test data
+        previousState = reducerTestData.expectedState
     }
-    assertContentEquals(
-        expectedReducerResults,
-        actualReducerResults
+}
+
+internal fun <Msg : Any, State : Any, Eff : Any> assertReducerRunCorrect(
+    testStep: Int,
+    currentState: State,
+    reducerTestData: ReducerTestData<Msg, State, Eff>,
+    reducer: Reducer<Msg, State, Eff>,
+) {
+    val (msg, expectState, expectEffects) = reducerTestData
+    val (actualState, actualEffects) = reducer(msg = msg, state = currentState)
+    assertEquals(
+        expected = expectState to expectEffects,
+        actual = actualState to actualEffects,
+        message = getAssertionMessage(testStep, msg, currentState, expectState, expectEffects, actualState, actualEffects)
     )
+}
+
+private fun <Eff : Any, Msg : Any, State : Any> getAssertionMessage(
+    testStep: Int,
+    msg: Msg,
+    previousState: State,
+    expectState: State,
+    expectEffects: Set<Eff>,
+    actualState: State,
+    actualEffects: Set<Eff>
+) = buildString {
+    appendLine("Test reducer step $testStep: Expected behavior differs from actual.")
+    appendLine("==========================================================")
+
+    appendLine("  Msg  : $msg")
+    appendLine("   +")
+    appendLine(" State : $previousState")
+    appendLine("   |")
+    appendLine("   V")
+    addExpectedActual("State", expectState, actualState)
+    appendLine("   +")
+    addExpectedActual("Effects", expectEffects, actualEffects)
+
+    appendLine("==========================================================")
+}
+
+private fun <T : Any> StringBuilder.addExpectedActual(name: String, expectState: T, actualState: T) {
+    if (expectState == actualState) {
+        appendLine(" $name : $actualState")
+    } else {
+        appendLine(" $name :")
+        appendLine("    Expected: $expectState")
+        appendLine("    Actual  : $actualState")
+    }
 }
