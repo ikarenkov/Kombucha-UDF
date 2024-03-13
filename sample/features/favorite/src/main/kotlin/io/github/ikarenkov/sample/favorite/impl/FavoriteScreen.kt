@@ -56,8 +56,8 @@ import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.ui.uiBuilder
 import io.github.ikarenkov.sample.favorite.R
 import io.github.ikarenkov.sample.favorite.api.favoriteSampleFacade
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Eff
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Msg
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.Eff
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.Msg
 import io.github.ikarenkov.sample.favorite.impl.core.LCE
 import io.github.ikarenkov.sample.favorite.impl.ui.FavoriteListItem
 import io.github.ikarenkov.sample.favorite.impl.ui.FavoriteListItemContent
@@ -76,11 +76,11 @@ class FavoriteScreen(
     @Composable
     override fun Content() {
         // POC restoring state after process death (PD)
-        var state: FavoriteFeature.State by rememberSaveable {
-            mutableStateOf(FavoriteFeature.State(LCE.Loading()))
+        var state: FavoriteListFeature.State by rememberSaveable {
+            mutableStateOf(FavoriteListFeature.State(LCE.Loading()))
         }
         val screenModel = rememberScreenModel {
-            val store = favoriteSampleFacade.scope.get<FavoriteStore> { parametersOf(state) }
+            val store = favoriteSampleFacade.scope.get<FavoriteListStore> { parametersOf(state) }
             FavoriteScreenModel(store)
         }
         LaunchedEffect(key1 = screenModel) {
@@ -196,7 +196,7 @@ private fun TopBarContent(modifier: Modifier) {
 }
 
 internal class FavoriteScreenModel(
-    val store: FavoriteStore
+    val store: FavoriteListStore
 ) : ScreenModel {
 
     val uiStore: Store<Msg.Outer, FavoriteUiState, Eff.Outer> =

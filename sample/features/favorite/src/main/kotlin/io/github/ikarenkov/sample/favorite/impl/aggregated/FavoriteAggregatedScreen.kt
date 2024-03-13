@@ -48,18 +48,18 @@ class FavoriteAggregatedScreen(
         LaunchedEffect(key1 = uiStore) {
             uiStore.effects.collect { eff ->
                 val text: String? = when (val eff = (eff as FavoriteAggregatedFeature.Eff.FavoriteInteraction).eff) {
-                    is FavoriteInteractionFeature.Eff.Outer.ItemClick ->
+                    is FavoriteFeature.Eff.Outer.ItemClick ->
                         resources.getString(R.string.favorite_item_clicked, eff.id)
-                    is FavoriteInteractionFeature.Eff.Outer.ItemUpdateFinished -> {
-                        if (eff.update.isFavorite) {
-                            resources.getString(R.string.favorite_item_added, eff.update.id)
+                    is FavoriteFeature.Eff.Outer.ItemUpdate.Finished -> {
+                        if (eff.item.isFavorite) {
+                            resources.getString(R.string.favorite_item_added, eff.item.id)
                         } else {
-                            resources.getString(R.string.favorite_item_removed, eff.update.id)
+                            resources.getString(R.string.favorite_item_removed, eff.item.id)
                         }
                     }
-                    is FavoriteInteractionFeature.Eff.Outer.ItemUpdateError ->
-                        resources.getString(R.string.favorite_item_remove_error, eff.id)
-                    is FavoriteInteractionFeature.Eff.Outer.ItemUpdateStarted -> null
+                    is FavoriteFeature.Eff.Outer.ItemUpdate.Error ->
+                        resources.getString(R.string.favorite_item_remove_error, eff.item.id)
+                    is FavoriteFeature.Eff.Outer.ItemUpdate.Started -> null
                 }
                 if (text != null) {
                     scaffoldState.snackbarHostState.showSnackbar(text)
@@ -73,14 +73,14 @@ class FavoriteAggregatedScreen(
             removeFavoriteClick = {
                 uiStore.accept(
                     FavoriteAggregatedFeature.Msg.Msg(
-                        FavoriteInteractionFeature.Msg.Outer.UpdateFavorite(
+                        FavoriteFeature.Msg.Outer.UpdateFavorite(
                             it,
                             false
                         )
                     )
                 )
             },
-            itemClick = { uiStore.accept(FavoriteAggregatedFeature.Msg.Msg(FavoriteInteractionFeature.Msg.Outer.ItemClick(it))) },
+            itemClick = { uiStore.accept(FavoriteAggregatedFeature.Msg.Msg(FavoriteFeature.Msg.Outer.ItemClick(it))) },
             retryLoad = { uiStore.accept(FavoriteAggregatedFeature.Msg.Msg(PaginationMsg.Outer.RetryLoadNext)) }
         )
     }
@@ -97,9 +97,9 @@ internal class FavoriteScreenModel(
                 uiStateConverter = { state -> FavoriteUiConverter.convert(state) },
             )
 
-    val uiStoreVerbose: Store<FavoriteAggregatedFeature.Msg, FavoriteUiState, FavoriteInteractionFeature.Eff.Outer> =
+    val uiStoreVerbose: Store<FavoriteAggregatedFeature.Msg, FavoriteUiState, FavoriteFeature.Eff.Outer> =
         store.uiBuilder()
-            .using<FavoriteAggregatedFeature.Msg, FavoriteUiState, FavoriteInteractionFeature.Eff.Outer>(
+            .using<FavoriteAggregatedFeature.Msg, FavoriteUiState, FavoriteFeature.Eff.Outer>(
                 uiStateConverter = { state -> FavoriteUiConverter.convert(state) },
                 uiMsgToMsgConverter = { it as FavoriteAggregatedFeature.Msg },
                 uiEffConverter = { (it as? FavoriteAggregatedFeature.Eff.FavoriteInteraction)?.eff }

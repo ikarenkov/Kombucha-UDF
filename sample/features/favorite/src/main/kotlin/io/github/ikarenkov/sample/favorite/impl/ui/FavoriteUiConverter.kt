@@ -1,7 +1,7 @@
 package io.github.ikarenkov.sample.favorite.impl.ui
 
 import io.github.ikarenkov.sample.core.pagination.PaginationState
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature
 import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteAggregatedFeature
 import io.github.ikarenkov.sample.favorite.impl.core.LCE
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteItem
@@ -10,7 +10,7 @@ internal object FavoriteUiConverter {
 
     private const val SHIMMERS_COUNT = 5
 
-    fun convert(state: FavoriteFeature.State): FavoriteUiState = when (state.content) {
+    fun convert(state: FavoriteListFeature.State): FavoriteUiState = when (state.content) {
         is LCE.Initial, is LCE.Loading -> FavoriteUiState(LCE.Data(getShimmerCells()))
         is LCE.Data -> FavoriteUiState(LCE.Data(toUiItem(state.content.value)))
         is LCE.Error -> FavoriteUiState(LCE.Error(state.content.error))

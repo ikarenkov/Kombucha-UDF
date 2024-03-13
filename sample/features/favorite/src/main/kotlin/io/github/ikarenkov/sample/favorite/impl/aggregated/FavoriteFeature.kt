@@ -7,10 +7,10 @@ import io.github.ikarenkov.kombucha.reducer.dslReducer
 import io.github.ikarenkov.kombucha.store.CoroutinesStore
 import io.github.ikarenkov.sample.favorite.api.FavoriteUpdate
 import io.github.ikarenkov.sample.favorite.impl.FavoriteAnalytics
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionFeature.Eff
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionFeature.Msg
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionFeature.State
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionFeature.reducer
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteFeature.Eff
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteFeature.Msg
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteFeature.State
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteFeature.reducer
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteItem
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteRepository
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-internal class FavoriteInteractionStore(
+internal class FavoriteStore(
     favoriteEffectHandler: FavoriteEffectHandler,
     favoriteAnalytics: FavoriteAnalytics
 ) : CoroutinesStore<Msg, State, Eff>(
@@ -47,7 +47,7 @@ internal class FavoriteInteractionStore(
 
 }
 
-object FavoriteInteractionFeature {
+object FavoriteFeature {
 
     val reducer = dslReducer<Msg, State, Eff> { msg ->
         when (msg) {
@@ -58,20 +58,21 @@ object FavoriteInteractionFeature {
 
     private fun ResultBuilder<State, Eff>.innerReducer(msg: Msg.Inner) {
         when (msg) {
-            is Msg.Inner.ItemRemoveResult.Done -> {
+            is Msg.Inner.ItemRemoveResult -> {
                 state {
                     this - msg.id
                 }
-                eff(Eff.Outer.ItemUpdateFinished(FavoriteUpdate(msg.id, isFavorite = false)))
-            }
-            is Msg.Inner.ItemRemoveResult.Error -> {
-                state {
-                    this - msg.id
-                }
-                eff(Eff.Outer.ItemUpdateError(msg.id, previousFavorite = true))
+                eff(
+                    when (msg) {
+                        is Msg.Inner.ItemRemoveResult.Done ->
+                            Eff.Outer.ItemUpdate.Finished(FavoriteUpdate(msg.id, isFavorite = false))
+                        is Msg.Inner.ItemRemoveResult.Error ->
+                            Eff.Outer.ItemUpdate.Error(FavoriteUpdate(msg.id, isFavorite = false), msg.throwable)
+                    }
+                )
             }
             is Msg.Inner.AddItem -> {
-                eff(Eff.Outer.ItemUpdateFinished(FavoriteUpdate(msg.item.id, isFavorite = true)))
+                eff(Eff.Outer.ItemUpdate.Finished(FavoriteUpdate(msg.item.id, isFavorite = true)))
             }
         }
     }
@@ -79,19 +80,21 @@ object FavoriteInteractionFeature {
     private fun ResultBuilder<State, Eff>.outerReducer(msg: Msg.Outer) {
         when (msg) {
             is Msg.Outer.UpdateFavorite -> {
-                val isAlreadyRemoving = state.removingItems[msg.id] != null
-                if (!isAlreadyRemoving) {
-                    val item = FavoriteItem(
+                val isUpdating = state.updatingItems[msg.id] != null
+                if (msg.isFavorite) {
+                    TODO("need to implement cancellation if update is in progress")
+                }
+                if (!isUpdating) {
+                    val item = FavoriteUpdate(
                         id = msg.id,
                         isFavorite = false,
-                        updatingFavorite = true
                     )
                     state {
                         this + item
                     }
                     eff(
                         Eff.Inner.RemoveItem(msg.id),
-                        Eff.Outer.ItemUpdateStarted(FavoriteUpdate(item.id, item.isFavorite)),
+                        Eff.Outer.ItemUpdate.Started(FavoriteUpdate(item.id, item.isFavorite)),
                     )
                 }
             }
@@ -100,25 +103,35 @@ object FavoriteInteractionFeature {
     }
 
     private infix operator fun State.minus(id: String): State =
-        copy(removingItems - id)
+        copy(updatingItems - id)
 
-    private infix operator fun State.plus(item: FavoriteItem): State =
-        copy(removingItems + (item.id to item))
+    private infix operator fun State.plus(item: FavoriteUpdate): State =
+        copy(updatingItems + (item.id to item))
 
     data class State(
-        val removingItems: Map<String, FavoriteItem>
+        /**
+         * Contains currently updating items with desired favorite value.
+         */
+        val updatingItems: Map<String, FavoriteUpdate>
     )
 
     sealed interface Eff {
 
         sealed interface Outer : Eff {
-            data class ItemUpdateStarted(val update: FavoriteUpdate) : Outer
-            data class ItemUpdateFinished(val update: FavoriteUpdate) : Outer
 
-            /**
-             * Send when we failed to update item. We also send ItemUpdate to reset isFavorite to previous state
-             */
-            data class ItemUpdateError(val id: String, val previousFavorite: Boolean) : Outer
+            sealed interface ItemUpdate : Outer {
+                val item: FavoriteUpdate
+
+                data class Started(override val item: FavoriteUpdate) : ItemUpdate
+                data class Finished(override val item: FavoriteUpdate) : ItemUpdate
+
+                /**
+                 * contains desired favorite status, failed
+                 */
+                data class Error(override val item: FavoriteUpdate, val throwable: Throwable?) : ItemUpdate
+
+            }
+
             data class ItemClick(val id: String) : Outer
         }
 

@@ -5,9 +5,9 @@ import io.github.ikarenkov.kombucha.eff_handler.adaptCast
 import io.github.ikarenkov.kombucha.reducer.ResultBuilder
 import io.github.ikarenkov.kombucha.reducer.dslReducer
 import io.github.ikarenkov.kombucha.store.CoroutinesStore
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Eff
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Msg
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.State
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.Eff
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.Msg
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.State
 import io.github.ikarenkov.sample.favorite.impl.core.LCE
 import io.github.ikarenkov.sample.favorite.impl.core.toLce
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteItem
@@ -19,13 +19,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
-internal class FavoriteStore(
+internal class FavoriteListStore(
     effectHandler: FavoriteEffHandler,
     initialState: State = State(LCE.Loading()),
     favoriteAnalytics: FavoriteAnalytics
 ) : CoroutinesStore<Msg, State, Eff>(
     name = "FavoriteStore",
-    reducer = FavoriteFeature.reducer,
+    reducer = FavoriteListFeature.reducer,
     initialState = initialState,
     initialEffects = setOfNotNull(
         Eff.Inner.LoadFav.takeIf {
@@ -54,7 +54,7 @@ internal class FavoriteStore(
 
 }
 
-internal object FavoriteFeature {
+internal object FavoriteListFeature {
 
     val reducer = dslReducer<Msg, State, Eff> { msg ->
         when (msg) {

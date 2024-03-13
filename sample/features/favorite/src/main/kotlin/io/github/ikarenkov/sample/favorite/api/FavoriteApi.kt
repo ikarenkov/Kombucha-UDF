@@ -3,14 +3,13 @@ package io.github.ikarenkov.sample.favorite.api
 import com.github.terrakok.modo.Screen
 import io.github.ikarenkov.sample.favorite.impl.FavoriteScreen
 import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteAggregatedScreen
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionFeature
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionStore
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteFeature
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteStore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 class FavoriteApi internal constructor(
-    private val favoriteInteractionStore: FavoriteInteractionStore
+    private val favoriteStore: FavoriteStore
 ) {
 
     fun favoriteListScreen(): Screen = FavoriteScreen()
@@ -21,14 +20,19 @@ class FavoriteApi internal constructor(
         id: String,
         isFavorite: Boolean
     ) {
-        favoriteInteractionStore.accept(
-            FavoriteInteractionFeature.Msg.Outer.UpdateFavorite(id, isFavorite)
+        favoriteStore.accept(
+            FavoriteFeature.Msg.Outer.UpdateFavorite(id, isFavorite)
         )
     }
 
     fun observeFavoriteUpdates(): Flow<FavoriteUpdate> =
-        favoriteInteractionStore.effects
-            .filterIsInstance<FavoriteInteractionFeature.Eff.Outer.ItemUpdateFinished>()
-            .map { it.update }
+        favoriteStore.effects
+            .mapNotNull { eff ->
+                when (eff) {
+                    is FavoriteFeature.Eff.Outer.ItemUpdate.Started -> eff.item
+                    is FavoriteFeature.Eff.Outer.ItemUpdate.Error -> eff.item.run { copy(isFavorite = !isFavorite) }
+                    else -> null
+                }
+            }
 
 }

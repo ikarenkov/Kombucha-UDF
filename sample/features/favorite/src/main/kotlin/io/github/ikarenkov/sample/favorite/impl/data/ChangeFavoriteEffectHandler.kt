@@ -2,8 +2,8 @@ package io.github.ikarenkov.sample.favorite.impl.data
 
 import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.eff_handler.adapt
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Eff
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Msg
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.Eff
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.Msg
 import kotlinx.coroutines.flow.Flow
 
 internal class ChangeFavoriteEffectHandler : EffectHandler<ChangeFavoriteEff, ChangeFavoriteMsg> {

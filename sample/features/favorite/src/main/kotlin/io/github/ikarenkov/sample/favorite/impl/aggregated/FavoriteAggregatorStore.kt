@@ -10,12 +10,11 @@ import io.github.ikarenkov.sample.favorite.impl.data.FavoriteItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 
 internal class FavoriteAggregatorStore(
     private val paginationStore: FavoritePaginationStore,
-    private val interactionStore: FavoriteInteractionStore,
+    private val interactionStore: FavoriteStore,
 ) : AggregatorStore<Msg, State, Eff>(
     name = "FavoriteAggregatorStore"
 ) {
@@ -23,7 +22,7 @@ internal class FavoriteAggregatorStore(
         combineStates(paginationStore.state, interactionStore.state, ::State)
 
     override val effects: Flow<Eff> = interactionStore.effects
-        .filterIsInstance<FavoriteInteractionFeature.Eff.Outer>()
+        .filterIsInstance<FavoriteFeature.Eff.Outer>()
         .mapNotNull {
             val paginationState = paginationStore.state.value
             if (paginationState.hadSuccessLoading) {
@@ -36,8 +35,8 @@ internal class FavoriteAggregatorStore(
     init {
         bindEffToMsg(interactionStore, paginationStore) { eff ->
             when (eff) {
-                is FavoriteInteractionFeature.Eff.Outer.ItemUpdateFinished -> {
-                    val (id, isFavorite) = eff.update
+                is FavoriteFeature.Eff.Outer.ItemUpdate.Finished -> {
+                    val (id, isFavorite) = eff.item
                     if (isFavorite) {
                         val paginationState = paginationStore.state.value
                         if (paginationState.hadSuccessLoading) {
@@ -51,8 +50,8 @@ internal class FavoriteAggregatorStore(
                         }
                     }
                 }
-                is FavoriteInteractionFeature.Eff.Outer.ItemUpdateStarted -> {
-                    val (id, isFavorite) = eff.update
+                is FavoriteFeature.Eff.Outer.ItemUpdate.Started -> {
+                    val (id, isFavorite) = eff.item
                     if (isFavorite) {
                         PaginationMsg.Outer.AddItem(FavoriteItem(id = id))
                     } else {
@@ -68,12 +67,11 @@ internal class FavoriteAggregatorStore(
                         }
                     }
                 }
-                is FavoriteInteractionFeature.Eff.Outer.ItemUpdateError -> {
-                    val (id, isFavorite) = eff
+                is FavoriteFeature.Eff.Outer.ItemUpdate.Error -> {
                     PaginationMsg.Outer.UpdateItems { item ->
-                        if (item.id == id) {
+                        if (item.id == eff.item.id) {
                             item.copy(
-                                isFavorite = isFavorite,
+                                isFavorite = !eff.item.isFavorite,
                                 updatingFavorite = false
                             )
                         } else {
@@ -103,20 +101,20 @@ internal class FavoriteAggregatorStore(
 internal object FavoriteAggregatedFeature {
     data class State(
         val pagination: PaginationState<FavoriteItem>,
-        val favoriteInteraction: FavoriteInteractionFeature.State
+        val favoriteInteraction: FavoriteFeature.State
     )
 
     sealed interface Msg {
         data class Pagination(val msg: PaginationMsg.Outer<FavoriteItem>) : Msg
-        data class FavoriteInteraction(val msg: FavoriteInteractionFeature.Msg.Outer) : Msg
+        data class FavoriteInteraction(val msg: FavoriteFeature.Msg.Outer) : Msg
 
         companion object {
             fun Msg(msg: PaginationMsg.Outer<FavoriteItem>) = Pagination(msg)
-            fun Msg(msg: FavoriteInteractionFeature.Msg.Outer) = FavoriteInteraction(msg)
+            fun Msg(msg: FavoriteFeature.Msg.Outer) = FavoriteInteraction(msg)
         }
     }
 
     sealed interface Eff {
-        data class FavoriteInteraction(val eff: FavoriteInteractionFeature.Eff.Outer) : Eff
+        data class FavoriteInteraction(val eff: FavoriteFeature.Eff.Outer) : Eff
     }
 }
