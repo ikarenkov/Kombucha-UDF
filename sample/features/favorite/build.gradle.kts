@@ -22,14 +22,12 @@ dependencies {
     implementation(projects.kombucha.uiAdapter)
     implementation(projects.sample.core.feature)
     implementation(projects.sample.core.modoKombucha)
+    implementation(projects.sample.core.pagination)
 
     testImplementation(libs.test.kotlin)
     testImplementation(libs.test.junit.jupiter)
     testImplementation(libs.test.mockk)
     testImplementation(libs.test.coroutines)
     testImplementation(projects.kombucha.test)
-//    implementation(Libs.accompanist.shimmerPlaceholder)
-//    implementation(Libs.support.materialComponents)
-//    implementation(Libs.ui.shimmer)
 
 }

@@ -2,7 +2,9 @@
 
 package io.github.ikarenkov.sample.favorite.impl.core
 
-sealed class LCE<out T> {
+import java.io.Serializable
+
+sealed class LCE<out T> : Serializable {
 
     fun <R> map(f: (T) -> R): LCE<R> {
         return when (this) {
@@ -31,16 +33,34 @@ sealed class LCE<out T> {
         get() = this is Loading || this is Initial
 
     @Suppress("detekt.ClassStructure")
-    object Initial : LCE<Nothing>()
+    object Initial : LCE<Nothing>() {
+        private const val serialVersionUID: Long = -672209942124939891L
+    }
 
     data class Data<T>(
         val value: T,
         val isReloading: Boolean = false,
-    ) : LCE<T>()
+    ) : LCE<T>() {
+        companion object {
+            private const val serialVersionUID: Long = 3393430746733121748L
+        }
+    }
 
-    data class Error(val error: Throwable) : LCE<Nothing>()
+    data class Error(val error: Throwable) : LCE<Nothing>() {
+        companion object {
+            private const val serialVersionUID: Long = -5345378515844049870L
+        }
+    }
 
-    data class Loading<T>(val isInitial: Boolean = false, val previousValue: T? = null) : LCE<T>()
+    data class Loading<T>(val isInitial: Boolean = false, val previousValue: T? = null) : LCE<T>() {
+        companion object {
+            private const val serialVersionUID: Long = -2510278964850328160L
+        }
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = -594079817251997558L
+    }
 }
 
 fun <T> Result<T>.toLce() = fold(

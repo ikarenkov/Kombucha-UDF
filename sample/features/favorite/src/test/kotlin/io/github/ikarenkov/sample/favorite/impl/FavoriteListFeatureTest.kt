@@ -1,14 +1,14 @@
 package io.github.ikarenkov.sample.favorite.impl
 
 import io.github.ikarenkov.kombucha.test.testReducer
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Eff
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Msg
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.State
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.Eff
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.Msg
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.State
 import io.github.ikarenkov.sample.favorite.impl.core.LCE
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteItem
 import kotlin.test.Test
 
-class FavoriteFeatureTest {
+class FavoriteListFeatureTest {
 
     private val initialItems = List(5) { FavoriteItem(it.toString(), "Item: $it") }
 
@@ -16,7 +16,7 @@ class FavoriteFeatureTest {
     fun `Test initial loading`() {
         testReducer(
             initialState = State(LCE.Loading()),
-            reducer = FavoriteFeature.reducer
+            reducer = FavoriteListFeature.reducer
         ) {
             Msg.Inner.ItemLoadingResult(Result.success(initialItems)) assertReturn State(LCE.Data(initialItems))
         }
@@ -26,7 +26,7 @@ class FavoriteFeatureTest {
     fun `Test add item before loading result`() {
         testReducer(
             initialState = State(LCE.Loading()),
-            reducer = FavoriteFeature.reducer
+            reducer = FavoriteListFeature.reducer
         ) {
             val newItem = FavoriteItem("new", "new")
             Msg.Outer.RemoveFavorite(newItem.id) assertReturn
@@ -41,7 +41,7 @@ class FavoriteFeatureTest {
     fun `When remove item error - Then restore item`() {
         testReducer(
             initialState = State(LCE.Data(initialItems)),
-            reducer = FavoriteFeature.reducer
+            reducer = FavoriteListFeature.reducer
         ) {
             val removeItem = initialItems[1]
 

@@ -37,11 +37,13 @@ import com.github.terrakok.modo.ScreenKey
 import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.model.ScreenModel
 import com.github.terrakok.modo.model.rememberScreenModel
+import io.github.ikarenkov.sample.core.pagination.PaginationFeature
+import io.github.ikarenkov.sample.core.pagination.PaginationMsg
+import io.github.ikarenkov.sample.core.pagination.PaginationState
 import io.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
 import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesAggregatorStore
 import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature
 import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesStoreAgregatorFactory
-import io.github.ikarenkov.sample.shikimori.impl.pagination.PaginationFeature
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -113,7 +115,7 @@ private fun AnimesScreenContent(model: AnimesScreenModel) {
                 .collect { needLoadMore ->
                     withContext(Dispatchers.IO) {
                         if (needLoadMore) {
-                            model.store.accept(AnimesAggregatorStore.Msg.Pagination(PaginationFeature.Msg.LoadNext))
+                            model.store.accept(AnimesAggregatorStore.Msg.Pagination(PaginationMsg.Outer.LoadNext))
                         }
                     }
                 }
@@ -128,13 +130,13 @@ private fun AnimesScreenContent(model: AnimesScreenModel) {
             }
             if (paginationState.items.isNotEmpty()) {
                 when (paginationState.nextPageLoadingState) {
-                    PaginationFeature.State.PageLoadingState.Loading -> item {
+                    PaginationState.PageLoadingState.Loading -> item {
                         ItemLoading()
                     }
-                    is PaginationFeature.State.PageLoadingState.Error -> item {
+                    is PaginationState.PageLoadingState.Error -> item {
                         ItemError(model)
                     }
-                    PaginationFeature.State.PageLoadingState.Idle -> {}
+                    PaginationState.PageLoadingState.Idle -> {}
                 }
             }
         }
@@ -146,11 +148,11 @@ private fun AnimesScreenContent(model: AnimesScreenModel) {
 
 @Composable
 private fun EmptyStateContent(
-    paginationState: PaginationFeature.State<AnimesStoreAgregatorFactory.Anime>,
+    paginationState: PaginationState<AnimesStoreAgregatorFactory.Anime>,
     model: AnimesScreenModel
 ) {
-    if (paginationState.nextPageLoadingState is PaginationFeature.State.PageLoadingState.Error) {
-        Button(onClick = { model.store.accept(AnimesAggregatorStore.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext)) }) {
+    if (paginationState.nextPageLoadingState is PaginationState.PageLoadingState.Error) {
+        Button(onClick = { model.store.accept(AnimesAggregatorStore.Msg.Pagination(PaginationMsg.Outer.RetryLoadNext)) }) {
             Text(text = "Error, try again")
         }
     } else {
@@ -168,7 +170,7 @@ private fun ItemError(model: AnimesScreenModel) {
         Box(Modifier.fillMaxWidth()) {
             Button(
                 onClick = {
-                    model.store.accept(AnimesAggregatorStore.Msg.Pagination(PaginationFeature.Msg.RetryLoadNext))
+                    model.store.accept(AnimesAggregatorStore.Msg.Pagination(PaginationMsg.Outer.RetryLoadNext))
                 }
             ) {
                 Text(text = "Error, try again")

@@ -4,11 +4,10 @@ import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.eff_handler.adaptCast
 import io.github.ikarenkov.kombucha.reducer.ResultBuilder
 import io.github.ikarenkov.kombucha.reducer.dslReducer
-import io.github.ikarenkov.kombucha.store.Store
-import io.github.ikarenkov.kombucha.store.StoreFactory
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Eff
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.Msg
-import io.github.ikarenkov.sample.favorite.impl.FavoriteFeature.State
+import io.github.ikarenkov.kombucha.store.CoroutinesStore
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.Eff
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.Msg
+import io.github.ikarenkov.sample.favorite.impl.FavoriteListFeature.State
 import io.github.ikarenkov.sample.favorite.impl.core.LCE
 import io.github.ikarenkov.sample.favorite.impl.core.toLce
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteItem
@@ -17,19 +16,45 @@ import io.github.ikarenkov.sample.favorite.impl.data.changeFavorite
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import java.io.Serializable
 
-internal class FavoriteStore(
-    storeFactory: StoreFactory,
+internal class FavoriteListStore(
     effectHandler: FavoriteEffHandler,
-) : Store<Msg, State, Eff> by storeFactory.create(
+    initialState: State = State(LCE.Loading()),
+    favoriteAnalytics: FavoriteAnalytics
+) : CoroutinesStore<Msg, State, Eff>(
     name = "FavoriteStore",
-    reducer = FavoriteFeature.reducer,
-    initialState = State(LCE.Loading()),
-    initialEffects = setOf(Eff.Inner.LoadFav, Eff.Inner.ObserveFavUpdates),
-    effectHandlers = arrayOf(effectHandler.adaptCast())
-)
+    reducer = FavoriteListFeature.reducer,
+    initialState = initialState,
+    initialEffects = setOfNotNull(
+        Eff.Inner.LoadFav.takeIf {
+            initialState == State(LCE.Loading())
+        },
+        Eff.Inner.ObserveFavUpdates
+    ),
+    effectHandlers = listOf(effectHandler.adaptCast())
+) {
 
-internal object FavoriteFeature {
+    init {
+        coroutinesScope.launch {
+            storeUpdates.collect { (msg, oldState, newState, effects) ->
+                when (msg) {
+                    is Msg.Outer.ItemClick -> {
+                        favoriteAnalytics.itemClick(msg.id, isFavorite = true)
+                    }
+                    is Msg.Outer.RemoveFavorite -> {
+                        favoriteAnalytics.changeFavoriteClick(msg.id, desiredFavorite = false)
+                    }
+                    else -> Unit
+                }
+            }
+        }
+    }
+
+}
+
+internal object FavoriteListFeature {
 
     val reducer = dslReducer<Msg, State, Eff> { msg ->
         when (msg) {
@@ -62,7 +87,7 @@ internal object FavoriteFeature {
                 eff(Eff.Outer.ItemRemoveError(msg.id))
             }
             is Msg.Inner.AddItem -> {
-                if (state.content is LCE.Data<*>) {
+                if (state.content is LCE.Data) {
                     state { addItem(msg.item) }
                     eff(Eff.Outer.ItemAdded(msg.item.id))
                 }
@@ -172,7 +197,11 @@ internal object FavoriteFeature {
 
     internal data class State(
         val content: LCE<List<FavoriteItem>>,
-    )
+    ) : Serializable {
+        companion object {
+            private const val serialVersionUID: Long = -4363109422258770646L
+        }
+    }
 }
 
 internal class FavoriteEffHandler(
@@ -182,7 +211,7 @@ internal class FavoriteEffHandler(
     override fun handleEff(eff: Eff.Inner): Flow<Msg.Inner> = when (eff) {
         is Eff.Inner.LoadFav -> flow {
             emit(
-                Msg.Inner.ItemLoadingResult(repository.loadFavoriteItems())
+                Msg.Inner.ItemLoadingResult(runCatching { repository.loadFavoriteItems() })
             )
         }
         is Eff.Inner.RemoveItem -> flow {

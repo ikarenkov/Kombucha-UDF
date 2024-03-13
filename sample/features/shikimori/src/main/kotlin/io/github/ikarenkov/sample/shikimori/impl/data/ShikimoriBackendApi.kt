@@ -34,8 +34,8 @@ internal class ShikimoriBackendApi(
         }
     }
 
-    suspend fun animes(page: Int = 1, limit: Int = 10): Result<List<AnimeResponse>> =
-        client.runCatching {
+    suspend fun animes(page: Int = 1, limit: Int = 10): List<AnimeResponse> =
+        client.run {
             get {
                 url {
                     path("api/animes")

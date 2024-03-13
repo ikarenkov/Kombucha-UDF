@@ -30,6 +30,7 @@ dependencies {
 
     implementation(projects.kombucha.core)
     implementation(projects.sample.core.feature)
+    implementation(projects.sample.core.pagination)
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 

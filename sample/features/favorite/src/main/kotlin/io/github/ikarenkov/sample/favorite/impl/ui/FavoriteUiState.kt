@@ -4,6 +4,6 @@ import androidx.compose.runtime.Immutable
 import io.github.ikarenkov.sample.favorite.impl.core.LCE
 
 @Immutable
-internal data class DemoFavUiState(
+internal data class FavoriteUiState(
     val listCells: LCE<List<FavoriteListItem>>,
 )

@@ -1,31 +1,30 @@
 package io.github.ikarenkov.kombucha.aggregator
 
 import io.github.ikarenkov.kombucha.store.Store
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 
-fun <Eff : Any, Msg : Any> bindEffToMsg(
-    coroutineScope: CoroutineScope,
+suspend fun <T, Msg : Any> bindFlowToMsg(
+    fromFlow: Flow<T>,
+    toStore: Store<Msg, *, *>,
+    transform: (T) -> Msg?
+) {
+    fromFlow.collect { eff ->
+        transform(eff)?.let { msg -> toStore.accept(msg) }
+    }
+}
+
+suspend fun <Eff : Any, Msg : Any> bindEffToMsg(
     storeEff: Store<*, *, Eff>,
     storeMsg: Store<Msg, *, *>,
     transform: (Eff) -> Msg?
 ) {
-    coroutineScope.launch {
-        storeEff.effects.collect { eff ->
-            transform(eff)?.let { msg -> storeMsg.accept(msg) }
-        }
-    }
+    bindFlowToMsg(storeEff.effects, storeMsg, transform)
 }
 
-fun <State : Any, Msg : Any> bindStateToMsg(
-    coroutineScope: CoroutineScope,
+suspend fun <State : Any, Msg : Any> bindStateToMsg(
     storeEff: Store<*, State, *>,
     storeMsg: Store<Msg, *, *>,
     transform: (State) -> Msg?
 ) {
-    coroutineScope.launch {
-        storeEff.state.collect { eff ->
-            transform(eff)?.let { msg -> storeMsg.accept(msg) }
-        }
-    }
+    bindFlowToMsg(storeEff.state, storeMsg, transform)
 }

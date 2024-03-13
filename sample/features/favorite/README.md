@@ -4,7 +4,10 @@
 
 There are 2 samples:
 
-1. FavoriteListFeature - simple implementation list loading logic and interaction as single store.
+1. [FavoriteListFeature](src/main/kotlin/io/github/ikarenkov/sample/favorite/impl/FavoriteListFeature.kt) - simple implementation list loading logic
+   and interaction as single store.
+2. [FavoriteAggregatorStore](src/main/kotlin/io/github/ikarenkov/sample/favorite/impl/aggregated/FavoriteAggregatorStore.kt) - this is enhanced
+   version of the previous sample, with suppot of pagination and extend favorite logic. It is an aggregation of 2 features: pagination and favorite.
 
 ## Logic of samples
 
