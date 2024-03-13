@@ -1,14 +1,15 @@
-# Модуль с примерами работы с TEA
+# Sample with Favorite screens
 
-## Логика примера
+## Samples
 
-В примере мы эмулируем работу с экраном избранного:
+There are 2 samples:
 
-1. Мы загружаем избранное.
-2. Мы подписываемся на обновления избранного и добавляем элементы в список.
-3. Мы можем удалить из избранного, кликнув лайк. При этом мы эмулируем ошибки, и элемент может вернуться при ошибке
-   удаления.
+1. FavoriteListFeature - simple implementation list loading logic and interaction as single store.
 
-## Fragment & Compose
+## Logic of samples
 
-В примере 2 экрана - fragment & compose, при этом они используют один и тот же Store.
+In the sample we emulate work with favorite:
+
+1. Loading favorite feature.
+2. Subscribe to updates.
+3. We can try to remove the item from favorite, but it can fail. In this case we return the item into the list.
