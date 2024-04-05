@@ -9,14 +9,14 @@ import io.github.ikarenkov.kombucha.sample.counter.impl.CounterFeature.Eff
 import io.github.ikarenkov.kombucha.sample.counter.impl.CounterFeature.Msg
 import io.github.ikarenkov.kombucha.sample.counter.impl.CounterFeature.State
 import io.github.ikarenkov.kombucha.store.Store
-import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
 import kotlinx.parcelize.Parcelize
 
 internal class CounterStore(
     initialState: State,
-    storeFactory: StoreFactory,
+    reducerStoreFactory: ReducerStoreFactory,
     counterEffectHandler: CounterEffectHandler
-) : Store<Msg, State, Eff> by storeFactory.create(
+) : Store<Msg, State, Eff> by reducerStoreFactory.create(
     name = "Counter",
     initialState = initialState,
     reducer = CounterFeature.dslReducer,

@@ -8,7 +8,7 @@ import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.eff_handler.adaptCast
 import io.github.ikarenkov.kombucha.reducer.dslReducer
 import io.github.ikarenkov.kombucha.store.Store
-import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
 import io.github.ikarenkov.sample.shikimori.impl.auth.data.AccessTokenResponse
 import io.github.ikarenkov.sample.shikimori.impl.data.AuthDataLocalStorage
 import io.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
@@ -17,9 +17,9 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 
 internal class AuthStore(
-    storeFactory: StoreFactory,
+    reducerStoreFactory: ReducerStoreFactory,
     authEffectHandler: AuthFeature.AuthEffHandler
-) : Store<AuthFeature.Msg, AuthFeature.State, AuthFeature.Eff> by storeFactory.create(
+) : Store<AuthFeature.Msg, AuthFeature.State, AuthFeature.Eff> by reducerStoreFactory.create(
     name = "AuthFeature",
     initialState = AuthFeature.State.Init(false),
     reducer = AuthFeature.Reducer,

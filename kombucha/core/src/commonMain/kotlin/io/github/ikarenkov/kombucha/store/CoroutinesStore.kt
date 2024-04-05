@@ -17,7 +17,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 /**
- * Basic coroutines safe implementation of [Store]. State modification is consequential with locking using [Mutex].
+ * Basic coroutines safe implementation of [ReducerStore]. State modification is consequential with locking using [Mutex].
  * @param name - the name that is used in base [EffectHandler] and in [coroutinesScope] as [CoroutineName], to help you in debugging.
  * @param reducer - the main logic component that describes how new state and side effects are provides. Must be a pure function.
  * @param effectHandlers - the list of objects that are intended to handle all effects that [reducer] provides.
@@ -33,7 +33,7 @@ open class CoroutinesStore<Msg : Any, State : Any, Eff : Any>(
     initialState: State,
     initialEffects: Set<Eff> = setOf(),
     coroutineExceptionHandler: CoroutineExceptionHandler = DefaultStoreCoroutineExceptionHandler()
-) : Store<Msg, State, Eff> {
+) : ReducerStore<Msg, State, Eff> {
 
     private val mutableState = MutableStateFlow(initialState)
     override val state: StateFlow<State> = mutableState
@@ -45,12 +45,12 @@ open class CoroutinesStore<Msg : Any, State : Any, Eff : Any>(
 
     private val stateUpdateMutex = Mutex()
 
-    private val mutableStoreUpdates: MutableSharedFlow<StoreUpdate<Msg, State, Eff>> = MutableSharedFlow()
+    private val mutableReducerUpdates: MutableSharedFlow<ReducerUpdate<Msg, State, Eff>> = MutableSharedFlow()
 
     /**
      * Represents cycles of reducer work. You can observe reducers inputs and outputs in one place.
      */
-    val storeUpdates: SharedFlow<StoreUpdate<Msg, State, Eff>> = mutableStoreUpdates
+    override val reducerUpdates: SharedFlow<ReducerUpdate<Msg, State, Eff>> = mutableReducerUpdates
 
     protected open val coroutinesScope = StoreScope(name, coroutineExceptionHandler)
 
@@ -63,12 +63,12 @@ open class CoroutinesStore<Msg : Any, State : Any, Eff : Any>(
             error("Trying to call accept in closed store with name \"$name\".")
         }
         coroutinesScope.launch {
-            val storeUpdate = stateUpdateMutex.withLock {
+            val reducerUpdate = stateUpdateMutex.withLock {
                 if (isActive) {
                     val oldState = state.value
                     val (newState, effects) = reducer(msg, oldState)
                     mutableState.value = newState
-                    StoreUpdate(
+                    ReducerUpdate(
                         msg = msg,
                         oldState = oldState,
                         newState = newState,
@@ -78,9 +78,9 @@ open class CoroutinesStore<Msg : Any, State : Any, Eff : Any>(
                     null
                 }
             }
-            if (storeUpdate != null) {
-                mutableStoreUpdates.emit(storeUpdate)
-                storeUpdate.effects.forEach { eff ->
+            if (reducerUpdate != null) {
+                mutableReducerUpdates.emit(reducerUpdate)
+                reducerUpdate.effects.forEach { eff ->
                     launch {
                         mutableEffects.emit(eff)
                         handleEff(eff)

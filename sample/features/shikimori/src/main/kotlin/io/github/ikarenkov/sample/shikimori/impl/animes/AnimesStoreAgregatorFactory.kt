@@ -1,28 +1,26 @@
 package io.github.ikarenkov.sample.shikimori.impl.animes
 
 import io.github.ikarenkov.kombucha.store.Store
-import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
 import io.github.ikarenkov.sample.core.pagination.PaginationDataFetcher
-import io.github.ikarenkov.sample.core.pagination.PaginationMsg
 import io.github.ikarenkov.sample.core.pagination.PaginationStore
 import io.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
 import io.github.ikarenkov.sample.shikimori.impl.auth.AuthStore
 import io.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
-import kotlinx.coroutines.CancellationException
 
 internal class AnimesStoreAgregatorFactory(
-    private val storeFactory: StoreFactory,
+    private val reducerStoreFactory: ReducerStoreFactory,
     private val animesDataFetcher: AnimesDataFetcher,
 ) {
 
     fun createStore(): Store<AnimesAggregatorStore.Msg, AnimesAggregatorStore.State, AnimesAggregatorStore.Eff> {
         val paginationFeature = PaginationStore(
-            storeFactory = storeFactory,
+            reducerStoreFactory = reducerStoreFactory,
             name = "AnimePagination",
             dataFetcher = animesDataFetcher
         )
         val authStore = shikimoriFeatureFacade.scope.get<AuthStore>()
-        return AnimesAggregatorStore(AnimesStore(storeFactory), paginationFeature, authStore)
+        return AnimesAggregatorStore(AnimesStore(reducerStoreFactory), paginationFeature, authStore)
     }
 
     data class Anime(val id: String, val name: String)

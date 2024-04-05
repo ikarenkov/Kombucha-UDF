@@ -31,7 +31,8 @@ internal class FavoriteStore(
 
     init {
         coroutinesScope.launch {
-            storeUpdates.collect { (msg, oldState, newState, effects) ->
+            // The sample of implementing analytics through observation of reducerUpdates.
+            reducerUpdates.collect { (msg, oldState, newState, effects) ->
                 when (msg) {
                     is Msg.Outer.ItemClick -> {
                         favoriteAnalytics.itemClick(msg.id, isFavorite = true)

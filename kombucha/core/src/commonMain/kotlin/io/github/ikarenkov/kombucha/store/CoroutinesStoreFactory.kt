@@ -10,14 +10,14 @@ import kotlinx.coroutines.CoroutineExceptionHandler
  */
 class CoroutinesStoreFactory(
     private val coroutineExceptionHandler: CoroutineExceptionHandler = DefaultStoreCoroutineExceptionHandler()
-) : StoreFactory {
+) : ReducerStoreFactory {
     override fun <Msg : Any, State : Any, Eff : Any> create(
         name: String?,
         initialState: State,
         reducer: Reducer<Msg, State, Eff>,
         initialEffects: Set<Eff>,
         vararg effectHandlers: EffectHandler<Eff, Msg>
-    ): Store<Msg, State, Eff> = CoroutinesStore<Msg, State, Eff>(
+    ): ReducerStore<Msg, State, Eff> = CoroutinesStore<Msg, State, Eff>(
         name = name,
         reducer = reducer,
         effectHandlers = effectHandlers.toList(),

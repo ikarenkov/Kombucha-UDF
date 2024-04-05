@@ -4,7 +4,7 @@ import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.eff_handler.adaptCast
 import io.github.ikarenkov.kombucha.reducer.dslReducer
 import io.github.ikarenkov.kombucha.store.Store
-import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
 import io.github.ikarenkov.sample.ui.api.UiSampleDeps
 import io.github.ikarenkov.sample.ui.impl.CachingUiEffectsFeature.Eff
 import io.github.ikarenkov.sample.ui.impl.CachingUiEffectsFeature.Msg
@@ -18,10 +18,10 @@ import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 internal class CachingUiEffectsStore(
-    storeFactory: StoreFactory,
+    reducerStoreFactory: ReducerStoreFactory,
     updatedEffHandler: UpdatesEffectHandler,
     navigationEffHandler: NavigationEffHandler
-) : Store<Msg, State, Eff> by storeFactory.create(
+) : Store<Msg, State, Eff> by reducerStoreFactory.create(
     name = "CachingUiEffectsFeature",
     initialState = State(emptyList()),
     reducer = CachingUiEffectsFeature.reducer,

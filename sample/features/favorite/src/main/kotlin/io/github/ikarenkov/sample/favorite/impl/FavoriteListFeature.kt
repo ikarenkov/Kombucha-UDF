@@ -38,7 +38,7 @@ internal class FavoriteListStore(
 
     init {
         coroutinesScope.launch {
-            storeUpdates.collect { (msg, oldState, newState, effects) ->
+            reducerUpdates.collect { (msg, oldState, newState, effects) ->
                 when (msg) {
                     is Msg.Outer.ItemClick -> {
                         favoriteAnalytics.itemClick(msg.id, isFavorite = true)

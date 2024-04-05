@@ -29,7 +29,7 @@ class UiStore<UiMsg : Any, UiState : Any, UiEff : Any, Msg : Any, State : Any, E
     private val uiEffConverter: (Eff) -> UiEff?,
     private val propagateCloseToOriginal: Boolean = true,
     coroutineExceptionHandler: CoroutineExceptionHandler = DefaultStoreCoroutineExceptionHandler(),
-    uiDispatcher: CoroutineDispatcher = Dispatchers.Main,
+    uiDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
     cacheUiEffects: Boolean = true,
 ) : Store<UiMsg, UiState, UiEff> {
 

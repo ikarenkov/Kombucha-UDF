@@ -4,7 +4,7 @@ import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.reducer.Reducer
 import io.github.ikarenkov.kombucha.store.CoroutinesStore
 import io.github.ikarenkov.kombucha.store.Store
-import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.drop
@@ -17,7 +17,7 @@ import kotlin.test.assertContentEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 fun <Msg : Any, State : Any, Eff : Any> testStoreReducer(
-    createStore: (StoreFactory) -> Store<Msg, State, Eff>,
+    createStore: (ReducerStoreFactory) -> Store<Msg, State, Eff>,
     testData: List<ReducerTestData<Msg, State, Eff>>
 ) {
     runTest {
@@ -25,7 +25,7 @@ fun <Msg : Any, State : Any, Eff : Any> testStoreReducer(
         val store = createStore(storeFactory)
         val collectedUpdates = mutableListOf<ReducerTestData<Msg, State, Eff>>()
         val collectionJob = launch {
-            storeFactory.createdStore!!.storeUpdates
+            storeFactory.createdStore!!.reducerUpdates
                 .drop(1)
                 .map { (msg, _, newState, effects) -> ReducerTestData(msg, newState, effects) }
                 .collect { collectedUpdates += it }
@@ -49,7 +49,7 @@ fun <Msg : Any, State : Any, Eff : Any> testStoreReducer(
 
 class TestStoreFactory<FMsg : Any, FState : Any, FEff : Any>(
     val testScope: TestScope = TestScope()
-) : StoreFactory {
+) : ReducerStoreFactory {
 
     var createdStore: CoroutinesStore<FMsg, FState, FEff>? = null
 

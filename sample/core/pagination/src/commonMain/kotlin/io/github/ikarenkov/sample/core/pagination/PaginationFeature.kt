@@ -5,14 +5,14 @@ import io.github.ikarenkov.kombucha.reducer.Reducer
 import io.github.ikarenkov.kombucha.reducer.ResultBuilder
 import io.github.ikarenkov.kombucha.reducer.dslReducer
 import io.github.ikarenkov.kombucha.store.Store
-import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
 
 open class PaginationStore<Item>(
     name: String,
-    storeFactory: StoreFactory,
+    reducerStoreFactory: ReducerStoreFactory,
     dataFetcher: PaginationDataFetcher<Item>,
     pageSize: Int = PaginationFeature.DEFAULT_PAGE_SIZE,
-) : Store<PaginationMsg<Item>, PaginationState<Item>, PaginationEff> by storeFactory.create(
+) : Store<PaginationMsg<Item>, PaginationState<Item>, PaginationEff> by reducerStoreFactory.create(
     name = name,
     initialState = PaginationState.Initial(pageSize),
     reducer = PaginationFeature.reducer(),

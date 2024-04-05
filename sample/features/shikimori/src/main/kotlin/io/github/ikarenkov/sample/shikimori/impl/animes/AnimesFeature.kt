@@ -2,14 +2,14 @@ package io.github.ikarenkov.sample.shikimori.impl.animes
 
 import io.github.ikarenkov.kombucha.reducer.dslReducer
 import io.github.ikarenkov.kombucha.store.Store
-import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
 import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Eff
 import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.Msg
 import io.github.ikarenkov.sample.shikimori.impl.animes.AnimesFeature.State
 
 internal class AnimesStore(
-    storeFactory: StoreFactory
-) : Store<Msg, State, Eff> by storeFactory.create(
+    reducerStoreFactory: ReducerStoreFactory
+) : Store<Msg, State, Eff> by reducerStoreFactory.create(
     name = "Animes",
     initialState = State.NotAuthorized,
     reducer = reducer::invoke,

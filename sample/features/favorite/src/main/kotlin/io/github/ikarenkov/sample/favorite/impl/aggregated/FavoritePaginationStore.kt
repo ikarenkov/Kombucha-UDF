@@ -1,17 +1,17 @@
 package io.github.ikarenkov.sample.favorite.impl.aggregated
 
-import io.github.ikarenkov.kombucha.store.StoreFactory
+import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
 import io.github.ikarenkov.sample.core.pagination.PaginationDataFetcher
 import io.github.ikarenkov.sample.core.pagination.PaginationStore
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteItem
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteRepository
 
 internal class FavoritePaginationStore(
-    storeFactory: StoreFactory,
+    reducerStoreFactory: ReducerStoreFactory,
     dataFetcher: DataFetcher,
 ) : PaginationStore<FavoriteItem>(
     name = "FavoritePagination",
-    storeFactory = storeFactory,
+    reducerStoreFactory = reducerStoreFactory,
     dataFetcher = dataFetcher
 
 ) {
