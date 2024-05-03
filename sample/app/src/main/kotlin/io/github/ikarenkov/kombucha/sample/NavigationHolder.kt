@@ -1,11 +1,11 @@
 package io.github.ikarenkov.kombucha.sample
 
 import android.os.Bundle
-import io.github.ikarenkov.kombucha.sample.root.KombuchaRootScreen
-import io.github.ikarenkov.kombucha.sample.root.SampleStack
 import com.github.terrakok.modo.Modo
 import com.github.terrakok.modo.RootScreen
 import com.github.terrakok.modo.stack.StackScreen
+import io.github.ikarenkov.kombucha.sample.root.KombuchaRootScreen
+import io.github.ikarenkov.kombucha.sample.root.SampleStack
 
 class NavigationHolder {
     var rootScreen: RootScreen<StackScreen>? = null

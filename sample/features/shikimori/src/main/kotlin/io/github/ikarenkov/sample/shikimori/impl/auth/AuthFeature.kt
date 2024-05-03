@@ -7,8 +7,8 @@ import androidx.browser.customtabs.CustomTabsIntent
 import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.eff_handler.adaptCast
 import io.github.ikarenkov.kombucha.reducer.dslReducer
-import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
+import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.sample.shikimori.impl.auth.data.AccessTokenResponse
 import io.github.ikarenkov.sample.shikimori.impl.data.AuthDataLocalStorage
 import io.github.ikarenkov.sample.shikimori.impl.data.ShikimoriBackendApi
@@ -85,71 +85,101 @@ internal object AuthFeature {
 
     }
 
-    internal object Reducer : io.github.ikarenkov.kombucha.reducer.Reducer<Msg, State, Eff> by dslReducer({ msg ->
-        when (msg) {
-            Msg.Init -> {
-                val state = state
-                if (state is State.Init && !state.inProgress) {
-                    state { State.Init(inProgress = true) }
-                    eff(Eff.LoadCachedData)
-                }
-            }
-            Msg.Auth -> {
-                if (state is State.NotAuthorized) {
-                    eff(Eff.GetAuthorizationCodeBrouser)
-                }
-            }
-            is Msg.AuthResult -> {
-                msg.result.fold(
-                    onSuccess = {
-                        state { it }
-                    },
-                    onFailure = {
-                        when (val state = state) {
-                            is State.NotAuthorized -> state { State.NotAuthorized.Idle }
-                            is State.Authorized -> {
-                                state { state.copy(failedRefreshAccessToken = true) }
-                            }
-                            is State.Init -> {}
-                        }
-                    }
-                )
-            }
-            is Msg.OAuthResult -> {
-                val code = msg.oauthUrl.substringAfter("kombucha.shikimori://oauth?code=")
-                if (code.isNotEmpty()) {
-                    state { State.NotAuthorized.OAuthInProgress(code) }
-                    eff(Eff.GetAccessToken.AuthorizationCode(code))
-                } else {
-                    eff(Eff.OAuthErrorCodeIsEmpty(msg.oauthUrl))
-                    state { State.NotAuthorized.Idle }
-                }
-            }
-            is Msg.LoadCacheAuthResult -> {
-                if (initialState is State.Init) {
-                    if (msg.accessTokenResponse == null) {
-                        state { State.NotAuthorized.Idle }
-                    } else {
+    internal object Reducer : io.github.ikarenkov.kombucha.reducer.Reducer<Msg, State, Eff> by dslReducer(
+        { msg ->
+            when (msg) {
+                Msg.Init -> {
+                    val state = state
+                    if (state is State.Init && !state.inProgress) {
                         state {
-                            State.Authorized(
-                                accessToken = msg.accessTokenResponse.accessToken,
-                                refreshToken = msg.accessTokenResponse.refreshToken
+                            State.Init(
+                                inProgress = true
                             )
                         }
+                        eff(Eff.LoadCachedData)
                     }
                 }
-            }
-            Msg.RefreshToken -> {
-                val state = state
-                when (state) {
-                    is State.Authorized -> eff(Eff.GetAccessToken.RefreshToken(state.refreshToken))
-                    // meybe it would be better to send effect out the fact, that we should inform user for auth?
-                    is State.NotAuthorized -> eff(Eff.GetAuthorizationCodeBrouser)
-                    is State.Init -> Unit
+                Msg.Auth -> {
+                    if (state is State.NotAuthorized) {
+                        eff(Eff.GetAuthorizationCodeBrouser)
+                    }
+                }
+                is Msg.AuthResult -> {
+                    msg.result.fold(
+                        onSuccess = {
+                            state { it }
+                        },
+                        onFailure = {
+                            when (val state = state) {
+                                is State.NotAuthorized -> state { State.NotAuthorized.Idle }
+                                is State.Authorized -> {
+                                    state {
+                                        state.copy(
+                                            failedRefreshAccessToken = true
+                                        )
+                                    }
+                                }
+                                is State.Init -> {}
+                            }
+                        }
+                    )
+                }
+                is Msg.OAuthResult -> {
+                    val code = msg.oauthUrl.substringAfter(
+                        "kombucha.shikimori://oauth?code="
+                    )
+                    if (code.isNotEmpty()) {
+                        state {
+                            State.NotAuthorized.OAuthInProgress(
+                                code
+                            )
+                        }
+                        eff(
+                            Eff.GetAccessToken.AuthorizationCode(
+                                code
+                            )
+                        )
+                    } else {
+                        eff(
+                            Eff.OAuthErrorCodeIsEmpty(
+                                msg.oauthUrl
+                            )
+                        )
+                        state { State.NotAuthorized.Idle }
+                    }
+                }
+                is Msg.LoadCacheAuthResult -> {
+                    if (initialState is State.Init) {
+                        if (msg.accessTokenResponse == null) {
+                            state { State.NotAuthorized.Idle }
+                        } else {
+                            state {
+                                State.Authorized(
+                                    accessToken = msg.accessTokenResponse.accessToken,
+                                    refreshToken = msg.accessTokenResponse.refreshToken
+                                )
+                            }
+                        }
+                    }
+                }
+                Msg.RefreshToken -> {
+                    val state = state
+                    when (state) {
+                        is State.Authorized -> eff(
+                            Eff.GetAccessToken.RefreshToken(
+                                state.refreshToken
+                            )
+                        )
+                        // meybe it would be better to send effect out the fact, that we should inform user for auth?
+                        is State.NotAuthorized -> eff(
+                            Eff.GetAuthorizationCodeBrouser
+                        )
+                        is State.Init -> Unit
+                    }
                 }
             }
         }
-    })
+    )
 
     internal class AuthEffHandler(
         private val context: Context,
@@ -170,10 +200,10 @@ internal object AuthFeature {
                         context,
                         Uri.parse(
                             "https://shikimori.one/oauth/authorize?" +
-                                    "client_id=Ty0gZ-tS9LCWcuRov-a2rLvkHqE7kcYkgwelAdmxxIk" +
-                                    "&redirect_uri=kombucha.shikimori%3A%2F%2Foauth" +
-                                    "&response_type=code" +
-                                    "&scope=user_rates+comments+topics"
+                                "client_id=Ty0gZ-tS9LCWcuRov-a2rLvkHqE7kcYkgwelAdmxxIk" +
+                                "&redirect_uri=kombucha.shikimori%3A%2F%2Foauth" +
+                                "&response_type=code" +
+                                "&scope=user_rates+comments+topics"
                         )
                     )
                 }

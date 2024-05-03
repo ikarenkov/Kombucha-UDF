@@ -8,7 +8,7 @@ import org.gradle.kotlin.dsl.getByType
 class AndroidAppPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            withVersionCatalog { libs ->
+            withVersionCatalog {
                 with(pluginManager) {
                     apply(libs.plugins.android.application.get().pluginId)
                     apply(libs.plugins.kotlin.android.get().pluginId)

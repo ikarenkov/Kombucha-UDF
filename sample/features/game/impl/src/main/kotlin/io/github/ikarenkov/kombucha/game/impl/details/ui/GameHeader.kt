@@ -76,7 +76,7 @@ fun GameHeader(
 
 @Preview
 @Composable
-fun PreviewGameHeader() {
+private fun PreviewGameHeader() {
     GameHeader(
         name = mockModel.name,
         rating = mockModel.rating,
@@ -125,6 +125,6 @@ fun StarsRating(rating: Float, modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-fun PreviewStars() {
+private fun PreviewStars() {
     StarsRating(rating = 2f)
 }

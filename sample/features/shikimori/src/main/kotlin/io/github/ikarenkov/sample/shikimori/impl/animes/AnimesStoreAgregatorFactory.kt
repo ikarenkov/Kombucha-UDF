@@ -1,7 +1,7 @@
 package io.github.ikarenkov.sample.shikimori.impl.animes
 
-import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
+import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.sample.core.pagination.PaginationDataFetcher
 import io.github.ikarenkov.sample.core.pagination.PaginationStore
 import io.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade

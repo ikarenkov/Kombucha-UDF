@@ -1,6 +1,5 @@
 package io.github.ikarenkov.kombucha.sample.root
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

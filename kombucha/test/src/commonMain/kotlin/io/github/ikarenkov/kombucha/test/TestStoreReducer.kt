@@ -3,8 +3,8 @@ package io.github.ikarenkov.kombucha.test
 import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.reducer.Reducer
 import io.github.ikarenkov.kombucha.store.CoroutinesStore
-import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
+import io.github.ikarenkov.kombucha.store.Store
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.drop

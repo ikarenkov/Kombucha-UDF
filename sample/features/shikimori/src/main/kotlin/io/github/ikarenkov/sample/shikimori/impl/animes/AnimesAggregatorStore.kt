@@ -1,8 +1,6 @@
 package io.github.ikarenkov.sample.shikimori.impl.animes
 
 import io.github.ikarenkov.kombucha.aggregator.AggregatorStore
-import io.github.ikarenkov.kombucha.aggregator.bindEffToMsg
-import io.github.ikarenkov.kombucha.aggregator.bindStateToMsg
 import io.github.ikarenkov.sample.core.pagination.PaginationEff
 import io.github.ikarenkov.sample.core.pagination.PaginationMsg
 import io.github.ikarenkov.sample.core.pagination.PaginationState
@@ -11,12 +9,9 @@ import io.github.ikarenkov.sample.shikimori.impl.auth.AuthFeature
 import io.github.ikarenkov.sample.shikimori.impl.auth.AuthStore
 import io.github.ikarenkov.sample.shikimori.impl.storeCoroutineExceptionHandler
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.stateIn
 
 internal class AnimesAggregatorStore(
     private val animesStore: AnimesStore,

@@ -30,7 +30,7 @@ class FavoriteListFeatureTest {
         ) {
             val newItem = FavoriteItem("new", "new")
             Msg.Outer.RemoveFavorite(newItem.id) assertReturn
-                    State(LCE.Loading()) + setOf(Eff.Inner.RemoveItem(newItem.id))
+                State(LCE.Loading()) + setOf(Eff.Inner.RemoveItem(newItem.id))
 
             val items = List(5) { FavoriteItem(it.toString(), "Item: $it") }
             Msg.Inner.ItemLoadingResult(Result.success(items)) assertReturn State(LCE.Data(items))
@@ -46,12 +46,14 @@ class FavoriteListFeatureTest {
             val removeItem = initialItems[1]
 
             Msg.Outer.RemoveFavorite(removeItem.id) assertReturn {
-                val removeResult = initialItems.toMutableList().apply { set(1, removeItem.copy(isFavorite = false, updatingFavorite = true)) }
+                val removeResult = initialItems.toMutableList().apply {
+                    set(1, removeItem.copy(isFavorite = false, updatingFavorite = true))
+                }
                 State(LCE.Data(removeResult)) + Eff.Inner.RemoveItem(removeItem.id)
             }
 
             Msg.Inner.ItemRemoveResult.Error(removeItem.id, null) assertReturn
-                    State(LCE.Data(initialItems)) + Eff.Outer.ItemRemoveError(removeItem.id)
+                State(LCE.Data(initialItems)) + Eff.Outer.ItemRemoveError(removeItem.id)
         }
     }
 

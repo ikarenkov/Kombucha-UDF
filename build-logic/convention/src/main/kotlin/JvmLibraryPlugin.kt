@@ -6,7 +6,7 @@ import org.gradle.api.Project
 class JvmLibraryPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            withVersionCatalog { libs ->
+            withVersionCatalog {
                 pluginManager.apply(libs.plugins.kotlin.jvm.get().pluginId)
                 target.configureKotlinJvm()
             }

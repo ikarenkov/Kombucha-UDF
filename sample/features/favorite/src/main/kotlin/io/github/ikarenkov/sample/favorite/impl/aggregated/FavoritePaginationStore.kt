@@ -13,7 +13,6 @@ internal class FavoritePaginationStore(
     name = "FavoritePagination",
     reducerStoreFactory = reducerStoreFactory,
     dataFetcher = dataFetcher
-
 ) {
 
     class DataFetcher(

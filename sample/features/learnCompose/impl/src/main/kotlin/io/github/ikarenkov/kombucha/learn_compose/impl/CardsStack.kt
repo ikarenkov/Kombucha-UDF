@@ -39,7 +39,7 @@ import kotlin.math.roundToInt
 
 @Suppress("MagicNumber")
 @Composable
-fun <T> CardsStack(
+internal fun <T> CardsStack(
     items: List<T>,
     topItem: Int,
     onTopSwiped: () -> Unit,
@@ -97,7 +97,7 @@ fun <T> CardsStack(
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "ModifierComposed")
 private fun Modifier.swipeToDismiss(
     offset: Animatable<Offset, AnimationVector2D>,
     onDismissed: () -> Unit,
@@ -158,7 +158,7 @@ private fun Modifier.swipeToDismiss(
         )
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "ModifierComposed")
 private fun Modifier.scaleAndOffset(relativePos: Int, relativeOffset: Float) = composed {
     val scale = 1f - 0.1f * relativePos + 0.1f * relativeOffset
     val offset = 16.dp * (relativePos - relativeOffset) * scale

@@ -4,8 +4,8 @@ import io.github.ikarenkov.kombucha.eff_handler.adaptCast
 import io.github.ikarenkov.kombucha.reducer.Reducer
 import io.github.ikarenkov.kombucha.reducer.ResultBuilder
 import io.github.ikarenkov.kombucha.reducer.dslReducer
-import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
+import io.github.ikarenkov.kombucha.store.Store
 
 open class PaginationStore<Item>(
     name: String,
@@ -178,7 +178,7 @@ data class PaginationState<out T>(
 
     // TODO: empty list case
     val allLoaded = totalPages != null &&
-            pagesLoaded == totalPages && pagesLoaded != 0
+        pagesLoaded == totalPages && pagesLoaded != 0
 
     val hadSuccessLoading = pagesLoaded > 0
 

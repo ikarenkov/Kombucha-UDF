@@ -14,7 +14,6 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.headers
 import io.ktor.http.path
 
 internal class ShikimoriBackendApi(
@@ -68,9 +67,6 @@ internal class ShikimoriBackendApi(
                 url.path("oauth/token")
 
                 contentType(ContentType.Application.Json)
-                headers {
-
-                }
                 setBody(
                     AccessTokenRequest(
                         grantType = "authorization_code",

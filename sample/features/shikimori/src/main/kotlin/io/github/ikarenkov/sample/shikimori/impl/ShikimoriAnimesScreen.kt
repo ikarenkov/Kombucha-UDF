@@ -37,7 +37,6 @@ import com.github.terrakok.modo.ScreenKey
 import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.model.ScreenModel
 import com.github.terrakok.modo.model.rememberScreenModel
-import io.github.ikarenkov.sample.core.pagination.PaginationFeature
 import io.github.ikarenkov.sample.core.pagination.PaginationMsg
 import io.github.ikarenkov.sample.core.pagination.PaginationState
 import io.github.ikarenkov.sample.shikimori.api.shikimoriFeatureFacade
@@ -83,7 +82,11 @@ private fun AnimesScreenContent(model: AnimesScreenModel) {
     val animesState by remember { derivedStateOf { state.animesState } }
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { model.store.accept(AnimesAggregatorStore.Msg.Animes(AnimesFeature.Msg.OnAuthClick)) }) {
+            FloatingActionButton(
+                onClick = {
+                    model.store.accept(AnimesAggregatorStore.Msg.Animes(AnimesFeature.Msg.OnAuthClick))
+                }
+            ) {
                 when (animesState) {
                     is AnimesFeature.State.AuthInProgress -> {
                         CircularProgressIndicator()
@@ -110,7 +113,7 @@ private fun AnimesScreenContent(model: AnimesScreenModel) {
             snapshotFlow { lazyListState.layoutInfo }
                 .map {
                     it.visibleItemsInfo.isNotEmpty() &&
-                            paginationState.items.size - 1 <= it.visibleItemsInfo.last().index
+                        paginationState.items.size - 1 <= it.visibleItemsInfo.last().index
                 }
                 .collect { needLoadMore ->
                     withContext(Dispatchers.IO) {
