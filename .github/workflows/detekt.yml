@@ -3,10 +3,10 @@ run-name: Running Detekt checks
 on:
   push:
     branches:
-      - "dev"
+      - "main"
   pull_request:
     branches:
-      - "dev"
+      - "main"
 jobs:
   detekt-check:
     runs-on: ubuntu-latest
