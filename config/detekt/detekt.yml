@@ -93,6 +93,7 @@ comments:
 
 complexity:
   active: true
+  severity: error
   CognitiveComplexMethod:
     active: false
     threshold: 15
