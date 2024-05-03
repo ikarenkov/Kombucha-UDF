@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,7 +50,7 @@ internal class LearnComposeScreen(
         val items = remember {
             List(10) { 0 }.flatMap { listOf(Color.Green, Color.Cyan, Color.Red) }
         }
-        var topItem by remember { mutableStateOf(0) }
+        var topItem by remember { mutableIntStateOf(0) }
         CompositionLocalProvider(
             LocalIndication provides DefaultDebugIndication
         ) {

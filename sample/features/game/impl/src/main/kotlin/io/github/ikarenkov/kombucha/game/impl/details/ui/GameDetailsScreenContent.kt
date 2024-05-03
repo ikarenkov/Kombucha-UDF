@@ -62,6 +62,7 @@ import io.github.ikarenkov.kombucha.game.impl.details.ui.theme.BackgroundColor
 val contentPadding = 24.dp
 
 // For tablets support
+@Suppress("CompositionLocalAllowlist")
 val LocalContentPadding = staticCompositionLocalOf { contentPadding }
 
 fun Modifier.contentPadding(): Modifier = this.composed { padding(horizontal = LocalContentPadding.current) }
@@ -70,7 +71,7 @@ fun Modifier.contentPadding(): Modifier = this.composed { padding(horizontal = L
 @OptIn(ExperimentalMotionApi::class, ExperimentalMaterialApi::class)
 @Preview
 @Composable
-fun DetailsScreen(state: DetailsScreenState = mockModel) {
+internal fun DetailsScreen(state: DetailsScreenState = mockModel) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.toFloat()
 
     val swipeableState = rememberSwipeableState(initialValue = SwipingStates.EXPANDED)

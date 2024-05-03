@@ -180,7 +180,7 @@ internal fun FavoriteScreenContent(
 }
 
 @Composable
-private fun TopBarContent(modifier: Modifier) {
+private fun TopBarContent(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
@@ -243,10 +243,14 @@ private fun FavoriteList(
             FavoriteListItemContent(
                 item = item as? FavoriteListItem.Item,
                 removeFavoriteClick = (item as? FavoriteListItem.Item)?.let {
-                    { removeFavoriteClick(item.id) }
+                    {
+                        removeFavoriteClick(item.id)
+                    }
                 },
                 itemClick = (item as? FavoriteListItem.Item)?.let {
-                    { itemClick(item.id) }
+                    {
+                        itemClick(item.id)
+                    }
                 },
                 modifier = Modifier
                     .padding(horizontal = 16.dp)

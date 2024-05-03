@@ -1,7 +1,5 @@
 package io.github.ikarenkov.sample.favorite.impl.data
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 data class FavoriteItem(

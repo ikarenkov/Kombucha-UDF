@@ -18,7 +18,7 @@ fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension<*, *, *, *, *>,
 ) {
     commonExtension.apply {
-        withVersionCatalog { libs ->
+        withVersionCatalog {
             compileSdk = libs.versions.compileSdk.get().toInt()
 
             defaultConfig {
@@ -57,7 +57,6 @@ fun Project.configureKotlin() {
     // Use withType to workaround https://youtrack.jetbrains.com/issue/KT-55947
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
-
             // Set JVM target to 8
             jvmTarget = JAVA_VERSION.toString()
             // Treat all Kotlin warnings as errors (disabled by default)

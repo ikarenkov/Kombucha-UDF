@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 class KotlinMultiplatformLibraryPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            withVersionCatalog { libs ->
+            withVersionCatalog {
                 pluginManager.apply(libs.plugins.kotlin.multiplatform.get().pluginId)
             }
             configure<KotlinMultiplatformExtension> {

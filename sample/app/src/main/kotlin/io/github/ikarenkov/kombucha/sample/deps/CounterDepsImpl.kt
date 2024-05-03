@@ -1,7 +1,7 @@
 package io.github.ikarenkov.kombucha.sample.deps
 
-import io.github.ikarenkov.kombucha.sample.NavigationHolder
 import com.github.terrakok.modo.stack.Forward
+import io.github.ikarenkov.kombucha.sample.NavigationHolder
 import io.github.ikarenkov.kombucha.sample.counter.api.CounterDeps
 import io.github.ikarenkov.kombucha.sample.counter.api.counterFeatureFacade
 

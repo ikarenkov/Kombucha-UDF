@@ -3,7 +3,6 @@ package io.github.ikarenkov.kombucha.game.impl.details.ui
 import androidx.annotation.DrawableRes
 import io.github.ikarenkov.sample.game.R
 
-
 data class DetailsScreenState(
     val name: String,
     val rating: Float,
@@ -64,7 +63,7 @@ val mockModel = DetailsScreenState(
     reviewsCount = 70_000_000,
     genres = listOf("MOBA", "MULTIPLAYER", "STRATEGY", "action", "battle arena", "MOBA", "MULTIPLAYER", "STRATEGY", "action", "battle arena"),
     description = "Dota 2 is a multiplayer online battle arena (MOBA) game which has two teams of five players compete to collectively destroy a " +
-            "large structure defended by the opposing team known as the \"Ancient\", whilst defending their own.",
+        "large structure defended by the opposing team known as the \"Ancient\", whilst defending their own.",
     imageRes = R.drawable.image_dota,
     iconRes = R.drawable.icon_dota,
     media = listOf(

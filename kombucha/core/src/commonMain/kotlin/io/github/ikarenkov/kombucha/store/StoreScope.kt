@@ -13,7 +13,7 @@ fun StoreScope(
     coroutineContext: CoroutineContext = EmptyCoroutineContext
 ) = CoroutineScope(
     SupervisorJob() +
-            coroutineExceptionHandler +
-            (name?.let { CoroutineName(name) } ?: EmptyCoroutineContext) +
-            coroutineContext
+        coroutineExceptionHandler +
+        (name?.let { CoroutineName(name) } ?: EmptyCoroutineContext) +
+        coroutineContext
 )

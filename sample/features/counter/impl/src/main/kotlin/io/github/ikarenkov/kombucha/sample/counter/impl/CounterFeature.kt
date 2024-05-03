@@ -8,8 +8,8 @@ import io.github.ikarenkov.kombucha.reducer.withoutEff
 import io.github.ikarenkov.kombucha.sample.counter.impl.CounterFeature.Eff
 import io.github.ikarenkov.kombucha.sample.counter.impl.CounterFeature.Msg
 import io.github.ikarenkov.kombucha.sample.counter.impl.CounterFeature.State
-import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
+import io.github.ikarenkov.kombucha.store.Store
 import kotlinx.parcelize.Parcelize
 
 internal class CounterStore(

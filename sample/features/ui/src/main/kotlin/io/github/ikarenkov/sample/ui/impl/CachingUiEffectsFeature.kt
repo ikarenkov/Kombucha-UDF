@@ -3,8 +3,8 @@ package io.github.ikarenkov.sample.ui.impl
 import io.github.ikarenkov.kombucha.eff_handler.EffectHandler
 import io.github.ikarenkov.kombucha.eff_handler.adaptCast
 import io.github.ikarenkov.kombucha.reducer.dslReducer
-import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.kombucha.store.ReducerStoreFactory
+import io.github.ikarenkov.kombucha.store.Store
 import io.github.ikarenkov.sample.ui.api.UiSampleDeps
 import io.github.ikarenkov.sample.ui.impl.CachingUiEffectsFeature.Eff
 import io.github.ikarenkov.sample.ui.impl.CachingUiEffectsFeature.Msg

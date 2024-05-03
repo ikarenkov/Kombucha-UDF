@@ -136,12 +136,12 @@ private fun ReviewHeader(rating: Float, reviewsCount: Int) {
 
 @Preview
 @Composable
-fun PreviewReviewHeader() {
+private fun PreviewReviewHeader() {
     ReviewHeader(rating = 3f, reviewsCount = 10_000_000)
 }
 
 @Composable
-fun DecorateListItem(
+private fun DecorateListItem(
     pos: Int,
     size: Int,
     innerOffset: Dp = 0.dp,
@@ -157,12 +157,12 @@ fun DecorateListItem(
 
 @Preview
 @Composable
-fun PreviewDetailsBottomContent() {
+private fun PreviewDetailsBottomContent() {
     DetailsBottomContent(state = mockModel)
 }
 
 @Composable
-fun DetailsMediaContent(media: DetailsMedia) {
+private fun DetailsMediaContent(media: DetailsMedia) {
     Box(
         modifier = Modifier
             .size(height = 135.dp, width = 240.dp)
@@ -192,13 +192,13 @@ fun DetailsMediaContent(media: DetailsMedia) {
 
 @Preview
 @Composable
-fun PreviewDetailsImage() {
+private fun PreviewDetailsImage() {
     DetailsMediaContent(mockDetailsMediaImage)
 }
 
 @Preview
 @Composable
-fun PreviewDetailsVideo() {
+private fun PreviewDetailsVideo() {
     DetailsMediaContent(mockDetailsMediaVideo)
 }
 
@@ -222,7 +222,7 @@ fun GenreCell(text: String, modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-fun PreviewGenreCell() {
+private fun PreviewGenreCell() {
     Row {
         GenreCell(text = "moba")
     }
@@ -254,6 +254,6 @@ fun ReviewItem(review: Review, modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-fun PreviewReviewItem() {
+private fun PreviewReviewItem() {
     ReviewItem(review = mockReview1)
 }

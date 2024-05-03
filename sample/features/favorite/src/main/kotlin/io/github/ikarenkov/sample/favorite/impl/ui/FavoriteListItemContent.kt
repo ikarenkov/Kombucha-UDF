@@ -53,7 +53,9 @@ internal fun FavoriteListItemContent(
                     Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.Gray)
-                } else Modifier
+                } else {
+                    Modifier
+                }
             )
             Box(Modifier.weight(1f))
             IconButton(

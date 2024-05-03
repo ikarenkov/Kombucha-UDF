@@ -22,16 +22,13 @@ dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.android.tools.common)
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.detektPlugin)
     // workaround for https://github.com/gradle/gradle/issues/15383
     compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
 
 gradlePlugin {
     plugins {
-        register("kombucha-build-logic") {
-            id = "kombucha-build-logic"
-            implementationClass = "StubConventionPlugin"
-        }
         register("kombucha-jvm-library") {
             id = "kombucha-jvm-library"
             implementationClass = "JvmLibraryPlugin"
@@ -59,6 +56,10 @@ gradlePlugin {
         register("kombucha-publishing") {
             id = "kombucha-publishing"
             implementationClass = "PublishingPlugin"
+        }
+        register("kombucha-detekt") {
+            id = "kombucha-detekt"
+            implementationClass = "DetektPlugin"
         }
     }
 }

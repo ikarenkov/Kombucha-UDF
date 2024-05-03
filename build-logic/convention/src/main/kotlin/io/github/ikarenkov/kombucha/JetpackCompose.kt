@@ -7,8 +7,7 @@ import org.gradle.kotlin.dsl.dependencies
 fun Project.configureJetpackCompose(
     commonExtension: CommonExtension<*, *, *, *, *>,
 ) {
-    withVersionCatalog { libs ->
-
+    withVersionCatalog {
         commonExtension.apply {
             buildFeatures.compose = true
             composeOptions.kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtension.get()

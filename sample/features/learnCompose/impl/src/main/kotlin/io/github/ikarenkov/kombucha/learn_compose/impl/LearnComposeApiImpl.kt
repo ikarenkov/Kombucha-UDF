@@ -1,7 +1,7 @@
 package io.github.ikarenkov.kombucha.learn_compose.impl
 
-import io.github.ikarenkov.kombucha.learn_compose.api.LearnComposeApi
 import com.github.terrakok.modo.Screen
+import io.github.ikarenkov.kombucha.learn_compose.api.LearnComposeApi
 
 class LearnComposeApiImpl : LearnComposeApi {
 

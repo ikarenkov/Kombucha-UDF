@@ -19,6 +19,8 @@ androidxAppCompat = "1.6.1"
 androidxJunit = "1.1.5"
 koin = "3.5.3"
 ktor = "2.3.7"
+detektVersion = "1.23.4"
+detektComposeVersion = "0.3.19"
 
 [libraries]
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
@@ -54,6 +56,7 @@ ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+detektPlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detektVersion" }
 
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
 work-testing = { group = "androidx.work", name = "work-testing", version = "2.9.0" }
@@ -73,6 +76,9 @@ test-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 test-mockk = { group = "io.mockk", name = "mockk", version = "1.13.9" }
 test-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 
+detekt-composeRules = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektComposeVersion" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detektVersion" }
+
 [plugins]
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -81,7 +87,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 
-detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.4" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektVersion" }
 
 kombucha-buildLogic = { id = "kombucha-build-logic", version = "unspecified" }
 kombucha-jetpackCompose-library = { id = "kombucha-jetpack-compose-library", version = "unspecified" }
@@ -91,3 +97,4 @@ kombucha-android-library = { id = "kombucha-android-library", version = "unspeci
 kombucha-android-app = { id = "kombucha-android-app", version = "unspecified" }
 kombucha-kmp-library = { id = "kombucha-kmp-library", version = "unspecified" }
 kombucha-publishing = { id = "kombucha-publishing", version = "unspecified" }
+kombucha-detekt = { id = "kombucha-detekt", version = "unspecified" }

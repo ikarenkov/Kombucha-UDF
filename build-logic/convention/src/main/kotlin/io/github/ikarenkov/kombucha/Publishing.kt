@@ -55,7 +55,7 @@ internal fun Project.setupPublishing() {
         // Configure all publications
         publications.withType<MavenPublication> {
             groupId = "io.github.ikarenkov"
-            withVersionCatalog { libs ->
+            withVersionCatalog {
                 version = libs.versions.kombucha.get().toString()
             }
 
@@ -64,9 +64,8 @@ internal fun Project.setupPublishing() {
             // Provide artifacts information requited by Maven Central
             pom {
                 name = "Kombucha UDF"
-                description =
-                    "UDF library based on The Elm Architecture (TEA) concepts that helps to focus on logic of you application, " +
-                            "rather then understanding what is going on."
+                description = "UDF library based on The Elm Architecture (TEA) concepts that helps to focus on logic of you application, " +
+                    "rather then understanding what is going on."
                 url = "https://github.com/ikarenkov/kombucha-udf"
 
                 setupLicense()
@@ -131,4 +130,4 @@ private fun Project.readEnvironmentVariables() {
     }
 }
 
-private fun Project.getExtraString(name: String) = extra[name]?.toString()
+private fun Project.getExtraString(name: String) = if (extra.has(name)) extra[name]?.toString() else null
