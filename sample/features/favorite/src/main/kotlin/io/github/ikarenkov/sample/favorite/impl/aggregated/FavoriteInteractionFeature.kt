@@ -7,10 +7,10 @@ import io.github.ikarenkov.kombucha.reducer.dslReducer
 import io.github.ikarenkov.kombucha.store.CoroutinesStore
 import io.github.ikarenkov.sample.favorite.api.FavoriteUpdate
 import io.github.ikarenkov.sample.favorite.impl.FavoriteAnalytics
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteFeature.Eff
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteFeature.Msg
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteFeature.State
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteFeature.reducer
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionFeature.Eff
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionFeature.Msg
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionFeature.State
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionFeature.reducer
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteItem
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteRepository
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-internal class FavoriteStore(
+internal class FavoriteInteractionStore(
     favoriteEffectHandler: FavoriteEffectHandler,
     favoriteAnalytics: FavoriteAnalytics
 ) : CoroutinesStore<Msg, State, Eff>(
@@ -48,7 +48,7 @@ internal class FavoriteStore(
 
 }
 
-object FavoriteFeature {
+object FavoriteInteractionFeature {
 
     val reducer = dslReducer<Msg, State, Eff> { msg ->
         when (msg) {

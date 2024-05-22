@@ -10,7 +10,8 @@ interface EffectHandler<in Eff : Any, out Msg : Any> {
 
 }
 
-inline fun <reified Eff1 : Any, Msg1 : Any, Eff2 : Any, reified Msg2 : Any> EffectHandler<Eff1, Msg1>.adaptCast(): EffectHandler<Eff2, Msg2> =
+inline fun <reified Eff1 : Any, Msg1 : Any, Eff2 : Any, reified Msg2 : Any>
+        EffectHandler<Eff1, Msg1>.adaptCast(): EffectHandler<Eff2, Msg2> =
     adapt(
         effAdapter = { it as? Eff1 },
         msgAdapter = { it as? Msg2 }

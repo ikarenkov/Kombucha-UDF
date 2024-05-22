@@ -24,7 +24,7 @@ internal class FavoriteListStore(
     initialState: State = State(LCE.Loading()),
     favoriteAnalytics: FavoriteAnalytics
 ) : CoroutinesStore<Msg, State, Eff>(
-    name = "FavoriteStore",
+    name = "FavoriteListStore",
     reducer = FavoriteListFeature.reducer,
     initialState = initialState,
     initialEffects = setOfNotNull(
@@ -40,12 +40,10 @@ internal class FavoriteListStore(
         coroutinesScope.launch {
             reducerUpdates.collect { (msg, oldState, newState, effects) ->
                 when (msg) {
-                    is Msg.Outer.ItemClick -> {
+                    is Msg.Outer.ItemClick ->
                         favoriteAnalytics.itemClick(msg.id, isFavorite = true)
-                    }
-                    is Msg.Outer.RemoveFavorite -> {
+                    is Msg.Outer.RemoveFavorite ->
                         favoriteAnalytics.changeFavoriteClick(msg.id, desiredFavorite = false)
-                    }
                     else -> Unit
                 }
             }

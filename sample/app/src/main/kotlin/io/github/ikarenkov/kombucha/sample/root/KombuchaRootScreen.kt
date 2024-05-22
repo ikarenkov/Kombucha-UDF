@@ -51,7 +51,7 @@ private fun RootScreen(parent: StackScreen) {
                 "Game" to { gameFeatureFacade.api.createScreen() },
                 "Shikimori" to { shikimoriFeatureFacade.api.createScreen() },
                 "Ui adapter sample" to { uiSampleFeatureFacade.api.cachingUiEffectsScreen() },
-                "Favorite" to { favoriteSampleFacade.api.favoriteListScreen() },
+                "Simple FavoriteListStore" to { favoriteSampleFacade.api.favoriteListScreen() },
                 "Favorite aggregated" to { favoriteSampleFacade.api.favoriteAggregatedListScreen() },
             ).forEach { (text, screen) ->
                 Button(

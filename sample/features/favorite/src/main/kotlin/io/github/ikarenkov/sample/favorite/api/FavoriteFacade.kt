@@ -7,14 +7,14 @@ import io.github.ikarenkov.sample.favorite.impl.FavoriteScreenModel
 import io.github.ikarenkov.sample.favorite.impl.FavoriteListStore
 import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteAggregatorStore
 import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteEffectHandler
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteStore
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionStore
 import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoritePaginationStore
 import io.github.ikarenkov.sample.favorite.impl.data.FavoriteRepository
 
 val favoriteSampleFacade by lazy {
     featureFacade<Any, FavoriteApi>("TeaSampleFacade") {
         scoped { FavoriteApi(get()) }
-        scoped { FavoriteStore(get(), get()) }
+        scoped { FavoriteInteractionStore(get(), get()) }
         scoped { FavoriteAnalytics() }
         factory { FavoriteAggregatorStore(get(), get()) }
         factory { FavoriteEffectHandler(get()) }

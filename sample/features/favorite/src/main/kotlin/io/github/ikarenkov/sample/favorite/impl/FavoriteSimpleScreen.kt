@@ -68,7 +68,7 @@ import org.koin.core.parameter.parametersOf
 import java.io.IOException
 
 @Parcelize
-class FavoriteScreen(
+class FavoriteSimpleScreen(
     override val screenKey: ScreenKey = generateScreenKey(),
 ) : Screen {
 
