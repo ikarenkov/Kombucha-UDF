@@ -1,18 +1,18 @@
 package io.github.ikarenkov.sample.favorite.api
 
 import com.github.terrakok.modo.Screen
-import io.github.ikarenkov.sample.favorite.impl.FavoriteScreen
+import io.github.ikarenkov.sample.favorite.impl.FavoriteSimpleScreen
 import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteAggregatedScreen
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteFeature
-import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteStore
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionFeature
+import io.github.ikarenkov.sample.favorite.impl.aggregated.FavoriteInteractionStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 
 class FavoriteApi internal constructor(
-    private val favoriteStore: FavoriteStore
+    private val favoriteInteractionStore: FavoriteInteractionStore
 ) {
 
-    fun favoriteListScreen(): Screen = FavoriteScreen()
+    fun favoriteListScreen(): Screen = FavoriteSimpleScreen()
 
     fun favoriteAggregatedListScreen(): Screen = FavoriteAggregatedScreen()
 
@@ -20,17 +20,19 @@ class FavoriteApi internal constructor(
         id: String,
         isFavorite: Boolean
     ) {
-        favoriteStore.accept(
-            FavoriteFeature.Msg.Outer.UpdateFavorite(id, isFavorite)
+        favoriteInteractionStore.accept(
+            FavoriteInteractionFeature.Msg.Outer.UpdateFavorite(id, isFavorite)
         )
     }
 
     fun observeFavoriteUpdates(): Flow<FavoriteUpdate> =
-        favoriteStore.effects
+        favoriteInteractionStore.effects
             .mapNotNull { eff ->
                 when (eff) {
-                    is FavoriteFeature.Eff.Outer.ItemUpdate.Started -> eff.item
-                    is FavoriteFeature.Eff.Outer.ItemUpdate.Error -> eff.item.run { copy(isFavorite = !isFavorite) }
+                    is FavoriteInteractionFeature.Eff.Outer.ItemUpdate.Started ->
+                        eff.item
+                    is FavoriteInteractionFeature.Eff.Outer.ItemUpdate.Error ->
+                        eff.item.run { copy(isFavorite = !isFavorite) }
                     else -> null
                 }
             }
